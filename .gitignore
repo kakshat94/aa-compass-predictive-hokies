@@ -1,0 +1,7 @@
+# Ignore solver logs and temp files inside member directories
+*.log
+*.lp
+*.mps
+*.sol
+__pycache__/
+.venv/
