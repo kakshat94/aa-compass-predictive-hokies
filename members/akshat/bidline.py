@@ -1,34 +1,78 @@
 import pandas as pd
-from typing import Dict
-from members.akshat.config import ProjectConfig
+from datetime import datetime
+from typing import Dict, List, Union
+
 
 class BidlineGenerator:
     """
-    Generates 4-3-4-4 bidline coverage vectors across 15 offsets.
+    Generates 4-3-4-4 bidline coverage vectors for 15 offsets across a specified date horizon.
+    
+    Pattern Structure (15-day cycle):
+      Days 0..3   : 4 Working Days (1)
+      Days 4..6   : 3 Off Days     (0)
+      Days 7..10  : 4 Working Days (1)
+      Days 11..14 : 4 Off Days     (0)
     """
-    def __init__(self, start_date: str, end_date: str):
-        self.date_range = pd.date_range(start=start_date, end=end_date)
-        self.date_list = [dt.strftime('%Y-%m-%d') for dt in self.date_range]
-        self.pattern = ProjectConfig.BIDLINE_PATTERN
-        self.cycle_length = ProjectConfig.CYCLE_LENGTH
+    CYCLE_LENGTH = 15
+    PATTERN = [1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0]
+
+    def __init__(self, start_date: str = "2025-01-14", end_date: str = "2026-01-11"):
+        """
+        Initializes the date range horizon. Dates can be provided as YYYY-MM-DD or MM/DD/YYYY.
+        """
+        self.start_date = pd.to_datetime(start_date)
+        self.end_date = pd.to_datetime(end_date)
+        
+        # Build list of date strings (YYYY-MM-DD)
+        self.date_range = pd.date_range(start=self.start_date, end=self.end_date)
+        self.date_strings = [dt.strftime('%Y-%m-%d') for dt in self.date_range]
 
     def get_coverage_vector(self, offset: int) -> Dict[str, int]:
         """
-        Generates a dictionary with date as key and 1 (working) / 0 (off) as value
-        for a bidline starting with the specified offset.
+        Returns a dictionary {date_str: 0 or 1} for a specific offset (0 to 14).
+        
+        Args:
+            offset (int): Offset integer from 0 to 14 representing cycle shift.
+            
+        Returns:
+            Dict[str, int]: Key is YYYY-MM-DD, Value is 1 (working) or 0 (off).
         """
-        if offset < 0 or offset >= self.cycle_length:
-            raise ValueError(f"Offset must be between 0 and {self.cycle_length - 1}")
+        if not (0 <= offset < self.CYCLE_LENGTH):
+            raise ValueError(f"Offset must be an integer between 0 and {self.CYCLE_LENGTH - 1}.")
 
-        coverage_vector = {}
-        for day_idx, date_str in enumerate(self.date_list):
-            pattern_pos = (day_idx - offset) % self.cycle_length
-            coverage_vector[date_str] = self.pattern[pattern_pos]
+        coverage = {}
+        for day_idx, date_str in enumerate(self.date_strings):
+            pattern_pos = (day_idx - offset) % self.CYCLE_LENGTH
+            coverage[date_str] = self.PATTERN[pattern_pos]
 
-        return coverage_vector
+        return coverage
 
-    def get_all_offset_vectors() -> Dict[int, Dict[str, int]]:
+    def get_all_coverage_vectors(self) -> Dict[int, Dict[str, int]]:
         """
-        Returns coverage vectors for all 15 offsets.
+        Generates coverage vectors for all 15 offsets.
+        
+        Returns:
+            Dict[int, Dict[str, int]]: {offset_id: {date_str: 0_or_1}}
         """
-        return {offset: self.get_coverage_vector(offset) for offset in range(self.cycle_length)}
+        return {f"Offset{offset}": self.get_coverage_vector(offset) for offset in range(self.CYCLE_LENGTH)}
+
+    def get_coverage_dataframe(self) -> pd.DataFrame:
+        """
+        Returns a full tabular coverage matrix where:
+          - Rows: Dates in horizon (YYYY-MM-DD)
+          - Columns: Offset_0 through Offset_14
+        """
+        all_vecs = self.get_all_coverage_vectors()
+        df = pd.DataFrame(all_vecs, index=self.date_strings)
+        df.columns = [f"Offset_{i}" for i in range(self.CYCLE_LENGTH)]
+        return df
+
+
+if __name__ == "__main__":
+    # Sanity Test & Sample Verification
+    gen = BidlineGenerator("2025-01-14", "2026-01-11")
+    cov_df = gen.get_coverage_dataframe()
+    
+    print(f"Total dates generated: {len(cov_df)}")
+    print("\nSample Coverage Matrix (First 10 days for Offsets 0, 1, 5, 6):")
+    print(cov_df[['Offset_0', 'Offset_1', 'Offset_5', 'Offset_6']].head(10))
