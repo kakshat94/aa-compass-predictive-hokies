@@ -72,7 +72,7 @@ class WorkforceOptimizer:
         self.dom_trainbid_const = {}
         self.special_train = {}
         for w in self.wc_day_sets.keys():
-            if w=='DOMESTIC':
+            if w=='Domestic':
                 for i, per in enumerate(self.wc_day_sets[w]['training_days']):
                     self.dom_trainbid_const[f"Period{i}"] = self.model.addConstrs(
                             (gp.quicksum(self.Y[wc, number, offset, day]
@@ -80,15 +80,16 @@ class WorkforceOptimizer:
                                 == self.X[wc, number, offset] for (wc, number, offset) in self.X_set),
                             name="domestic_train"
                         )
+                
                 self.model.addConstrs(
                             (gp.quicksum(self.Y[wc, number, offset, day]
-                                            for day in self.coverage_days[wc] if day not in self.wc_day_sets[wc]['training_days'])                          
-                                == 0 for (wc, number, offset) in self.X_set if wc==w),
+                                            for day in self.coverage_days[wc] if day not in list(set(list({item for sublist in self.wc_day_sets[wc]['training_days'] for item in sublist})) | set(all_domestic_train_days)))
+                                == 0 for (wc, number, offset) in self.X_set),
                             name="domestic_train_0s"
                         )
                 self.model.addConstrs(
                             (gp.quicksum(self.Y[wc, number, offset, day]
-                                            for day in self.coverage_days[wc] if day in {i: e for i,e in self.coverage_vectors[offset].items() if e==0}.keys())                          
+                                            for day in self.coverage_days[wc] if day in {i: e for i,e in self.coverage_vectors[offset].items() if e==0.0}.keys())
                                 == 0 for (wc, number, offset) in self.X_set if wc==w),
                             name="domestic_train_0s_2"
                         )
@@ -116,7 +117,7 @@ class WorkforceOptimizer:
                                 (gp.quicksum(self.Y[wc, number, offset, day]
                                                 for day in per)                          
                                     == self.X[wc, number, offset] for (wc, number, offset) in self.X_set if wc==w),
-                                name="special_train_0s"
+                                name="special_train"
                             )
                     self.model.addConstrs(
                                     (gp.quicksum(self.Y[wc, number, offset, day]

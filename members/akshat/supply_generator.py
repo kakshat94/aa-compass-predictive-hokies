@@ -39,10 +39,12 @@ class SupplyGenerator:
         self,
         orch_models: Dict[str, Any],
         regular_out_path: str = "Supply_Regular.csv",
-        training_out_path: str = "Supply_Training.csv"
+        standard_training_out_path: str = "Supply_Standard_Training.csv",
+        special_training_out_path: str = "Supply_Standard_Training.csv"
     ) -> Tuple[pd.DataFrame, pd.DataFrame]:
         all_regular_rows: List[Dict] = []
-        all_training_rows: List[Dict] = []
+        all_special_training_rows: List[Dict] = []
+        all_standard_training_rows: List[Dict] = []
 
         for shift_key, model in orch_models.items():
             shift_type = shift_key.upper()
@@ -123,7 +125,10 @@ class SupplyGenerator:
                     key = (w, n, o, d)
                     if key in shift_regular_records:
                         training_row = shift_regular_records.pop(key)
-                        all_training_rows.append(training_row)
+                        if datetime.strptime(d, "%Y-%m-%d").month in (2, 5, 9):
+                            all_standard_training_rows.append(training_row)
+                        else:
+                            all_special_training_rows.append(training_row)
                     else:
                         print('Error')
 
@@ -131,24 +136,32 @@ class SupplyGenerator:
 
         # Step 3: Combine and export
         master_regular_df = pd.DataFrame(all_regular_rows)
-        master_training_df = pd.DataFrame(all_training_rows)
+        master_standard_training_df = pd.DataFrame(all_standard_training_rows)
+        master_special_training_df = pd.DataFrame(all_special_training_rows)
 
         if master_regular_df.empty:
             master_regular_df = pd.DataFrame(columns=self.SUPPLY_COLUMNS)
         else:
             master_regular_df = master_regular_df[self.SUPPLY_COLUMNS]
 
-        if master_training_df.empty:
-            master_training_df = pd.DataFrame(columns=self.SUPPLY_COLUMNS)
+        if master_standard_training_df.empty:
+            master_standard_training_df = pd.DataFrame(columns=self.SUPPLY_COLUMNS)
         else:
-            master_training_df = master_training_df[self.SUPPLY_COLUMNS]
+            master_standard_training_df = master_standard_training_df[self.SUPPLY_COLUMNS]
+
+        if master_special_training_df.empty:
+            master_special_training_df = pd.DataFrame(columns=self.SUPPLY_COLUMNS)
+        else:
+            master_special_training_df = master_special_training_df[self.SUPPLY_COLUMNS]
 
         master_regular_df.to_csv(regular_out_path, index=False)
-        master_training_df.to_csv(training_out_path, index=False)
+        master_standard_training_df.to_csv(standard_training_out_path, index=False)
+        master_special_training_df.to_csv(special_training_out_path, index=False)
 
         print(f"\n================ EXPORT COMPLETE ================")
         print(f"Total Regular Shifts  : {len(master_regular_df):,} -> Saved to '{regular_out_path}'")
-        print(f"Total Training Shifts : {len(master_training_df):,} -> Saved to '{training_out_path}'")
+        print(f"Total Standard Training Shifts : {len(master_standard_training_df):,} -> Saved to '{standard_training_out_path}'")
+        print(f"Total Special Training Shifts : {len(master_special_training_df):,} -> Saved to '{special_training_out_path}'")
         print("=================================================\n")
 
-        return master_regular_df, master_training_df
+        return master_regular_df, master_standard_training_df, master_special_training_df

@@ -28,10 +28,11 @@ def run():
     exporter = SupplyGenerator(orch.coverage_vectors)
 
 # Process all shift models in orch.models simultaneously
-    regular_df, training_df = exporter.process_all_models(
+    regular_df, standard_training_df, special_training_df = exporter.process_all_models(
         orch_models=orch.models,
         regular_out_path="data/Supply_Regular.csv",
-        training_out_path="data/Supply_Training.csv"
+        standard_training_out_path="data/Supply_Standard_Training.csv",
+        special_training_out_path="data/Supply_Special_Training.csv"
     )
 
     end = datetime.now() - start
