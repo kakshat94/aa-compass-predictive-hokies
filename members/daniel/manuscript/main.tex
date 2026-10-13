@@ -48,6 +48,8 @@ This manuscript documents the model we implemented end-to-end. Our contributions
    \item a solver-agnostic implementation (Gurobi and FICO Xpress) integrated as a drop-in replacement for the original random placement, and validated against the shared evaluator.
 \end{enumerate}
 
+The notation used throughout is collected in Table~\ref{tab:notation} of Appendix~\ref{app:notation}, grouped into sets and indices, parameters, and decision variables.
+
 % ========================================================================== %
 \section{Problem description}
 % ========================================================================== %
@@ -83,12 +85,12 @@ Phase II introduces three rules that change what a scheduled day actually does: 
 % ========================================================================== %
 
 \subsection{Separability and the offset-covering structure}
-A bid line is fixed to one work center and one shift, and coverage constraints never couple two work centers. The Phase I problem therefore decomposes into 24 independent subproblems, one per work-center/shift combination. Within a subproblem the only real decision is how many bid lines to create at each of the 15 offsets. With $x_k$ the number of lines at offset $k$ and $a_{kd}\in\{0,1\}$ indicating whether offset $k$ works cycle-day $d$, the base model is the integer program
+A bid line is fixed to one work center and one shift, and coverage constraints never couple two work centers. The Phase I problem therefore decomposes into 24 independent subproblems, one per work-center/shift combination. Within a subproblem the only real decision is how many bid lines to create at each of the 15 offsets. With $n_\kappa$ the number of lines created at offset $\kappa$ and $\alpha_{\kappa\delta}\in\{0,1\}$ indicating whether offset $\kappa$ works cycle position $\delta$, the base model is the integer program
 \begin{equation}
-\min \; \sum_{k=0}^{14} x_k
+\min \; \sum_{\kappa=0}^{14} n_\kappa
 \quad\text{s.t.}\quad
-\sum_{k} a_{kd}\,x_k \;\ge\; D_d \;\; \forall d,
-\qquad x_k \in \mathbb{Z}_{\ge 0},
+\sum_{\kappa} \alpha_{\kappa\delta}\,n_\kappa \;\ge\; D_\delta \;\; \forall \delta,
+\qquad n_\kappa \in \mathbb{Z}_{\ge 0},
 \label{eq:phase1}
 \end{equation}
 a cyclic covering problem of the classical days-off/tour-scheduling family \citep{baker1974scheduling,alfares2004survey,ernst2004staff}. We enumerate the offset vectors directly rather than encode the cycle as constraints, so the model contains only 15 integer variables per subproblem.
@@ -109,27 +111,27 @@ The Phase II rules introduce only two per-day shared capacities: the training cl
 We implement the supplied three-step pseudocode: rank historical employees by qualification breadth and map them onto bid lines; build the historical co-occurrence table $P(\text{holds }y \mid \text{primary}=x)$; and sample secondary qualifications in those proportions. The resulting qualification mix fixes the training load and hence the shrinkage. This stage is preprocessing and does not enter the optimization.
 
 \subsection{Exact training placement (the T1 model)}
-Let $r=(\ell,q,m)$ be the requirement that line $\ell$ trains for qualification $q$ in month $m$, and let $E_r$ be the set of days line $\ell$ is scheduled to work in month $m$ (excluding flex and vacation days). Let
+Let $r=(\ell,q,m)$ be the requirement that line $\ell$ trains for qualification $q$ in month $m$, and let $E_r$ be the set of dates line $\ell$ is scheduled to work in month $m$ (excluding flex and vacation dates). Let
 \[
-z_{wd} \;=\; \sum_{r:\,\ell(r)\in w,\;d\in E_r} y_{rd}
+z_{wt} \;=\; \sum_{r:\,\ell(r)\in w,\;t\in E_r} y_{rt}
 \]
-be the number of training days removed from slot $(w,d)$ where $w$ is a work center and $d$ a date, and let $b_{wd}$ and $D_{wd}$ be the roster supply and demand on that slot. We solve, per shift $s$,
+be the number of training days removed from slot $(w,t)$ where $w$ is a work center and $t$ a date, and let $\beta_{wt}$ and $D_{wt}$ be the roster supply and demand on that slot. We solve, per shift $s$,
 \begin{align}
-\min \;\; & 100\sum_{w,d} u_{wd} \;+\; 10\sum_{w,d} o_{wd}
+\min \;\; & 100\sum_{w,t} u_{wt} \;+\; 10\sum_{w,t} o_{wt}
 \label{eq:t1obj}\\
-\text{s.t.}\;\; & \sum_{d\in E_r} y_{rd} = 1 && \forall r
+\text{s.t.}\;\; & \sum_{t\in E_r} y_{rt} = 1 && \forall r
    \tag{one training per requirement}\\
-& \sum_{r:\,\ell(r)=\ell,\;m(r)=\mu} y_{rd} \le 1 && \forall \ell,\mu,d
+& \sum_{r:\,\ell(r)=\ell,\;m(r)=m} y_{rt} \le 1 && \forall \ell,m,t
    \tag{$\le 1$ per line per day}\\
-& \sum_{r:\,\text{shift}(r)=s} y_{rd} \le 12 && \forall d
+& \sum_{r:\,\text{shift}(r)=s} y_{rt} \le 12 && \forall t
    \tag{shared class cap}\\
-& z_{wd} = \sum_{r} y_{rd} \cdot \mathbb{1}[\ell(r)\in w] && \forall w,d
+& z_{wt} = \sum_{r} y_{rt} \cdot \mathbb{1}[\ell(r)\in w] && \forall w,t
    \tag{training counts}\\
-& u_{wd} \ge D_{wd} - (b_{wd}-z_{wd}),\quad o_{wd} \ge (b_{wd}-z_{wd}) - D_{wd}
-   && \forall w,d \tag{coverage}\\
-& y_{rd}\in\{0,1\},\quad u_{wd},o_{wd}\ge 0 . \nonumber
+& u_{wt} \ge D_{wt} - (\beta_{wt}-z_{wt}),\quad o_{wt} \ge (\beta_{wt}-z_{wt}) - D_{wt}
+   && \forall w,t \tag{coverage}\\
+& y_{rt}\in\{0,1\},\quad u_{wt},o_{wt}\ge 0 . \nonumber
 \end{align}
-The penalties 100 and 10 mirror the evaluator's asymmetric treatment of under-coverage and surplus. Because $z$ is integer and the ``$\max$'' structure is convex, \eqref{eq:t1obj} is an exact convex-cost assignment program: training is pushed onto slack-rich, low-demand days and away from cells that are already tight. This is the formal analogue of the ``excess off-days / idle time'' objective \citep{ozguven2013integer} and of implicit flexible-day modeling \citep{bechtold1990implicit}.
+The penalties 100 and 10 mirror the evaluator's asymmetric treatment of under-coverage and surplus. Because $z_{wt}$ is integer and the ``$\max$'' structure is convex, \eqref{eq:t1obj} is an exact convex-cost assignment program: training is pushed onto slack-rich, low-demand days and away from cells that are already tight. This is the formal analogue of the ``excess off-days / idle time'' objective \citep{ozguven2013integer} and of implicit flexible-day modeling \citep{bechtold1990implicit}.
 
 \paragraph{Lossless (shift, month) decomposition.} Training months never share calendar dates. The class cap, the per-line-per-day rule, and coverage are all per-date constraints, so nothing couples two months and the union of the per-(shift, month) optima is the global optimum. We solve one program per (shift, month) pair; the split is exact rather than a heuristic relaxation. It also keeps every model far under the FICO Community license ceiling of 5,000 rows plus columns (largest group $\approx 3,636$), so the same model runs unchanged on both engines.
 
@@ -140,37 +142,37 @@ The penalties 100 and 10 mirror the evaluator's asymmetric treatment of under-co
 Vacation is an \emph{entitlement}: the number of dispatchers on vacation on each calendar day is fixed and cannot be optimized away. Only \emph{where} the vacation falls is ours to decide, and the plan must absorb it.
 
 \subsection{Rules as constraints}
-Let $T$ be the set of calendar days in the planning year and, for each line $\ell$, let $W_\ell$ be the set of days it is scheduled to work under its bid-line offset, and $F_\ell$ its (possibly empty) flex days. The assignment variables $x_{\ell d}\in\{0,1\}$, where line $\ell$ is on vacation on day $d$, must satisfy
+Let $\mathcal{T}$ be the set of calendar dates in the planning year and, for each line $\ell$, let $R_\ell$ be the set of dates it is scheduled to work under its bid-line offset, and $F_\ell$ its (possibly empty) flex dates. The assignment variables $\nu_{\ell t}\in\{0,1\}$, where line $\ell$ is on vacation on date $t$, must satisfy
 \begin{align}
-& \sum_{\ell} x_{\ell d} \;=\; q_d && \forall d \in T
+& \sum_{\ell} \nu_{\ell t} \;=\; Q_t && \forall t \in \mathcal{T}
    \tag{daily quota met} \label{eq:vac-quota}\\
-& x_{\ell d} = 0 && \forall \ell,\; d \notin W_\ell
+& \nu_{\ell t} = 0 && \forall \ell,\; t \notin R_\ell
    \tag{only on working days}\\
-& x_{\ell d} = 0 && \forall \ell,\; d \in F_\ell
+& \nu_{\ell t} = 0 && \forall \ell,\; t \in F_\ell
    \tag{never on a flex day}\\
-& x_{\ell d} + t_{\ell d} \le 1 && \forall \ell, d
+& \nu_{\ell t} + \tau_{\ell t} \le 1 && \forall \ell, t
    \tag{not on a training day, \eqref{eq:t1obj}}
 \end{align}
-where $q_d\in\{25,\dots,29\}$ is the day's quota and $t_{\ell d}\in\{0,1\}$ marks a training day. Equation~\eqref{eq:vac-quota} is an equality, not a bound: the daily count must be met exactly. Training is scheduled \emph{before} vacation, so the no-overlap rule is enforced by removing training days from the pool of eligible vacation days.
+where $Q_t\in\{25,\dots,29\}$ is the date's quota and $\tau_{\ell t}\in\{0,1\}$ marks a training date. Equation~\eqref{eq:vac-quota} is an equality, not a bound: the daily count must be met exactly. Training is scheduled \emph{before} vacation, so the no-overlap rule is enforced by removing training days from the pool of eligible vacation days.
 
 Two balance requirements accompany the hard rules, both assessed by the metrics of Section~\ref{sec:metrics}: across bid lines, vacation should be proportional so no line absorbs a disproportionate share; across the year, it should be spread so coverage is not disrupted in particular months, weeks or days.
 
 \subsection{Daily quota from operational volume}
-Busyness is measured by the unitless operational volume $u_d$ in the reference volume file, which is \emph{not} desk demand. We rank the days by $u_d$ and partition the ranking into $2M+1$ bands of near-equal size, with $M=2$ the maximum variable adjustment. Writing $\text{base}=27$, a day falling in band $b\in\{0,\dots,2M\}$ receives
+Busyness is measured by the unitless operational volume $\eta_t$ in the reference volume file, which is \emph{not} desk demand. We rank the dates by $\eta_t$ and partition the ranking into $2M+1$ bands of near-equal size, with $M=2$ the maximum variable adjustment. Writing $Q_{\text{base}}=27$, a date falling in band $j\in\{0,\dots,2M\}$ receives
 \begin{equation}
-q_d \;=\; \text{base} \;+\; (M - b), \qquad q_d \in \{25, 26, 27, 28, 29\},
+Q_t \;=\; Q_{\text{base}} \;+\; (M - j), \qquad Q_t \in \{25, 26, 27, 28, 29\},
 \end{equation}
-so the quietest band gets $+M$ and the busiest gets $-M$: quieter days carry more vacation. We use rank-based bands rather than the raw scaled value to keep integer adjustments; on the instance the bands contain 72/72/72/73/73 days and the resulting correlation between volume and quota is $\mathrm{corr}(u_d, q_d) = -0.87$, a strong inverse relation as intended. The continuous rescaling helper used for reporting is defined in Section~\ref{sec:metrics}.
+so the quietest band gets $+M$ and the busiest gets $-M$: quieter days carry more vacation. We use rank-based bands rather than the raw scaled value to keep integer adjustments; on the instance the bands contain 72/72/72/73/73 days and the resulting correlation between volume and quota is $\mathrm{corr}(\eta_t, Q_t) = -0.87$, a strong inverse relation as intended. The continuous rescaling helper used for reporting is defined in Section~\ref{sec:metrics}.
 
 \subsection{Selecting which lines take vacation}
-For each day $d$ let $A_d = \{\ell : d \in W_\ell,\ d \notin F_\ell,\ t_{\ell d}=0\}$ be the lines eligible to take vacation on $d$. If $|A_d| \le q_d$ every eligible line is placed; otherwise we sample $q_d$ lines from $A_d$ without replacement with probability weights
+For each date $t$ let $A_t = \{\ell : t \in R_\ell,\ t \notin F_\ell,\ \tau_{\ell t}=0\}$ be the lines eligible to take vacation on $t$. If $|A_t| \le Q_t$ every eligible line is placed; otherwise we sample $Q_t$ lines from $A_t$ without replacement with probability weights
 \begin{equation}
-w_\ell \;\propto\; \frac{1}{\varphi_\ell^{\,10}}, \qquad
-\varphi_\ell = \#\{\text{vacation days already assigned to } \ell\},
+\pi_\ell \;\propto\; \frac{1}{\varphi_\ell^{\,10}}, \qquad
+\varphi_\ell = \#\{\text{vacation dates already assigned to } \ell\},
 \end{equation}
-with $w_\ell = 1$ while $\varphi_\ell = 0$. The tenth power is a deliberately strong anti-concentration penalty: once a line has taken vacation, the chance it is drawn again falls sharply, which drives the proportional distribution the brief requires. The sampling seed is fixed (1) so the assignment reproduces. This greedy per-date procedure is the step the process document suggests replacing with a global optimization \citep{compassphase2}. We leave a joint vacation and training model as future work; the metrics below quantify how close the greedy assignment is to perfect balance.
+with $\pi_\ell = 1$ while $\varphi_\ell = 0$. The tenth power is a deliberately strong anti-concentration penalty: once a line has taken vacation, the chance it is drawn again falls sharply, which drives the proportional distribution the brief requires. The sampling seed is fixed (1) so the assignment reproduces. This greedy per-date procedure is the step the process document suggests replacing with a global optimization \citep{compassphase2}. We leave a joint vacation and training model as future work; the metrics below quantify how close the greedy assignment is to perfect balance.
 
-\paragraph{Outcome.} The procedure assigns 9,804 vacation line-days across 363 days, with the daily count exactly in $[25,29]$ (mean $27.0$) and every rule respected.
+\paragraph{Outcome.} The procedure assigns 9,804 vacation line-days across 363 dates, with the daily count exactly in $[25,29]$ (mean $27.0$) and every rule respected.
 
 % ========================================================================== %
 \section{Computational experiments}
@@ -212,7 +214,7 @@ Exact T1 (FICO Xpress)          & 83,892 & 4,221 & 5,861 & 100.0\% \\
 We report three families of metrics: the coverage metrics of the shared evaluator, a demand-rescaling feature, and the vacation-balance metrics. All dispersion measures are oriented so that $0$ is best (perfectly even).
 
 \subsection{Coverage metrics}
-For each key $k=(w,s,d)$ (work center, shift, date) let $S_k$ be the supplied number of desks and $D_k$ the demand. The evaluator defines
+For each key $k=(w,s,t)$ (work center, shift, date) let $S_k$ be the supplied number of desks and $D_k$ the demand. The evaluator defines
 \begin{equation}
 \begin{aligned}
 \mathrm{NET}_k &= \min(S_k, D_k), \quad
@@ -233,32 +235,32 @@ Two cautions apply. The fill rate is capped at $100\%$ and can read $100\%$ whil
 which penalizes a gap ten times as heavily as a surplus and matches our training model \eqref{eq:t1obj}. We therefore compare solutions by $\mathrm{Under}$ first, then $\mathrm{Over}$.
 
 \subsection{Demand rescaling feature}
-The helper \texttt{scale\_to\_range\_neg\_1\_to\_1} linearly rescales a series to a symmetric $[-1,1]$ range, mapping the minimum to $-1$, the maximum to $+1$, and a flat series to $0$:
+The helper \texttt{scale\_to\_range\_neg\_1\_to\_1} linearly rescales a series $h$ to a symmetric $[-1,1]$ range, mapping the minimum to $-1$, the maximum to $+1$, and a flat series to $0$:
 \begin{equation}
-\varsigma(z) =
+\varsigma(h) =
 \begin{cases}
-0, & \max z = \min z,\\[2pt]
-2\,\dfrac{z - \min z}{\max z - \min z} - 1, & \text{otherwise}.
+0, & \max h = \min h,\\[2pt]
+2\,\dfrac{h - \min h}{\max h - \min h} - 1, & \text{otherwise}.
 \end{cases}
 \end{equation}
 It is applied to two accumulations of desk demand, per $(\text{shift},\text{date})$ and per $(\text{shift},\text{date},\text{work center})$, and its inverse (the inverted, centered volume used to rank days for vacation) underpins the quota in the previous section.
 
 \subsection{Dispersion measures}
-For a vector $v=(v_1,\dots,v_n)$ with $v_i \ge 0$ we use four scale-free dispersion measures, each $0$ when all values are equal.
+For a vector $v=(v_1,\dots,v_N)$ with $v_i \ge 0$ we use four scale-free dispersion measures, each $0$ when all values are equal.
 
 \paragraph{Coefficient of variation.}
 \begin{equation}
 \mathrm{CV}(v) = \frac{\sigma_v}{\bar v}, \qquad
-\bar v = \frac1n\sum_i v_i, \qquad
-\sigma_v = \sqrt{\frac1n\sum_i (v_i-\bar v)^2}.
+\bar v = \frac1N\sum_i v_i, \qquad
+\sigma_v = \sqrt{\frac1N\sum_i (v_i-\bar v)^2}.
 \end{equation}
 
-\paragraph{Gini index.} With the values sorted ascending $v_{(1)}\le\dots\le v_{(n)}$,
+\paragraph{Gini index.} With the values sorted ascending $v_{(1)}\le\dots\le v_{(N)}$,
 \begin{equation}
-G(v) = \frac{2\sum_{i=1}^{n} i\,v_{(i)} - (n+1)\sum_{i=1}^{n} v_{(i)}}
-            {n \sum_{i=1}^{n} v_{(i)}},
+G(v) = \frac{2\sum_{i=1}^{N} i\,v_{(i)} - (N+1)\sum_{i=1}^{N} v_{(i)}}
+            {N \sum_{i=1}^{N} v_{(i)}},
 \end{equation}
-the standard $0$-to-$1$ inequality measure ($0$ = perfectly even, $\tfrac{n-1}{n}$ = fully concentrated). A degenerate vector with zero total returns $0$.
+the standard $0$-to-$1$ inequality measure ($0$ = perfectly even, $\tfrac{N-1}{N}$ = fully concentrated). A degenerate vector with zero total returns $0$.
 
 \paragraph{Max-to-mean ratio.} $\ \max_i v_i \,/\, \bar v \ge 1$, equal to $1$ only when $v$ is flat; it flags a single overloaded element.
 
@@ -267,10 +269,10 @@ the standard $0$-to-$1$ inequality measure ($0$ = perfectly even, $\tfrac{n-1}{n
 \subsection{Across-line and across-year balance}
 Let $v_\ell$ be the total vacation days of line $\ell$ over the year; then $\{v_\ell\}_\ell$ is scored with the four measures above, overall, by \emph{primary} qualification, and by \emph{every held} qualification (overlapping groups, so a line contributes to each qualification it holds), plus the between-group dispersion of each grouping.
 
-Temporal spread is scored on the vacation counts bucketed by day, week and month. Raw monthly counts are distorted by unequal bucket lengths, so we also report \emph{per-working-day} normalized versions. For a bucket $b$ (a week or a month),
+Temporal spread is scored on the vacation counts bucketed by day, week and month. Raw monthly counts are distorted by unequal bucket lengths, so we also report \emph{per-working-day} normalized versions. For a bucket $c$ (a week or a month),
 \begin{equation}
-\mathrm{rate}_b \;=\;
-\frac{\#\{\text{vacation line-days in } b\}}{\#\{\text{working days in } b\}},
+\mathrm{rate}_c \;=\;
+\frac{\#\{\text{vacation line-days in } c\}}{\#\{\text{working days in } c\}},
 \end{equation}
 and we compare the dispersion of those rates rather than the raw counts. Per-line month concentration is measured by the Herfindahl index over the months in which a line takes vacation,
 \begin{equation}
@@ -321,6 +323,64 @@ Dimension & Mean & Range & Gini & CV \\
 % ========================================================================== %
 
 We presented an end-to-end model for the two-phase flight-dispatcher workforce-planning problem. Phase I is solved exactly as 24 independent cyclic-covering integer programs. Phase II's shrinkage layer reduces to convex-cost assignment programs that place mandatory training days where they do least damage to coverage; the model decomposes without loss into (shift, month) programs and runs identically on Gurobi and Xpress. On the competition instance the exact training layer improves both coverage objectives over random placement, from 4,417 to 4,221 under-coverage and from 6,050 to 5,861 surplus, with all competition rules satisfied and the shrinkage fully reconciled.
+
+% ========================================================================== %
+\appendix
+\section{Notation}\label{app:notation}
+% ========================================================================== %
+
+Table~\ref{tab:notation} lists every symbol used in the manuscript, grouped into sets and indices, parameters, and decision variables.
+
+\begin{table}[ht]
+\centering
+\caption{Notation: sets and indices, then parameters, then decision variables.}
+\label{tab:notation}
+\begin{tabular}{@{}l p{0.68\textwidth}@{}}
+\toprule
+Symbol & Meaning \\
+\midrule
+\multicolumn{2}{@{}l}{\emph{Sets and indices}}\\
+$\mathcal{W}$, $w$ & set of work centers; a work center index \\
+$\mathcal{S}$, $s$ & set of shifts; a shift index \\
+$\mathcal{L}$, $\ell$ & set of bid lines; a bid-line index \\
+$\mathcal{T}$, $t$ & set of planning-year dates; a date \\
+$\delta$ & position in the 15-day cycle, $\delta\in\{0,\dots,14\}$ \\
+$\kappa$ & bid-line offset, $\kappa\in\{0,\dots,14\}$ \\
+$m$ & month, $m\in\{1,\dots,12\}$ \\
+$q$ & qualification \\
+$r=(\ell,q,m)$ & training requirement: line $\ell$, qualification $q$, month $m$ \\
+$k=(w,s,t)$ & coverage key (work center, shift, date) \\
+\midrule
+\multicolumn{2}{@{}l}{\emph{Parameters}}\\
+$D_\delta$ & desk demand on cycle position $\delta$ (Phase I) \\
+$D_{wt}$ & desk demand at $(w,t)$ for a fixed shift \\
+$D_k$ & desk demand at key $k$ \\
+$S_k$ & supplied desks at key $k$ \\
+$\alpha_{\kappa\delta}$ & 1 if offset $\kappa$ works cycle position $\delta$, else 0 \\
+$E_r$ & dates on which requirement $r$ may be trained \\
+$\beta_{wt}$ & roster supply (base) at $(w,t)$ \\
+$R_\ell$ & dates line $\ell$ is scheduled to work \\
+$F_\ell$ & flex dates of line $\ell$ \\
+$\tau_{\ell t}$ & 1 if line $\ell$ trains on date $t$, else 0 \\
+$Q_t$ & vacation quota on date $t$ (25 to 29) \\
+$Q_{\text{base}}$ & base vacation quota (27) \\
+$M$ & maximum variable vacation adjustment (2) \\
+$\eta_t$ & operational volume on date $t$ \\
+$A_t$ & lines eligible for vacation on date $t$ \\
+$\pi_\ell$ & vacation sampling weight of line $\ell$ \\
+$\varphi_\ell$ & vacation dates already assigned to line $\ell$ \\
+$N$ & number of elements in a dispersion vector \\
+\midrule
+\multicolumn{2}{@{}l}{\emph{Variables}}\\
+$n_\kappa$ & number of bid lines created at offset $\kappa$ \\
+$y_{rt}$ & 1 if requirement $r$ is trained on date $t$, else 0 \\
+$z_{wt}$ & training days removed from slot $(w,t)$ \\
+$u_{wt}$ & under-coverage at $(w,t)$ \\
+$o_{wt}$ & over-coverage at $(w,t)$ \\
+$\nu_{\ell t}$ & 1 if line $\ell$ is on vacation on date $t$, else 0 \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 % ========================================================================== %
 \bibliographystyle{elsarticle-num}
