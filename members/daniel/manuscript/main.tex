@@ -5,6 +5,7 @@
 
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage{dsfont}
 \usepackage{booktabs}
 \usepackage{url}
 \usepackage[hidelinks]{hyperref}
@@ -126,15 +127,15 @@ be the number of training days removed from slot $(w,t)$ where $w$ is a work cen
    \text{s.t.}\;\; & \sum\limits_{t\in E_r} y_{rt} = 1 && \forall r \label{eq:mod1:con1}\\
    & \sum\limits_{r:\,\ell(r)=\ell,\;m(r)=m} y_{rt} \le 1 && \forall \ell,m,t \label{eq:mod1:con2}\\
    & \sum\limits_{r:\,\text{shift}(r)=s} y_{rt} \le 12 && \forall t \label{eq:mod1:con3}\\
-   & z_{wt} = \sum\limits_{r} y_{rt} \cdot \mathbb{1}[\ell(r)\in w] && \forall w,t \label{eq:mod1:con4}\\
+   & z_{wt} = \sum\limits_{r} y_{rt} \cdot \mathds{1}_{\ell(r)\in w} && \forall w,t \label{eq:mod1:con4}\\
    & u_{wt} \ge D_{wt} - (\beta_{wt}-z_{wt}),\quad o_{wt} \ge (\beta_{wt}-z_{wt}) - D_{wt} && \forall w,t \label{eq:mod1:con5}\\
    & y_{rt}\in\{0,1\},\quad u_{wt},o_{wt}\ge 0 . \label{eq:mod1:con6}
 \end{align}
-Each constraint has a specific role. The objective \eqref{eq:mod1:obj} minimizes weighted coverage damage: a missing desk-day (under-coverage) costs 100 and a surplus desk-day (over-coverage) costs 10. Constraint \eqref{eq:mod1:con1} schedules each requirement $r$ exactly once, on one of the dates the line works that month. Constraint \eqref{eq:mod1:con2} allows at most one training per line per date, so two qualifications of the same line that share a month cannot fall on the same date. Constraint \eqref{eq:mod1:con3} limits trainees to 12 per (date, shift) across all work centers, the only constraint that couples work centers. Constraint \eqref{eq:mod1:con4} defines $z_{wt}$ as the number of trainings removed from slot $(w,t)$, and constraint \eqref{eq:mod1:con5} turns those removals into under-coverage $u_{wt}$ and over-coverage $o_{wt}$ relative to the roster supply $\beta_{wt}$ and the demand $D_{wt}$. Constraint \eqref{eq:mod1:con6} fixes $y_{rt}$ as binary and $u_{wt},o_{wt}$ as nonnegative.
+Each constraint has a specific role. The objective \eqref{eq:mod1:obj} minimizes weighted coverage damage: a missing desk-day (under-coverage) costs 100 and a surplus desk-day (over-coverage) costs 10. Constraint \eqref{eq:mod1:con1} schedules each requirement $r$ exactly once, on one of the dates the line works that month. Constraint \eqref{eq:mod1:con2} allows at most one training per line per date, so two qualifications of the same line that share a month cannot fall on the same date. Constraint \eqref{eq:mod1:con3} limits trainees to 12 per (date, shift) across all work centers, the only constraint that couples work centers. Constraint \eqref{eq:mod1:con4} defines $z_{wt}$ as the number of trainings removed from slot $(w,t)$, where $\mathds{1}_{\ell(r)\in w}$ is the indicator function for the event that line $r$ is in work center $w$; and constraint \eqref{eq:mod1:con5} turns those removals into under-coverage $u_{wt}$ and over-coverage $o_{wt}$ relative to the roster supply $\beta_{wt}$ and the demand $D_{wt}$. Constraint \eqref{eq:mod1:con6} fixes $y_{rt}$ as binary and $u_{wt},o_{wt}$ as nonnegative.
 
 The penalties 100 and 10 mirror the evaluator's asymmetric treatment of under-coverage and surplus. Because $z_{wt}$ is integer in \eqref{eq:mod1:con4} and the coverage terms in \eqref{eq:mod1:con5} make the objective convex, \eqref{eq:mod1:obj} is an exact convex-cost assignment program: training is pushed onto slack-rich, low-demand days and away from cells that are already tight. This objective mirrors the explicit treatment of excess off-days and idle time in the scheduling literature (Section~\ref{sec:lit}).
 
-\paragraph{Lossless (shift, month) decomposition.} Training months never share calendar dates. The class cap, the per-line-per-day rule, and coverage are all per-date constraints, so nothing couples two months and the union of the per-(shift, month) optima is the global optimum. We solve one program per (shift, month) pair; the split is exact rather than a heuristic relaxation. It also keeps every model far under the FICO Community license ceiling of 5,000 rows plus columns (largest group $\approx 3,636$), so the same model runs unchanged on both engines.
+\paragraph{Lossless (shift, month) decomposition.} Training months never share calendar dates. The class cap, the per-line-per-day rule, and coverage are all per-date constraints, so nothing couples two months and the union of the per-(shift, month) optima is the global optimum. We solve one program per (shift, month) pair.
 
 % ========================================================================== %
 \section{Vacation: rules, quota and assignment}
@@ -144,16 +145,12 @@ Vacation is an \emph{entitlement}: the number of dispatchers on vacation on each
 \subsection{Rules as constraints}
 Let $\mathcal{T}$ be the set of calendar dates in the planning year and, for each line $\ell$, let $R_\ell$ be the set of dates it is scheduled to work under its bid-line offset, and $F_\ell$ its (possibly empty) flex dates. The assignment variables $\nu_{\ell t}\in\{0,1\}$, where line $\ell$ is on vacation on date $t$, must satisfy
 \begin{align}
-   & \sum\limits_{\ell} \nu_{\ell t} \;=\; Q_t && \forall t \in \mathcal{T}
-      \tag{daily quota met} \label{eq:vac-quota}\\
-   & \nu_{\ell t} = 0 && \forall \ell,\; t \notin R_\ell
-      \tag{only on working days}\\
-   & \nu_{\ell t} = 0 && \forall \ell,\; t \in F_\ell
-      \tag{never on a flex day}\\
-   & \nu_{\ell t} + \tau_{\ell t} \le 1 && \forall \ell, t
-      \tag{not on a training day, \eqref{eq:mod1:obj}}
+   & \sum\limits_{\ell} \nu_{\ell t} \;=\; Q_t && \forall t \in \mathcal{T} \label{eq:mod2:con1}\\
+   & \nu_{\ell t} = 0 && \forall \ell,\; t \notin R_\ell \label{eq:mod2:con2}\\
+   & \nu_{\ell t} = 0 && \forall \ell,\; t \in F_\ell \label{eq:mod2:con3}\\
+   & \nu_{\ell t} + \tau_{\ell t} \le 1 && \forall \ell, t \label{eq:mod2:con4}
 \end{align}
-where $Q_t\in\{25,\dots,29\}$ is the date's quota and $\tau_{\ell t}\in\{0,1\}$ marks a training date. Equation~\eqref{eq:vac-quota} is an equality, not a bound: the daily count must be met exactly. Training is scheduled \emph{before} vacation, so the no-overlap rule is enforced by removing training days from the pool of eligible vacation days.
+where $Q_t\in\{25,\dots,29\}$ is the date's quota and $\tau_{\ell t}\in\{0,1\}$ marks a training date. Constraint \eqref{eq:mod2:con1} sets the daily vacation count to exactly $Q_t$; it is an equality, not a bound, so the quota must be met. Constraint \eqref{eq:mod2:con2} allows vacation only on dates the line is scheduled to work. Constraint \eqref{eq:mod2:con3} forbids vacation on a flex date. Constraint \eqref{eq:mod2:con4} forbids vacation on a date the line trains, using the training indicator from \eqref{eq:mod1:obj}. Training is scheduled \emph{before} vacation, so the no-overlap rule is enforced by removing training days from the pool of eligible vacation days.
 
 Two balance requirements accompany the hard rules, both assessed by the metrics of Section~\ref{sec:metrics}: across bid lines, vacation should be proportional so no line absorbs a disproportionate share; across the year, it should be spread so coverage is not disrupted in particular months, weeks or days.
 
