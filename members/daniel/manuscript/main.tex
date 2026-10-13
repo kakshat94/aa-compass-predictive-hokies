@@ -71,6 +71,16 @@ Phase II introduces three rules that change what a scheduled day actually does: 
 \paragraph{Secondary qualifications.} A bid line's work center determines its primary qualification; every line also holds Domestic; beyond that, secondary qualifications may be assigned. Each secondary qualification held requires its own training, so more qualifications mean more shrinkage. The competition permits any assignment method, and we implement the supplied three-step pseudocode (map lines to historical records, estimate co-occurrence proportions, sample secondaries in those proportions) \citep{compasspseudo}.
 
 % ========================================================================== %
+\section{Literature review}\label{sec:lit}
+% ========================================================================== %
+
+This work sits between personnel scheduling, cyclic days-off scheduling, and airline crew scheduling. The reviews of Ernst et al. \citep{ernst2004staff}, Van den Bergh et al. \citep{vandenbergh2013personnel}, and Alfares \citep{alfares2004survey} map the field: demand modeling, days-off assignment, shift assignment, and tour scheduling, including the compressed workweeks and cyclic patterns used here. The bid-line covering model in Equation~\eqref{eq:phase1} is a cyclic days-off model in the sense of Baker \citep{baker1974scheduling}; for the two-shift case its constraint matrix has the circular-ones property and the LP relaxation is integral \citep{bartholdi1980cyclic}, with a guaranteed-accuracy rounding scheme when it is not \citep{bartholdi1981roundoff}.
+
+Airline workforce planning is the closest application. Holloran and Byrn \citep{holloran1986united} report a deployed station manpower and bid-line system, and Barnhart et al. \citep{barnhart2003applications} and Gopalakrishnan and Johnson \citep{gopalakrishnan2005airline} survey crew scheduling, where set-covering and set-partitioning formulations solved by column generation are standard \citep{dantzig1960decomposition,vance1997airline,desaulniers2005column,irnich2005shortest}; the lineage starts with Dantzig's set-covering formulation \citep{dantzig1954comment} and early set-partitioning work on vehicle scheduling \citep{foster1976integer}.
+
+On the objective and the shrinkage layer, mixed-integer staff scheduling is well studied \citep{beaumont1997scheduling}, excess off-days and idle time are modeled explicitly by \"Ozg\"uven and Sungur \citep{ozguven2013integer}, and days-off preferences are handled by goal programming in Shuib and Kamarudin \citep{shuib2018solving}. Flexible intra-tour choices can be modeled implicitly rather than by enumerating every pattern \citep{bechtold1990implicit}, and annualized hours frame the value of extra working days across a year \citep{corominas2005annualised}. Planning a year ahead against uncertain shrinkage is a robustness problem, for which the budget-of-uncertainty approach of Bertsimas and Sim \citep{bertsimas2004price} is a tractable route.
+
+% ========================================================================== %
 \section{Data exploration and diagnostics}
 % ========================================================================== %
 
@@ -93,7 +103,7 @@ A bid line is fixed to one work center and one shift, and coverage constraints n
 \qquad n_\kappa \in \mathbb{Z}_{\ge 0},
 \label{eq:phase1}
 \end{equation}
-a cyclic covering problem of the classical days-off/tour-scheduling family \citep{baker1974scheduling,alfares2004survey,ernst2004staff}. We enumerate the offset vectors directly rather than encode the cycle as constraints, so the model contains only 15 integer variables per subproblem.
+a cyclic covering problem of the classical days-off/tour-scheduling family (Section~\ref{sec:lit}). We enumerate the offset vectors directly rather than encode the cycle as constraints, so the model contains only 15 integer variables per subproblem.
 
 \subsection{Is the covering LP integral?}
 For two-shift days-off problems the constraint matrix has the circular-ones property and the LP relaxation is integral \citep{bartholdi1980cyclic,bartholdi1981roundoff}, which would allow a very fast solution. Our structure is different: 15 offsets, each covering 8 of 15 cycle-days, with every day covered by exactly 8 offsets. We tested the LP relaxation of \eqref{eq:phase1} on random demand vectors and found the LP optimum \emph{fractional in 52 of 80} instances, so the clean integrality property does not transfer to the 15-offset case. The LP bound nevertheless lies within one unit of the integer optimum, and a greedy repair lands within a few percent.
@@ -131,7 +141,9 @@ be the number of training days removed from slot $(w,t)$ where $w$ is a work cen
    && \forall w,t \tag{coverage}\\
 & y_{rt}\in\{0,1\},\quad u_{wt},o_{wt}\ge 0 . \nonumber
 \end{align}
-The penalties 100 and 10 mirror the evaluator's asymmetric treatment of under-coverage and surplus. Because $z_{wt}$ is integer and the ``$\max$'' structure is convex, \eqref{eq:t1obj} is an exact convex-cost assignment program: training is pushed onto slack-rich, low-demand days and away from cells that are already tight. This is the formal analogue of the ``excess off-days / idle time'' objective \citep{ozguven2013integer} and of implicit flexible-day modeling \citep{bechtold1990implicit}.
+Each constraint has a specific role. The objective minimizes weighted coverage damage: a missing desk-day (under-coverage) costs 100 and a surplus desk-day (over-coverage) costs 10. The ``one training per requirement'' constraint schedules each requirement $r$ exactly once, on one of the dates the line works that month. The ``$\le 1$ per line per day'' constraint allows at most one training per line per date, so two qualifications of the same line that share a month cannot fall on the same date. The ``shared class cap'' limits trainees to 12 per (date, shift) across all work centers, and it is the only constraint that couples work centers. The ``training counts'' constraint defines $z_{wt}$ as the number of trainings removed from slot $(w,t)$, and the ``coverage'' constraint turns those removals into under-coverage $u_{wt}$ and over-coverage $o_{wt}$ relative to the roster supply $\beta_{wt}$ and the demand $D_{wt}$. The final line fixes $y_{rt}$ as binary and $u_{wt},o_{wt}$ as nonnegative.
+
+The penalties 100 and 10 mirror the evaluator's asymmetric treatment of under-coverage and surplus. Because $z_{wt}$ is integer and the ``$\max$'' structure is convex, \eqref{eq:t1obj} is an exact convex-cost assignment program: training is pushed onto slack-rich, low-demand days and away from cells that are already tight. This objective mirrors the explicit treatment of excess off-days and idle time in the scheduling literature (Section~\ref{sec:lit}).
 
 \paragraph{Lossless (shift, month) decomposition.} Training months never share calendar dates. The class cap, the per-line-per-day rule, and coverage are all per-date constraints, so nothing couples two months and the union of the per-(shift, month) optima is the global optimum. We solve one program per (shift, month) pair; the split is exact rather than a heuristic relaxation. It also keeps every model far under the FICO Community license ceiling of 5,000 rows plus columns (largest group $\approx 3,636$), so the same model runs unchanged on both engines.
 
@@ -316,7 +328,7 @@ Dimension & Mean & Range & Gini & CV \\
 
 \paragraph{The coupling that matters.} Phase II breaks Phase I's separability only through per-day shared capacities. Recognizing this reduces the whole shrinkage layer to convex-cost assignment programs and yields the lossless (shift, month) decomposition, which also sidesteps the row and column limits of a community solver license without any heuristic repair.
 
-\paragraph{Limitations and future work.} Vacation is currently assigned greedily after training. A joint model that co-optimizes vacation and training against coverage, or a conservative sizing of the roster against shrinkage using a price-of-robustness budget \citep{bertsimas2004price}, is one extension. Column generation over full line plans (offset $+$ flex $+$ vacation $+$ training $+$ qualifications), in the set-partitioning tradition of airline crew scheduling \citep{dantzig1960decomposition,vance1997airline,desaulniers2005column}, would make the shrinkage layer explicit instead of sequential and is a path to a fully integrated model.
+\paragraph{Limitations and future work.} Vacation is currently assigned greedily after training. A joint model that co-optimizes vacation and training against coverage, or a conservative sizing of the roster against shrinkage using a robustness budget, is one extension. Column generation over full line plans (offset $+$ flex $+$ vacation $+$ training $+$ qualifications), in the set-partitioning tradition of airline crew scheduling (Section~\ref{sec:lit}), would make the shrinkage layer explicit instead of sequential and is a path to a fully integrated model.
 
 % ========================================================================== %
 \section{Conclusion}
