@@ -8,7 +8,11 @@
 \usepackage{dsfont}
 \usepackage{booktabs}
 \usepackage{url}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
 \usepackage[hidelinks]{hyperref}
+
+\newcommand{\code}[1]{\texttt{\detokenize{#1}}}
 
 %\journal{}
 
@@ -114,7 +118,7 @@ For two-shift days-off problems the constraint matrix has the circular-ones prop
 The Phase II rules introduce only two per-day shared capacities: the training class of 12 seats per (day, shift) across all work centers, and the daily vacation quota of 25 to 29 dispatchers across all shifts and work centers. The daily demand, the offset calendar, and the working-day restriction all stay per-slot, which shapes the model below.
 
 \subsection{Qualification assignment}
-We implement the supplied three-step pseudocode: rank historical employees by qualification breadth and map them onto bid lines; build the historical co-occurrence table $P(\text{holds }y \mid \text{primary}=x)$; and sample secondary qualifications in those proportions. The resulting qualification mix fixes the training load and hence the shrinkage. This stage is preprocessing and does not enter the optimization.
+We implement the supplied three-step pseudocode: rank historical employees by qualification breadth and map them onto bid lines; build the historical co-occurrence table $P(\text{holds }y \mid \text{primary}=x)$; and sample secondary qualifications in those proportions. The resulting qualification mix fixes the training load and hence the shrinkage. This stage is preprocessing and does not enter the optimization; the full pseudocode is given as Algorithms~\ref{alg:map}--\ref{alg:sprinkle} in Appendix~\ref{app:quals}.
 
 \subsection{Exact training placement}
 Let $r=(\ell,q,m)$ be the requirement that line $\ell$ trains for qualification $q$ in month $m$, and let $E_r$ be the set of dates line $\ell$ is scheduled to work in month $m$ (excluding flex and vacation dates). Let
@@ -159,7 +163,7 @@ Busyness is measured by the unitless operational volume $\eta_t$ in the referenc
 \begin{equation}
    Q_t \;=\; Q_{\text{base}} \;+\; (M - j), \qquad Q_t \in \{25, 26, 27, 28, 29\},
 \end{equation}
-so the quietest band gets $+M$ and the busiest gets $-M$: quieter days carry more vacation. We use rank-based bands rather than the raw scaled value to keep integer adjustments; on the instance the bands contain 72/72/72/73/73 days and the resulting correlation between volume and quota is $\mathrm{corr}(\eta_t, Q_t) = -0.87$, a strong inverse relation as intended. The continuous rescaling helper used for reporting is defined in Section~\ref{sec:metrics}.
+so the quietest band gets $+M$ and the busiest gets $-M$: quieter days carry more vacation. We use rank-based bands rather than the raw scaled value to keep integer adjustments; on the instance the bands contain 72/72/72/73/73 days and the resulting correlation between volume and quota is $\mathrm{corr}(\eta_t, Q_t) = -0.87$, a strong inverse relation as intended. The quota routine is given as Algorithms~\ref{alg:scale}--\ref{alg:alloc} in Appendix~\ref{app:vac}, and the continuous rescaling helper used for reporting is defined in Section~\ref{sec:metrics}.
 
 \subsection{Selecting which lines take vacation}
 For each date $t$ let $A_t = \{\ell : t \in R_\ell,\ t \notin F_\ell,\ \tau_{\ell t}=0\}$ be the lines eligible to take vacation on $t$. If $|A_t| \le Q_t$ every eligible line is placed; otherwise we sample $Q_t$ lines from $A_t$ without replacement with probability weights
@@ -167,7 +171,7 @@ For each date $t$ let $A_t = \{\ell : t \in R_\ell,\ t \notin F_\ell,\ \tau_{\el
    \pi_\ell \;\propto\; \frac{1}{\varphi_\ell^{\,10}}, \qquad
    \varphi_\ell = \#\{\text{vacation dates already assigned to } \ell\},
 \end{equation}
-with $\pi_\ell = 1$ while $\varphi_\ell = 0$. The tenth power is a deliberately strong anti-concentration penalty: once a line has taken vacation, the chance it is drawn again falls sharply, which drives the proportional distribution the brief requires. The sampling seed is fixed (1) so the assignment reproduces. This greedy per-date procedure is the step the process document suggests replacing with a global optimization \citep{compassphase2}. We leave a joint vacation and training model as future work; the metrics below quantify how close the greedy assignment is to perfect balance.
+with $\pi_\ell = 1$ while $\varphi_\ell = 0$. The tenth power is a deliberately strong anti-concentration penalty: once a line has taken vacation, the chance it is drawn again falls sharply, which drives the proportional distribution the brief requires. The sampling seed is fixed (1) so the assignment reproduces. This greedy per-date procedure is the step the process document suggests replacing with a global optimization \citep{compassphase2}. We leave a joint vacation and training model as future work; the metrics below quantify how close the greedy assignment is to perfect balance. The selection routine is given as Algorithm~\ref{alg:shrink} in Appendix~\ref{app:vac}.
 
 \paragraph{Outcome.} The procedure assigns 9,804 vacation line-days across 363 dates, with the daily count exactly in $[25,29]$ (mean $27.0$) and every rule respected.
 
@@ -237,7 +241,7 @@ The helper \texttt{scale\_to\_range\_neg\_1\_to\_1} linearly rescales a series $
 2\,\dfrac{h - \min h}{\max h - \min h} - 1, & \text{otherwise}.
 \end{cases}
 \end{equation}
-It is applied to two accumulations of desk demand, per $(\text{shift},\text{date})$ and per $(\text{shift},\text{date},\text{work center})$, and its inverse (the inverted, centered volume used to rank days for vacation) underpins the quota in the previous section.
+It is applied to two accumulations of desk demand, per $(\text{shift},\text{date})$ and per $(\text{shift},\text{date},\text{work center})$, and its inverse (the inverted, centered volume used to rank days for vacation) underpins the quota in the previous section; the full routine is Algorithm~\ref{alg:scale} in Appendix~\ref{app:vac}.
 
 \subsection{Dispersion measures}
 For a vector $v=(v_1,\dots,v_N)$ with $v_i \ge 0$ we use four scale-free dispersion measures, each $0$ when all values are equal.
@@ -378,5 +382,181 @@ Table~\ref{tab:balance} reports the full metric set for the exact (Gurobi) vacat
       \bottomrule
       \end{tabular}
    \end{table}
+
+% ========================================================================== %
+\section{Qualification assignment algorithms}\label{app:quals}
+% ========================================================================== %
+
+Algorithms~\ref{alg:map}--\ref{alg:sprinkle} reproduce the three-step qualification process of the current-process description \citep{compasspseudo}. Phase 1 maps each bid line to a historical employee record, Phase 2 estimates the historical co-occurrence proportions, and Phase 3 samples secondary qualifications in those proportions. \code{QualPriorityList} is the ordered list of work centers, and \code{PropTable}$[x,y]$ is the empirical probability that a line whose primary qualification is $x$ also holds $y$.
+
+\begin{algorithm}[ht]
+\caption{Map supply lines to historical qualification records (Phase 1).}
+\label{alg:map}
+\begin{algorithmic}[1]
+\Function{MapQualificationsToSupply}{\code{SupplyModelInput}, \code{QualData}, \code{QualPriorityList}}
+\State \code{QualData}[\code{Qual Count}] $\gets$ size of \code{QualData}[\code{Final Quals}] for each row
+\State \code{SupplyTechQual} $\gets$ unique (\code{tech id}, \code{work center id}) pairs in \code{SupplyModelInput}
+\State \code{SupplyAgg} $\gets$ group \code{SupplyModelInput} by \code{work center id}, count unique \code{tech id} as \code{Num People}
+\State \code{EmpQualMap} $\gets$ empty map
+\ForAll{(\code{qual}, \code{requirement}) in \code{SupplyAgg}}
+   \State \code{Cands} $\gets$ rows of \code{QualData} with \code{Primary Qual} $=$ \code{qual}, sorted by \code{Qual Count} descending
+   \State \code{UsedQualEmps} $\gets$ first \code{requirement} entries of \code{Cands}[\code{Employee Number}]
+   \State \code{SupplyEmps} $\gets$ \code{tech id} where \code{work center id} $=$ \code{qual} in \code{SupplyTechQual}
+   \ForAll{(\code{qual id}, \code{supply id}) in zip(\code{UsedQualEmps}, \code{SupplyEmps})}
+      \State \code{EmpQualMap}[\code{supply id}] $\gets$ \code{qual id}
+   \EndFor
+\EndFor
+\State \code{SupplyModelInput}[\code{Mapped Qual ID}] $\gets$ map \code{tech id} through \code{EmpQualMap}
+\State \code{MergedSupply} $\gets$ left-join \code{SupplyModelInput} with \code{QualData} on \code{Mapped Qual ID} $=$ \code{Employee Number}
+\State fill missing \code{Final Quals} with $[$Domestic$]$
+\State \Return \code{MergedSupply}
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[ht]
+\caption{Build the historical qualification proportion table (Phase 2).}
+\label{alg:prop}
+\begin{algorithmic}[1]
+\Function{BuildPropTable}{\code{QualData}, \code{QualPriorityList}}
+\State \code{PropRows} $\gets$ empty list
+\ForAll{$x$ in \code{QualPriorityList}}
+   \State \code{PrimaryDF} $\gets$ rows of \code{QualData} with \code{Primary Qual} $= x$, columns restricted to \code{QualPriorityList}
+   \State \code{Sums} $\gets$ column-wise sum of \code{PrimaryDF}
+   \State \code{Sums}[\code{total}] $\gets$ \code{Sums}[x] \Comment{denominator: number of primary-$x$ employees}
+   \State append \code{Sums} to \code{PropRows}
+\EndFor
+\State \code{PropTable} $\gets$ concatenate(\code{PropRows})
+\ForAll{$x$ in \code{QualPriorityList}}
+   \State \code{PropTable}[x] $\gets$ \code{PropTable}[x] / \code{PropTable}[\code{total}]
+\EndFor
+\State \Return \code{PropTable}, indexed by \code{QualPriorityList}
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[ht]
+\caption{Sprinkle secondary qualifications onto the supply (Phase 3).}
+\label{alg:sprinkle}
+\begin{algorithmic}[1]
+\Function{SprinkleQualifications}{\code{MergedSupply}, \code{PropTable}, \code{QualPriorityList}}
+\State set random seed $\gets 42$
+\ForAll{\code{skill} in \code{QualPriorityList}}
+   \If{\code{skill} $=$ \code{Domestic}}
+      \State \code{MergedSupply}[\code{skill}] $\gets 1$ for all rows
+   \Else
+      \State \code{MergedSupply}[\code{skill}] $\gets 1$ if \code{employee work center id} $=$ \code{skill}, else $0$
+   \EndIf
+\EndFor
+\ForAll{$(s_1, \code{skill}_1)$ in enumerate(\code{QualPriorityList})}
+   \If{\code{skill}$_1 \neq$ \code{Domestic}}
+      \State $W_1 \gets$ unique \code{tech id} where \code{employee work center id} $=$ \code{skill}$_1$
+      \State $N \gets |W_1|$
+      \ForAll{$(s_2, \code{skill}_2)$ in enumerate(\code{QualPriorityList})}
+         \If{\code{skill}$_2 \neq$ \code{Domestic} and $s_1 \neq s_2$}
+            \State $prop \gets$ \code{PropTable}[\code{skill}$_1$, \code{skill}$_2$]
+            \State $k \gets \lfloor N \cdot prop \rfloor + 1$
+            \State \code{Eligible} $\gets$ unique \code{tech id} where \code{employee work center id} $=$ \code{skill}$_1$ and \code{skill}$_2 = 0$
+            \State \code{Sampled} $\gets$ random sample of $k$ from \code{Eligible} without replacement
+            \State set \code{MergedSupply}[\code{skill}$_2$] $= 1$ for all \code{tech id} in \code{Sampled}
+         \EndIf
+      \EndFor
+   \EndIf
+\EndFor
+\State \code{MergedSupply}[\code{Qual Count}] $\gets$ row-wise sum over \code{QualPriorityList} columns
+\State \code{MergedSupply}[\code{Primary Qual}] $\gets$ \code{employee work center id}
+\State \code{MergedSupply}[\code{Final Quals}] $\gets$ skills in \code{QualPriorityList} whose flag is $1$
+\State \Return \code{MergedSupply}
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+% ========================================================================== %
+\section{Vacation allocation algorithms}\label{app:vac}
+% ========================================================================== %
+
+Algorithms~\ref{alg:scale}--\ref{alg:shrink} reproduce the vacation allocation of the reference process. The quota per date is set from operational volume, lines are selected for vacation with an anti-concentration weight, and the selected days are removed from the supply. Algorithm~\ref{alg:bands} corrects the bucket-size test of the original description: the bucket size is decided from the \emph{bucket} index, not the global element index.
+
+\begin{algorithm}[ht]
+\caption{Rescale a series to $[-1,1]$.}
+\label{alg:scale}
+\begin{algorithmic}[1]
+\Function{scale\_to\_range\_neg\_1\_to\_1}{series}
+\State $lo \gets \min(series)$; $hi \gets \max(series)$
+\If{$hi = lo$}
+   \State \Return $series$ of zeros
+\EndIf
+\State $scaled \gets (series - lo)/(hi - lo)$ \Comment{maps to $[0,1]$}
+\State \Return $2\,scaled - 1$ \Comment{maps to $[-1,1]$}
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[ht]
+\caption{Assign integer variable-vacation adjustments by demand rank (corrected).}
+\label{alg:bands}
+\begin{algorithmic}[1]
+\Function{assign\_variable\_vacation\_days}{\code{demand\_df}, \code{max\_variable\_days}}
+\State $n \gets$ number of rows
+\State $B \gets 2\cdot\code{max\_variable\_days}+1$
+\State $base \gets \lfloor n/B \rfloor$; $extra \gets n \bmod B$
+\State \code{sorted\_indices} $\gets$ row indices sorted by \code{demand} ascending
+\State $pointer \gets 0$
+\For{$bucket = 0$ to $B-1$}
+   \State $size \gets base + 1$ if $bucket < extra$, else $base$ \Comment{use the bucket index, not the element index}
+   \State $value \gets bucket - \code{max\_variable\_days}$
+   \For{$j = 0$ to $size-1$}
+      \If{$pointer \geq n$}
+         \State \textbf{break}
+      \EndIf
+      \State \code{categories}[\code{sorted\_indices}[pointer]] $\gets value$
+      \State $pointer \gets pointer + 1$
+   \EndFor
+\EndFor
+\State \Return \code{demand\_df} with column \code{variable\_vacation} mapped from \code{categories}
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[ht]
+\caption{Combine base and variable vacation into a daily total.}
+\label{alg:alloc}
+\begin{algorithmic}[1]
+\Function{allocate\_vacation\_days}{\code{demand\_df}, \code{base\_vacation\_days}, \code{max\_variable\_days}}
+\State \code{demand\_df}[\code{normalized\_demand}] $\gets$ \Call{scale\_to\_range\_neg\_1\_to\_1}{\code{demand\_df}[\code{demand}]}
+\State \code{demand\_df}[\code{inverse\_demand}] $\gets -\code{normalized\_demand}$
+\State \code{demand\_df} $\gets$ \Call{assign\_variable\_vacation\_days}{\code{demand\_df}, \code{max\_variable\_days}}
+\State \code{demand\_df}[\code{total\_vacation}] $\gets$ round(\code{variable\_vacation} $+$ \code{base\_vacation\_days})
+\State \Return \code{demand\_df}
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[ht]
+\caption{Select which lines take vacation each date and remove them from supply.}
+\label{alg:shrink}
+\begin{algorithmic}[1]
+\Function{apply\_vacation\_shrinkage}{\code{supply\_data}, \code{vacation\_shrinkage\_df}}
+\State \code{vacation\_shrinkage} $\gets$ unique (\code{Date}, \code{total\_vacation}) rows
+\State \code{vacation\_data} $\gets$ empty frame with the columns of \code{supply\_data}
+\ForAll{\code{row} in \code{vacation\_shrinkage} ordered by \code{Date}}
+   \State $date \gets \code{row}[\code{Date}]$; $slots \gets \code{row}[\code{total\_vacation}]$
+   \State \code{avail} $\gets$ rows of \code{supply\_data} with \code{shift\_date} $= date$
+   \If{\code{avail} is empty}
+      \State \textbf{continue}
+   \EndIf
+   \If{number of rows in \code{avail} $\leq slots$}
+      \State place all of \code{avail}
+   \Else
+      \State $freq_\ell \gets$ vacation days already assigned to line $\ell$, $0$ if none
+      \State sample $slots$ lines from \code{avail} without replacement, weighting line $\ell$ by $1/\max(freq_\ell,1)^{10}$ (seed $=1$)
+   \EndIf
+   \State append the selected rows to \code{vacation\_data}
+\EndFor
+\State \code{filtered\_supply\_data} $\gets$ \code{supply\_data} with the \code{vacation\_data} rows removed
+\State \Return \code{filtered\_supply\_data}, \code{vacation\_data}
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
 \end{document}
 
