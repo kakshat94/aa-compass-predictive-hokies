@@ -238,7 +238,33 @@ The notation used throughout is collected in Table~\ref{tab:notation} of Appendi
    \end{remark}
 
    \subsection{Random placement}\label{subsec:random_placement}
-   The random placement is the baseline training layer and mirrors the original process. It forms the same training requirements $r=(\ell,q,m)$ defined at the start of the previous subsection, but fixes each training day by a random draw that respects every hard rule instead of optimizing coverage. The requirements are visited in a random order (a fixed seed, 42, makes the draw reproducible), and for each requirement $r$ one date is chosen uniformly at random among the dates in $E_r$ at which bid line $\ell$ does not already train and the shared class on the line's shift still has a free seat (fewer than $C^{size}$ trainees that day). If no such date remains, the requirement is recorded as a failure. The procedure therefore satisfies the mandatory-training, one-per-line-per-day and shared class-size rules, but it places the removals without regard to the resulting coverage, so the exact model of Section~\ref{subsec:exact_training} dominates it on both under- and over-coverage.
+   The random placement is the baseline training layer and mirrors the original process. It forms the same training requirements $r=(\ell,q,m)$ defined at the start of the previous subsection, but fixes each training day by a random draw that respects every hard rule instead of optimizing coverage. The requirements are visited in a random order (a fixed seed, 42, makes the draw reproducible), and for each requirement $r$ one date is chosen uniformly at random among the dates in $E_r$ at which bid line $\ell$ does not already train and the shared class on the line's shift still has a free seat (fewer than $C^{size}$ trainees that day). If no such date remains, the requirement is recorded as a failure. The procedure therefore satisfies the mandatory-training, one-per-line-per-day and shared class-size rules, but it places the removals without regard to the resulting coverage, so the exact model of Section~\ref{subsec:exact_training} dominates it on both under- and over-coverage. Algorithm~\ref{alg:random} states the procedure.
+
+   \begin{algorithm}[h!]
+      \caption{Random training placement (baseline).}
+      \label{alg:random}
+      \begin{algorithmic}[1]
+      \Function{AssignTrainingRandom}{\code{schedule}, \code{training\_months}, $C^{size}$, \code{seed}}
+      \State $df \gets$ \code{schedule} with date and month columns parsed from \code{SHIFT\_DATE}
+      \State $E_\ell \gets$ eligible working days of line $\ell$ (excluding flex and vacation dates)
+      \State $s_\ell \gets$ shift type of line $\ell$; \quad $Q_\ell \gets$ qualifications held by line $\ell$
+      \State $R \gets \{(\ell,q,m) : q \in Q_\ell,\ m \in \code{training\_months}[q]\}$
+      \State shuffle $R$ with a random generator seeded by \code{seed}
+      \State $\mathrm{cap} \gets \emptyset$; \quad $\mathrm{used}_\ell \gets \emptyset$ for every line $\ell$; \quad $y \gets \emptyset$; \quad $F \gets \emptyset$
+      \ForAll{requirement $r=(\ell,q,m)$ in $R$}
+         \State $D \gets \{\,t \in E_\ell : \mathrm{month}(t)=m,\ t \notin \mathrm{used}_\ell,\ \mathrm{cap}(t,s_\ell) < C^{size}\,\}$
+         \If{$D = \emptyset$}
+            \State $F \gets F \cup \{r\}$ \Comment{no eligible seat for this requirement}
+         \Else
+            \State $t^\star \gets$ a date drawn uniformly at random from $D$
+            \State $\mathrm{used}_\ell \gets \mathrm{used}_\ell \cup \{t^\star\}$; \quad $\mathrm{cap}(t^\star,s_\ell) \gets \mathrm{cap}(t^\star,s_\ell)+1$
+            \State $y[(\ell,t^\star)] \gets q$ \Comment{line $\ell$ trains for $q$ on $t^\star$}
+         \EndIf
+      \EndFor
+      \State \Return training days $y$ and failures $F$
+      \EndFunction
+      \end{algorithmic}
+   \end{algorithm}
 
 % ========================================================================== %
 \section{Vacation: rules, quota and assignment}
@@ -464,7 +490,7 @@ The notation used throughout is collected in Table~\ref{tab:notation} of Appendi
 
    \begin{table}[t]
       \centering
-      \caption{Effective-supply coverage (shared evaluator) and runtime. Lower is better for both under- and over-coverage; ``fill rate'' is capped at 100\% by the evaluator and is not discriminative. ``Solver'' is the summed training-MIP solve time over the 21 (shift, month) programs (not applicable to the random layer); ``ETE'' (end-to-end) is the full pipeline wall-clock on the experimental machine.}
+      \caption{Effective-supply coverage (shared evaluator) and runtime. Lower is better for both under- and over-coverage; ``fill rate'' is capped at 100\% by the evaluator and is not discriminative. ``Solver'' is the \emph{alone} MIP solve time over the 21 (shift, month) programs (not applicable to the random layer); ``ETE'' (end-to-end) is the full pipeline wall-clock on the experimental machine.}
       \label{tab:coverage}
       \small
       \setlength{\tabcolsep}{4pt}
@@ -479,7 +505,7 @@ The notation used throughout is collected in Table~\ref{tab:notation} of Appendi
       \end{tabular}
    \end{table}
 
-   \paragraph{Training-stage objective} Both engines attain the same optimal training objective, $\sum (p^{under}\,u + p^{surplus}\,o) = 49,360$ over the 21 (shift, month) programs, each solved to proven optimality. The summed solver time is 0.18~s with Gurobi and 0.27~s with Xpress, and the end-to-end pipeline takes 3.7~s (random and Gurobi) to 5.7~s (Xpress) on the experimental machine (Table~\ref{tab:coverage}). The identity of the totals across engines and across the single-shift and (shift, month) formulations confirms the decomposition is exact.
+   \paragraph{Training-stage objective} Both engines attain the same optimal training objective, $\sum (p^{under}\,u + p^{surplus}\,o) = 49,360$ over the 21 (shift, month) programs, each solved to proven optimality. The solver time \emph{alone} is 0.18~s with Gurobi and 0.27~s with Xpress, and the end-to-end pipeline takes 3.7~s (random and Gurobi) to 5.7~s (Xpress) on the experimental machine\footnote{Macbook air M4 16gb of RAM and running python scripts} (Table~\ref{tab:coverage}). The identity of the totals across engines and across the single-shift and (shift, month) formulations confirms the decomposition is exact.
 
    \paragraph{Improvement} Relative to random placement, the BLT layer reduces under-coverage by 187 to 196 seat-days (4.2 to 4.4\%) and surplus supply by 189 seat-days (3.1\%). The gain comes from relocating mandatory training days onto slack-rich, low-demand days; the number of bid lines is unchanged. The residual under-coverage is dominated by the interaction of vacation with the roster and by the rounding residual of integer bid line sizing, not by training placement.
 
