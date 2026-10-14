@@ -209,7 +209,7 @@ The notation used throughout is collected in Table~\ref{tab:notation} of Appendi
       \label{tab:prevalence_primary_secondary_quals}%
    \end{table}%
 
-   \subsection{Exact training placement}
+   \subsection{Exact training placement}\label{subsec:exact_training}
    Let $r=(\ell,q,m)$ be the requirement that bid line $\ell$ trains for qualification $q$ in month $m$, and let $E_r$ be the set of dates bid line $\ell$ is scheduled to work in month $m$ (\emph{excluding flex and vacation dates}). Let $y_{rt}$ be the binary variable indicating whether requirement $r$ is scheduled for training on date $t$, and let $z_{wt}$ be the number of training days removed from slot $(w,t)$, where $w$ is a work center and $t$ a date; let $\beta_{wt}$ and $D_{wt}$ be the roster supply and demand on that slot. We solve, per shift $s$, the model
    \begin{align}
       \min \;\; & p^{under}\sum\limits_{w,t} u_{wt} \;+\; p^{surplus}\sum\limits_{w,t} o_{wt} \label{eq:mod1:obj}\\
@@ -236,6 +236,9 @@ The notation used throughout is collected in Table~\ref{tab:notation} of Appendi
    \begin{remark}[Lossless (shift, month) decomposition] 
       Training months never share calendar dates. The class cap, the per-bid line-per-day rule, and coverage are all per-date constraints, so nothing couples two months and the union of the per-(shift, month) optima is the global optimum. We solve one program per (shift, month) pair.
    \end{remark}
+
+   \subsection{Random placement}\label{subsec:random_placement}
+   The random placement is the baseline training layer and mirrors the original process. It forms the same training requirements $r=(\ell,q,m)$ defined at the start of the previous subsection, but fixes each training day by a random draw that respects every hard rule instead of optimizing coverage. The requirements are visited in a random order (a fixed seed, 42, makes the draw reproducible), and for each requirement $r$ one date is chosen uniformly at random among the dates in $E_r$ at which bid line $\ell$ does not already train and the shared class on the line's shift still has a free seat (fewer than $C^{size}$ trainees that day). If no such date remains, the requirement is recorded as a failure. The procedure therefore satisfies the mandatory-training, one-per-line-per-day and shared class-size rules, but it places the removals without regard to the resulting coverage, so the exact model of Section~\ref{subsec:exact_training} dominates it on both under- and over-coverage.
 
 % ========================================================================== %
 \section{Vacation: rules, quota and assignment}
@@ -447,6 +450,16 @@ The notation used throughout is collected in Table~\ref{tab:notation} of Appendi
       \paragraph{Training load} With 498 lines the roster needs 2,103 training seat-days per year, concentrated in three synchronized peak months (February, May and September, when every line trains for Domestic: 498 seats each) plus March (250), October (210), April (90) and November (59). Because the class cap is shared per (day, shift), peak utilization is about 58\%, so the cap rarely binds globally and the question is \emph{where} to place the removals rather than whether they fit.
 
    \subsection{Training results}
+   We compare two training layers and, for each, report supply, coverage and runtime:
+   \begin{itemize}
+      \item \textbf{Random placement} (baseline): each requirement gets a uniformly random eligible working day, subject to the mandatory-training, one-per-line-per-day and class-size rules (Section~\ref{subsec:random_placement}).
+      \item \textbf{Exact BLT model}: the coverage-minimizing mixed-integer program of Section~\ref{subsec:exact_training}, solved to proven optimality by each of two engines:
+      \begin{itemize}
+         \item Gurobi;
+         \item FICO Xpress.
+      \end{itemize}
+   \end{itemize}
+
    Table~\ref{tab:coverage} compares the effective supply (the roster less vacation and training, plus flex days) under the random training placement and under the BLT (bid lines with training) model solved with each engine. Both exact runs beat the random baseline on both objectives while satisfying every structural constraint.
 
    \begin{table}[t]
