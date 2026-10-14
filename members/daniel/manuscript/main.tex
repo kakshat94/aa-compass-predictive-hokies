@@ -126,17 +126,17 @@ The notation used throughout is collected in Table~\ref{tab:notation} of Appendi
    \]
    be the number of training days removed from slot $(w,t)$ where $w$ is a work center and $t$ a date, and let $\beta_{wt}$ and $D_{wt}$ be the roster supply and demand on that slot. We solve, per shift $s$,
    \begin{align}
-      \min \;\; & 100\sum\limits_{w,t} u_{wt} \;+\; 10\sum\limits_{w,t} o_{wt} \label{eq:mod1:obj}\\
+      \min \;\; & p^{under}\sum\limits_{w,t} u_{wt} \;+\; p^{surplus}\sum\limits_{w,t} o_{wt} \label{eq:mod1:obj}\\
       \text{s.t.}\;\; & \sum\limits_{t\in E_r} y_{rt} = 1 && \forall r \label{eq:mod1:con1}\\
       & \sum\limits_{r:\,\ell(r)=\ell,\;m(r)=m} y_{rt} \le 1 && \forall \ell,m,t \label{eq:mod1:con2}\\
-      & \sum\limits_{r:\,\text{shift}(r)=s} y_{rt} \le 12 && \forall t \label{eq:mod1:con3}\\
+      & \sum\limits_{r:\,\text{shift}(r)=s} y_{rt} \le C^{size} && \forall t \label{eq:mod1:con3}\\
       & z_{wt} = \sum\limits_{r} y_{rt} \cdot \mathds{1}_{\ell(r)\in w} && \forall w,t \label{eq:mod1:con4}\\
       & u_{wt} \ge D_{wt} - (\beta_{wt}-z_{wt}),\quad o_{wt} \ge (\beta_{wt}-z_{wt}) - D_{wt} && \forall w,t \label{eq:mod1:con5}\\
       & y_{rt}\in\{0,1\},\quad u_{wt},o_{wt}\ge 0 . \label{eq:mod1:con6}
    \end{align}
-   Each constraint has a specific role. The objective \eqref{eq:mod1:obj} minimizes weighted coverage damage: a missing desk-day (under-coverage) costs 100 and a surplus desk-day (over-coverage) costs 10. Constraint \eqref{eq:mod1:con1} schedules each requirement $r$ exactly once, on one of the dates the line works that month. Constraint \eqref{eq:mod1:con2} allows at most one training per line per date, so two qualifications of the same line that share a month cannot fall on the same date. Constraint \eqref{eq:mod1:con3} limits trainees to 12 per (date, shift) across all work centers, the only constraint that couples work centers. Constraint \eqref{eq:mod1:con4} defines $z_{wt}$ as the number of trainings removed from slot $(w,t)$, where $\mathds{1}_{\ell(r)\in w}$ is the indicator function for the event that line $r$ is in work center $w$; and constraint \eqref{eq:mod1:con5} turns those removals into under-coverage $u_{wt}$ and over-coverage $o_{wt}$ relative to the roster supply $\beta_{wt}$ and the demand $D_{wt}$. Constraint \eqref{eq:mod1:con6} fixes $y_{rt}$ as binary and $u_{wt},o_{wt}$ as nonnegative.
+   Each constraint has a specific role. The objective \eqref{eq:mod1:obj} minimizes weighted coverage damage: a missing desk-day (under-coverage) costs $p^{under}$ and a surplus desk-day (over-coverage) costs $p^{surplus}$. Constraint \eqref{eq:mod1:con1} schedules each requirement $r$ exactly once, on one of the dates the line works that month. Constraint \eqref{eq:mod1:con2} allows at most one training per line per date, so two qualifications of the same line that share a month cannot fall on the same date. Constraint \eqref{eq:mod1:con3} limits trainees to $C^{size}$ per (date, shift) across all work centers, the only constraint that couples work centers. Constraint \eqref{eq:mod1:con4} defines $z_{wt}$ as the number of trainings removed from slot $(w,t)$, where $\mathds{1}_{\ell(r)\in w}$ is the indicator function for the event that line $r$ is in work center $w$; and constraint \eqref{eq:mod1:con5} turns those removals into under-coverage $u_{wt}$ and over-coverage $o_{wt}$ relative to the roster supply $\beta_{wt}$ and the demand $D_{wt}$. Constraint \eqref{eq:mod1:con6} fixes $y_{rt}$ as binary and $u_{wt},o_{wt}$ as nonnegative.
 
-   The penalties 100 and 10 mirror the evaluator's asymmetric treatment of under-coverage and surplus. Because $z_{wt}$ is integer in \eqref{eq:mod1:con4} and the coverage terms in \eqref{eq:mod1:con5} make the objective convex, \eqref{eq:mod1:obj} is an exact convex-cost assignment program: training is pushed onto slack-rich, low-demand days and away from cells that are already tight. This objective mirrors the explicit treatment of excess off-days and idle time in the scheduling literature (Section~\ref{sec:lit}).
+   The penalties $p^{under}$ and $p^{surplus}$ mirror the evaluator's asymmetric treatment of under-coverage and surplus. Because $z_{wt}$ is integer in \eqref{eq:mod1:con4} and the coverage terms in \eqref{eq:mod1:con5} make the objective convex, \eqref{eq:mod1:obj} is an exact convex-cost assignment program: training is pushed onto slack-rich, low-demand days and away from cells that are already tight. This objective mirrors the explicit treatment of excess off-days and idle time in the scheduling literature (Section~\ref{sec:lit}).
 
    \paragraph{Lossless (shift, month) decomposition.} Training months never share calendar dates. The class cap, the per-line-per-day rule, and coverage are all per-date constraints, so nothing couples two months and the union of the per-(shift, month) optima is the global optimum. We solve one program per (shift, month) pair.
 
@@ -283,7 +283,7 @@ The notation used throughout is collected in Table~\ref{tab:notation} of Appendi
       \end{tabular}
    \end{table}
 
-   \paragraph{Training-stage objective.} Both engines attain the same optimal training objective, $\sum (100\,u + 10\,o) = 49,360$ over the 21 (shift, month) programs, with each subprogram solved to proven optimality in well under 0.05~s (total solve time $< 0.3$~s for the whole year). The identity of the totals across engines and across the single-shift and (shift, month) formulations confirms the decomposition is exact.
+   \paragraph{Training-stage objective.} Both engines attain the same optimal training objective, $\sum (p^{under}\,u + p^{surplus}\,o) = 49,360$ over the 21 (shift, month) programs, with each subprogram solved to proven optimality in well under 0.05~s (total solve time $< 0.3$~s for the whole year). The identity of the totals across engines and across the single-shift and (shift, month) formulations confirms the decomposition is exact.
 
    \paragraph{Improvement.} Relative to random placement, the exact T1 layer reduces under-coverage by 187 to 196 seat-days (4.2 to 4.4\%) and surplus supply by 189 seat-days (3.1\%). The gain comes from relocating mandatory training days onto slack-rich, low-demand days; the number of bid lines is unchanged. The residual under-coverage is dominated by the interaction of vacation with the roster and by the rounding residual of integer bid-line sizing, not by training placement.
 
@@ -309,7 +309,7 @@ The notation used throughout is collected in Table~\ref{tab:notation} of Appendi
    \end{equation}
    Two cautions apply. The fill rate is capped at $100\%$ and can read $100\%$ while under-coverage remains (surplus elsewhere masks it), so it does not distinguish between solutions. The stated objective is instead the asymmetric penalty
    \begin{equation}
-      \min \;\; 100 \cdot \mathrm{Under} \;+\; 10 \cdot \mathrm{Over},
+      \min \;\; p^{under} \cdot \mathrm{Under} \;+\; p^{surplus} \cdot \mathrm{Over},
    \end{equation}
    which penalizes a gap ten times as heavily as a surplus and matches our training model \eqref{eq:mod1:obj}. We therefore compare solutions by $\mathrm{Under}$ first, then $\mathrm{Over}$.
 
@@ -437,6 +437,9 @@ The notation used throughout is collected in Table~\ref{tab:notation} of Appendi
       $D_{wt}$ & desk demand at $(w,t)$ for a fixed shift \\
       $D_k$ & desk demand at key $k$ \\
       $S_k$ & supplied desks at key $k$ \\
+      $p^{under}$ & penalty per missing desk-day (under-coverage) \\
+      $p^{surplus}$ & penalty per surplus desk-day (over-coverage) \\
+      $C^{size}$ & training class size per (date, shift) \\
       $\alpha_{\kappa\delta}$ & 1 if offset $\kappa$ works cycle position $\delta$, else 0 \\
       $E_r$ & dates on which requirement $r$ may be trained \\
       $\beta_{wt}$ & roster supply (base) at $(w,t)$ \\
