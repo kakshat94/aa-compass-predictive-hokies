@@ -30,7 +30,7 @@
 \author[1,3]{Jiayi Xue}
 
 \begin{abstract}
-   American Airlines plans its flight-dispatcher workforce a full year ahead, deciding how many bid lines to create across eight work centers and three shifts and how to schedule them so that every desk is staffed without carrying unnecessary staff. Phase I poses the pure bid-line covering problem. Phase II adds \emph{shrinkage}: mandatory training and vacation that consume scheduled working days, together with the rules that govern it. We report a two-part solution. For Phase I we exploit the exact separability of the problem into independent work-center/shift covering models and show empirically that the natural 15-offset covering relaxation is frequently fractional, so we solve the small integer programs exactly. For Phase II we observe that the only couplings introduced are per-day shared capacities (the 12-seat training class and the daily vacation quota) and build an exact mixed-integer model that places each mandatory training day where it does least damage to coverage. The training model decomposes, without loss, into one small program per (shift, month) pair, which keeps every model under the FICO Community license ceiling and lets identical code run on Gurobi and Xpress. On the competition instance the exact training layer reduces under-coverage from 4,417 to 4,221 seat-days and surplus supply from 6,050 to 5,861 relative to a random placement, with all structural, class-size and reconciliation checks passing.
+   American Airlines plans its flight-dispatcher workforce a full year ahead, deciding how many bid lines to create across eight work centers and three shifts and how to schedule them so that every desk is staffed without carrying unnecessary staff. Phase I poses the pure bid-line covering problem. Phase II adds \emph{shrinkage}: mandatory training and vacation that consume scheduled working days, together with the rules that govern it. We report a two-part solution. For Phase I we exploit the exact separability of the problem into independent work-center/shift covering models and show empirically that the natural 15-offset covering relaxation is frequently fractional, so we solve the small integer programs exactly. For Phase II we observe that the only couplings introduced are per-day shared capacities (the 12-seat training class and the daily vacation quota) and build an exact mixed-integer model that places each mandatory training day where it does least damage to coverage. The training model decomposes, without loss, into one small program per (shift, month) pair, which is solved using Gurobi and Xpress solvers. On the competition instance the exact training layer reduces under-coverage from 4,417 to 4,221 seat-days and surplus supply from 6,050 to 5,861 relative to a random placement.
 \end{abstract}
 
 %\begin{keyword}
@@ -46,11 +46,10 @@ American Airlines operates nearly 6,800 flights per day, each coordinated from i
 
 The competition releases the problem in two phases. Phase I is the core scheduling problem: given daily desk demand across eight work centers and three shifts, decide how many bid lines to create and at which offsets to place them. Phase II adds \emph{shrinkage}: mandatory training and vacation remove scheduled working days, flex days add them, and a set of rules governs where each may fall.
 
-This manuscript documents the model we implemented end-to-end. Our contributions are:
+This manuscript documents the model we implemented:
 \begin{enumerate}
-   \item a demonstration that Phase I decomposes into 24 independent cyclic-covering problems, together with an empirical study showing that the natural offset-based covering relaxation is \emph{not} integral for this 15-offset structure, which motivates an exact integer model rather than an LP-rounding argument;
-   \item an exact Phase II training model that chooses training days to minimize coverage damage subject to the mandatory-training, one-per-day and shared class-size rules, with a lossless decomposition into (shift, month) programs that fits a community solver license;
-   \item a solver-agnostic implementation (Gurobi and FICO Xpress) integrated as a drop-in replacement for the original random placement, and validated against the shared evaluator.
+   \item for Phase I, which decomposes into 24 independent cyclic-covering problems, for this problem an exact integer model is implemented;
+   \item an exact Phase II training model that chooses training days to minimize coverage damage subject to the mandatory-training, one-per-day and shared class-size rules, with a lossless decomposition into (shift, month) programs.
 \end{enumerate}
 
 The notation used throughout is collected in Table~\ref{tab:notation} of Appendix~\ref{app:notation}, grouped into sets and indices, parameters, and decision variables.
@@ -98,11 +97,11 @@ The notation used throughout is collected in Table~\ref{tab:notation} of Appendi
    \subsection{Separability and the offset-covering structure}
    A bid line is fixed to one work center and one shift, and coverage constraints never couple two work centers. The Phase I problem therefore decomposes into 24 independent subproblems, one per work-center/shift combination. Within a subproblem the only real decision is how many bid lines to create at each of the 15 offsets. With $n_\kappa$ the number of lines created at offset $\kappa$ and $\alpha_{\kappa\delta}\in\{0,1\}$ indicating whether offset $\kappa$ works cycle position $\delta$, the base model is the integer program
    \begin{equation}
-   \min \; \sum\limits_{\kappa=0}^{14} n_\kappa
-   \quad\text{s.t.}\quad
-   \sum\limits_{\kappa} \alpha_{\kappa\delta}\,n_\kappa \;\ge\; D_\delta \;\; \forall \delta,
-   \qquad n_\kappa \in \mathbb{Z}_{\ge 0},
-   \label{eq:phase1}
+      \min \; \sum\limits_{\kappa=0}^{14} n_\kappa
+      \quad\text{s.t.}\quad
+      \sum\limits_{\kappa} \alpha_{\kappa\delta}\,n_\kappa \;\ge\; D_\delta \;\; \forall \delta,
+      \qquad n_\kappa \in \mathbb{Z}_{\ge 0},
+      \label{eq:phase1}
    \end{equation}
    a cyclic covering problem of the classical days-off/tour-scheduling family (Section~\ref{sec:lit}). We enumerate the offset vectors directly rather than encode the cycle as constraints, so the model contains only 15 integer variables per subproblem.
 
@@ -258,38 +257,7 @@ The notation used throughout is collected in Table~\ref{tab:notation} of Appendi
    \paragraph{Outcome.} The procedure assigns 9,804 vacation line-days across 363 dates, with the daily count exactly in $[25,29]$ (mean $27.0$) and every rule respected.
 
 % ========================================================================== %
-\section{Computational experiments} \label{sec:computational_experiments}
-% ========================================================================== %
-   \paragraph{Implementation.} The pipeline loads the three supply files, assigns qualifications, assigns training (random or exact), then assigns vacation and scores the effective supply with the shared evaluator. The training layer is selected by a flag (\texttt{--random} or \texttt{--exact-mip}); the exact layer is solver-agnostic (\texttt{--solver gurobi} or \texttt{--solver xpress}) through a thin adapter that maps a common modeling interface onto the Gurobi and Xpress Python APIs \citep{gurobi2026,xpress2026}. All random seeds are fixed and results reproduce from the supplied data.
-
-   \paragraph{Validation.} Every run is checked against the competition rules by an independent verifier: each held qualification is trained exactly once per eligible month; training falls on a working day, never twice on the same day, and never on a flex or vacation day; and no more than 12 trainees occupy any (date, shift). The shrinkage files are also reconciled (regular $=$ effective $+$ vacation; vacation $\subseteq$ roster; training disjoint from roster and vacation). All checks pass for both solvers.
-
-% ========================================================================== %
-\section{Results} \label{sec:results}
-% ========================================================================== %
-   Table~\ref{tab:coverage} compares the effective supply (the roster less vacation and training, plus flex days) under the random training placement and under the exact T1 model solved with each engine. Both exact runs beat the random baseline on both objectives while satisfying every structural constraint.
-
-   \begin{table}[t]
-      \centering
-      \caption{Effective-supply coverage (shared evaluator). Lower is better for both under- and over-coverage; ``fill rate'' is capped at 100\% by the evaluator and is not discriminative.}
-      \label{tab:coverage}
-      \begin{tabular}{lrrrr}
-      \toprule
-      Training layer & Supply & Under & Over & Fill rate \\
-      \midrule
-      Random placement                & 83,885 & 4,417 & 6,050 & 100.0\% \\
-      Exact T1 (Gurobi)               & 83,888 & 4,230 & 5,866 & 100.0\% \\
-      Exact T1 (FICO Xpress)          & 83,892 & 4,221 & 5,861 & 100.0\% \\
-      \bottomrule
-      \end{tabular}
-   \end{table}
-
-   \paragraph{Training-stage objective.} Both engines attain the same optimal training objective, $\sum (p^{under}\,u + p^{surplus}\,o) = 49,360$ over the 21 (shift, month) programs, with each subprogram solved to proven optimality in well under 0.05~s (total solve time $< 0.3$~s for the whole year). The identity of the totals across engines and across the single-shift and (shift, month) formulations confirms the decomposition is exact.
-
-   \paragraph{Improvement.} Relative to random placement, the exact T1 layer reduces under-coverage by 187 to 196 seat-days (4.2 to 4.4\%) and surplus supply by 189 seat-days (3.1\%). The gain comes from relocating mandatory training days onto slack-rich, low-demand days; the number of bid lines is unchanged. The residual under-coverage is dominated by the interaction of vacation with the roster and by the rounding residual of integer bid-line sizing, not by training placement.
-
-% ========================================================================== %
-\section{Balance and performance metrics} \label{sec:metrics}
+\section{Balance and some proposed performance metrics} \label{sec:metrics}
 % ========================================================================== %
    We report three families of metrics: the coverage metrics of the shared evaluator, a demand-rescaling feature, and the vacation-balance metrics. All dispersion measures are oriented so that $0$ is best (perfectly even).
 
@@ -360,6 +328,37 @@ The notation used throughout is collected in Table~\ref{tab:notation} of Appendi
             \;\in\; \Big[\tfrac1{12},\,1\Big],
    \end{equation}
    where $v_{\ell m}$ is line $\ell$'s vacation days in month $m$. $H_\ell = 1/12$ is a perfectly even month-by-month spread and $H_\ell = 1$ means all vacation is in one month; we then score $\{H_\ell\}_\ell$ with the same dispersion measures.
+
+% ========================================================================== %
+\section{Computational experiments} \label{sec:computational_experiments}
+% ========================================================================== %
+   \paragraph{Implementation.} The pipeline loads the three supply files, assigns qualifications, assigns training (random or exact), then assigns vacation and scores the effective supply with the shared evaluator. The training layer is selected by a flag (\texttt{--random} or \texttt{--exact-mip}); the exact layer is solver-agnostic (\texttt{--solver gurobi} or \texttt{--solver xpress}) through a thin adapter that maps a common modeling interface onto the Gurobi and Xpress Python APIs \citep{gurobi2026,xpress2026}. All random seeds are fixed and results reproduce from the supplied data.
+
+   \paragraph{Validation.} Every run is checked against the competition rules by an independent verifier: each held qualification is trained exactly once per eligible month; training falls on a working day, never twice on the same day, and never on a flex or vacation day; and no more than 12 trainees occupy any (date, shift). The shrinkage files are also reconciled (regular $=$ effective $+$ vacation; vacation $\subseteq$ roster; training disjoint from roster and vacation). All checks pass for both solvers.
+
+% ========================================================================== %
+\section{Results} \label{sec:results}
+% ========================================================================== %
+   Table~\ref{tab:coverage} compares the effective supply (the roster less vacation and training, plus flex days) under the random training placement and under the BLT (bid-lines with training) model solved with each engine. Both exact runs beat the random baseline on both objectives while satisfying every structural constraint.
+
+   \begin{table}[t]
+      \centering
+      \caption{Effective-supply coverage (shared evaluator). Lower is better for both under- and over-coverage; ``fill rate'' is capped at 100\% by the evaluator and is not discriminative.}
+      \label{tab:coverage}
+      \begin{tabular}{lrrrr}
+      \toprule
+      Training layer & Supply & Under & Over & Fill rate \\
+      \midrule
+      Random placement                & 83,885 & 4,417 & 6,050 & 100.0\% \\
+      BLT (Gurobi)                    & 83,888 & 4,230 & 5,866 & 100.0\% \\
+      BLT (FICO Xpress)               & 83,892 & 4,221 & 5,861 & 100.0\% \\
+      \bottomrule
+      \end{tabular}
+   \end{table}
+
+   \paragraph{Training-stage objective.} Both engines attain the same optimal training objective, $\sum (p^{under}\,u + p^{surplus}\,o) = 49,360$ over the 21 (shift, month) programs, with each subprogram solved to proven optimality in well under 0.05~s (total solve time $< 0.3$~s for the whole year). The identity of the totals across engines and across the single-shift and (shift, month) formulations confirms the decomposition is exact.
+
+   \paragraph{Improvement.} Relative to random placement, the BLT layer reduces under-coverage by 187 to 196 seat-days (4.2 to 4.4\%) and surplus supply by 189 seat-days (3.1\%). The gain comes from relocating mandatory training days onto slack-rich, low-demand days; the number of bid lines is unchanged. The residual under-coverage is dominated by the interaction of vacation with the roster and by the rounding residual of integer bid-line sizing, not by training placement.
 
    \subsection{Reported values}\label{subsec:reported_values}
       Table~\ref{tab:balance} reports the full metric set for the exact (Gurobi) vacation assignment. Vacation is near-proportional across lines (Gini $0.029$) and essentially identical across qualification groups (between-group Gini $0.005$ by primary, $0.002$ by held qualification). Across the year the daily and per-working-day rates are even (Gini $0.025$ to $0.030$); the raw \emph{monthly} Gini is larger ($0.087$) only because months differ in length, and it drops to $0.025$ once normalized by working days. The Herfindahl mean of $0.109$ (against the ideal $0.083=1/12$) confirms each line spreads its vacation across many months.
@@ -456,9 +455,9 @@ The notation used throughout is collected in Table~\ref{tab:notation} of Appendi
       $R_\ell$ & dates line $\ell$ is scheduled to work \\
       $F_\ell$ & flex dates of line $\ell$ \\
       $\tau_{\ell t}$ & 1 if line $\ell$ trains on date $t$, else 0 \\
-      $Q_t$ & vacation quota on date $t$ (25 to 29) \\
-      $Q_{\text{base}}$ & base vacation quota (27) \\
-      $M$ & maximum variable vacation adjustment (2) \\
+      $Q_t$ & vacation quota on date $t$ (ranges from 25 to 29) \\
+      $Q_{\text{base}}$ & base vacation quota (default = 27) \\
+      $M$ & maximum variable vacation adjustment (default =2) \\
       $\eta_t$ & operational volume on date $t$ \\
       $A_t$ & lines eligible for vacation on date $t$ \\
       $\pi_\ell$ & vacation sampling weight of line $\ell$ \\
