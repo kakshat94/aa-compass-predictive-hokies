@@ -1,5 +1,5 @@
 %%
-%% Elsevier elsarticle template. Build with:  latexmk -pdf main.tex
+%% Elsevier elsarticle template. Build with:  latexmk -pdf document.tex
 %%
 \documentclass[preprint,12pt]{elsarticle}
 
@@ -15,6 +15,8 @@
 \usepackage[hidelinks]{hyperref}
 
 \newcommand{\code}[1]{\texttt{#1}}
+
+\newtheorem{remark}{Remark}
 
 %\journal{}
 
@@ -161,7 +163,7 @@ The notation used throughout is collected in Table~\ref{tab:notation} of Appendi
    
    \begin{figure}[h!]
       \centering
-      \includegraphics[width=1\linewidth]{figs/daily_dresk_demand_per_wc.png}
+      \includegraphics[width=1\linewidth]{figs/daily_desk_demand_per_wc.png}
       \caption{Daily desk demand by work center and shift (14 Jan 2025 - 11 Jan 2026)}
       \label{fig:daily_demand_per_wc}
    \end{figure}
@@ -208,23 +210,32 @@ The notation used throughout is collected in Table~\ref{tab:notation} of Appendi
    \end{table}%
 
    \subsection{Exact training placement}
-   Let $r=(\ell,q,m)$ be the requirement that bid line $\ell$ trains for qualification $q$ in month $m$, and let $E_r$ be the set of dates bid line $\ell$ is scheduled to work in month $m$ (excluding flex and vacation dates). Let
-   $$z_{wt} \;=\; \sum\limits_{r:\,\ell(r)\in w,\;t\in E_r} y_{rt}$$
-   be the number of training days removed from slot $(w,t)$ where $w$ is a work center and $t$ a date, and let $\beta_{wt}$ and $D_{wt}$ be the roster supply and demand on that slot. We solve, per shift $s$,
+   Let $r=(\ell,q,m)$ be the requirement that bid line $\ell$ trains for qualification $q$ in month $m$, and let $E_r$ be the set of dates bid line $\ell$ is scheduled to work in month $m$ (\emph{excluding flex and vacation dates}). Let $y_{rt}$ be the binary variable indicating whether requirement $r$ is scheduled for training on date $t$, and let $z_{wt}$ be the number of training days removed from slot $(w,t)$, where $w$ is a work center and $t$ a date; let $\beta_{wt}$ and $D_{wt}$ be the roster supply and demand on that slot. We solve, per shift $s$, the model
    \begin{align}
       \min \;\; & p^{under}\sum\limits_{w,t} u_{wt} \;+\; p^{surplus}\sum\limits_{w,t} o_{wt} \label{eq:mod1:obj}\\
       \text{s.t.}\;\; & \sum\limits_{t\in E_r} y_{rt} = 1 && \forall r \label{eq:mod1:con1}\\
       & \sum\limits_{r:\,\ell(r)=\ell,\;m(r)=m} y_{rt} \le 1 && \forall \ell,m,t \label{eq:mod1:con2}\\
       & \sum\limits_{r:\,\text{shift}(r)=s} y_{rt} \le C^{size} && \forall t \label{eq:mod1:con3}\\
-      & z_{wt} = \sum\limits_{r} y_{rt} \cdot \mathds{1}_{\ell(r)\in w} && \forall w,t \label{eq:mod1:con4}\\
+      & z_{wt} = \sum\limits_{r} y_{rt} \cdot \mathds{1}_{[\ell(r)\in w]} && \forall w,t \label{eq:mod1:con4}\\
       & u_{wt} \ge D_{wt} - (\beta_{wt}-z_{wt}),\quad o_{wt} \ge (\beta_{wt}-z_{wt}) - D_{wt} && \forall w,t \label{eq:mod1:con5}\\
-      & y_{rt}\in\{0,1\},\quad u_{wt},o_{wt}\ge 0 . \label{eq:mod1:con6}
+      & z_{wt}\in\mathbb{Z},\quad u_{wt},o_{wt}\ge 0  && \forall w,t \label{eq:mod1:con6} \\
+      & y_{rt}\in\{0,1\},  && \forall r,t. \label{eq:mod1:con7}
    \end{align}
-   Each constraint has a specific role. The objective \eqref{eq:mod1:obj} minimizes weighted coverage damage: a missing desk-day (under-coverage) costs $p^{under}$ and a surplus desk-day (over-coverage) costs $p^{surplus}$. Constraint \eqref{eq:mod1:con1} schedules each requirement $r$ exactly once, on one of the dates the bid line works that month. Constraint \eqref{eq:mod1:con2} allows at most one training per bid line per date, so two qualifications of the same bid line that share a month cannot fall on the same date. Constraint \eqref{eq:mod1:con3} limits trainees to $C^{size}$ per (date, shift) across all work centers, the only constraint that couples work centers. Constraint \eqref{eq:mod1:con4} defines $z_{wt}$ as the number of trainings removed from slot $(w,t)$, where $\mathds{1}_{\ell(r)\in w}$ is the indicator function for the event that bid line $r$ is in work center $w$; and constraint \eqref{eq:mod1:con5} turns those removals into under-coverage $u_{wt}$ and over-coverage $o_{wt}$ relative to the roster supply $\beta_{wt}$ and the demand $D_{wt}$. Constraint \eqref{eq:mod1:con6} fixes $y_{rt}$ as binary and $u_{wt},o_{wt}$ as nonnegative.
+   
+   The objective function \eqref{eq:mod1:obj} meets the demand by minimizing weighted coverage penalties: under-coverage penalty $p^{under}$ and a surplus (over-coverage) penalty $p^{surplus}$ are used to penalize deviations from the desired coverage levels. 
+   Constraint \eqref{eq:mod1:con1} schedules each requirement $r$ exactly once, on one of the dates the bid line works that month. 
+   Constraint \eqref{eq:mod1:con2} allows at most one training per bid line per date, so two qualifications of the same bid line that share a month cannot fall on the same date. 
+   Constraint \eqref{eq:mod1:con3} limits trainees to $C^{size}$ per (date, shift) across all work centers, the only constraint that couples work centers. 
+   Constraint \eqref{eq:mod1:con4} defines $z_{wt}$ as the number of trainings removed from slot $(w,t)$, where $\mathds{1}_{\ell(r)\in w}$ is the indicator function for the event that bid line $r$ is in work center $w$; and constraint \eqref{eq:mod1:con5} turns those removals into under-coverage $u_{wt}$ and over-coverage $o_{wt}$ relative to the roster supply $\beta_{wt}$ and the demand $D_{wt}$. 
+   Constraint \eqref{eq:mod1:con6} imposes integrality on $z_{wt}$ and nonnegativity on $u_{wt}$ and $o_{wt}$, and constraint \eqref{eq:mod1:con7} fixes $y_{rt}$ as binary.
 
-   The penalties $p^{under}$ and $p^{surplus}$ mirror the evaluator's asymmetric treatment of under-coverage and surplus. Because $z_{wt}$ is integer in \eqref{eq:mod1:con4} and the coverage terms in \eqref{eq:mod1:con5} make the objective convex, \eqref{eq:mod1:obj} is an exact convex-cost assignment program: training is pushed onto slack-rich, low-demand days and away from cells that are already tight. This objective mirrors the explicit treatment of excess off-days and idle time in the scheduling literature (Section~\ref{sec:lit}).
+   The penalties $p^{under}$ and $p^{surplus}$ mirror the evaluator's asymmetric treatment of under-coverage and surplus. 
+   %Because $z_{wt}$ is integer in \eqref{eq:mod1:con4} and the coverage terms in \eqref{eq:mod1:con5} make the objective convex, \eqref{eq:mod1:obj} is an exact convex-cost assignment program: training is pushed onto slack-rich, low-demand days and away from cells that are already tight. 
+   %This objective mirrors the explicit treatment of excess off-days and idle time in the scheduling literature (Section~\ref{sec:lit}).
 
-   \paragraph{Lossless (shift, month) decomposition} Training months never share calendar dates. The class cap, the per-bid-line-per-day rule, and coverage are all per-date constraints, so nothing couples two months and the union of the per-(shift, month) optima is the global optimum. We solve one program per (shift, month) pair.
+   \begin{remark}[Lossless (shift, month) decomposition] 
+      Training months never share calendar dates. The class cap, the per-bid-line-per-day rule, and coverage are all per-date constraints, so nothing couples two months and the union of the per-(shift, month) optima is the global optimum. We solve one program per (shift, month) pair.
+   \end{remark}
 
 % ========================================================================== %
 \section{Vacation: rules, quota and assignment}
@@ -254,7 +265,7 @@ The notation used throughout is collected in Table~\ref{tab:notation} of Appendi
       \caption{Rescale a series to $[-1,1]$.}
       \label{alg:scale}
       \begin{algorithmic}[1]
-      \Function{scale\_to\_range\_neg\_1\_to\_1}{series}
+      \Function{ScaleToRangeNeg1To1}{series}
       \State $lo \gets \min(series)$; $hi \gets \max(series)$
       \If{$hi = lo$}
          \State \Return $series$ of zeros
@@ -269,7 +280,7 @@ The notation used throughout is collected in Table~\ref{tab:notation} of Appendi
       \caption{Assign integer variable-vacation adjustments by demand rank.}
       \label{alg:bands}
       \begin{algorithmic}[1]
-      \Function{assign\_variable\_vacation\_days}{\code{demand\_df}, \code{max\_variable\_days}}
+      \Function{AssignVariableVacationDays}{\code{demand\_df}, \code{max\_variable\_days}}
       \State $n \gets$ number of rows
       \State $B \gets 2\cdot\code{max\_variable\_days}+1$
       \State $base \gets \lfloor n/B \rfloor$; $extra \gets n \bmod B$
@@ -295,10 +306,11 @@ The notation used throughout is collected in Table~\ref{tab:notation} of Appendi
       \caption{Combine base and variable vacation into a daily total.}
       \label{alg:alloc}
       \begin{algorithmic}[1]
-      \Function{allocate\_vacation\_days}{\code{demand\_df}, \code{base\_vacation\_days}, \code{max\_variable\_days}}
-      \State \code{demand\_df}[\code{normalized\_demand}] $\gets$ \Call{scale\_to\_range\_neg\_1\_to\_1}{\code{demand\_df}[\code{demand}]}
+      \Function{AllocateVacationDays}{\code{demand\_df}, \code{base\_vacation\_days}, \code{max\_variable\_days}}
+      \State $xs \gets \code{demand\_df}[\code{demand}]$
+      \State \code{demand\_df}[\code{normalized\_demand}] $\gets$ \Call{ScaleToRangeNeg1To1}{$xs$}
       \State \code{demand\_df}[\code{inverse\_demand}] $\gets -\code{normalized\_demand}$
-      \State \code{demand\_df} $\gets$ \Call{assign\_variable\_vacation\_days}{\code{demand\_df}, \code{max\_variable\_days}}
+      \State \code{demand\_df} $\gets$ \Call{AssignVariableVacationDays}{\code{demand\_df}, \code{max\_variable\_days}}
       \State \code{demand\_df}[\code{total\_vacation}] $\gets$ round(\code{variable\_vacation} $+$ \code{base\_vacation\_days})
       \State \Return \code{demand\_df}
       \EndFunction
@@ -309,7 +321,7 @@ The notation used throughout is collected in Table~\ref{tab:notation} of Appendi
    For each date $t$ let $A_t = \{\ell : t \in R_\ell,\ t \notin F_\ell,\ \tau_{\ell t}=0\}$ be the lines eligible to take vacation on $t$. If $|A_t| \le Q_t$ every eligible line is placed; otherwise we sample $Q_t$ lines from $A_t$ without replacement with probability weights
    \begin{equation}
       \pi_\ell \;\propto\; \frac{1}{\varphi_\ell^{\,10}}, \qquad
-      \varphi_\ell = \#\{\text{vacation dates already assigned to } \ell\},
+      \varphi_\ell = \#\text{vacation dates already assigned to } \ell,
    \end{equation}
    with $\pi_\ell = 1$ while $\varphi_\ell = 0$. The tenth power is a deliberately strong anti-concentration penalty: once a line has taken vacation, the chance it is drawn again falls sharply, which drives the proportional distribution the brief requires. The sampling seed is fixed (1) so the assignment reproduces. This greedy per-date procedure is the step the process document suggests replacing with a global optimization \citep{compassphase2}. We leave a joint vacation and training model as future work; the metrics below quantify how close the greedy assignment is to perfect balance. The selection routine is given as Algorithm~\ref{alg:shrink}.
 
@@ -317,7 +329,7 @@ The notation used throughout is collected in Table~\ref{tab:notation} of Appendi
       \caption{Select which lines take vacation each date and remove them from supply.}
       \label{alg:shrink}
       \begin{algorithmic}[1]
-      \Function{apply\_vacation\_shrinkage}{\code{supply\_data}, \code{vacation\_shrinkage\_df}}
+      \Function{ApplyVacationShrinkage}{\code{supply\_data}, \code{vacation\_shrinkage\_df}}
       \State \code{vacation\_shrinkage} $\gets$ unique (\code{Date}, \code{total\_vacation}) rows
       \State \code{vacation\_data} $\gets$ empty frame with the columns of \code{supply\_data}
       \ForAll{\code{row} in \code{vacation\_shrinkage} ordered by \code{Date}}
@@ -343,7 +355,7 @@ The notation used throughout is collected in Table~\ref{tab:notation} of Appendi
    \paragraph{Outcome} The procedure assigns 9,804 vacation line-days across 363 dates, with the daily count exactly in $[25,29]$ (mean $27.0$) and every rule respected.
 
 % ========================================================================== %
-\section{Balance and some proposed performance metrics} \label{sec:metrics}
+\section{Some proposed performance metrics} \label{sec:metrics}
 % ========================================================================== %
    We report three families of metrics: the coverage metrics of the shared evaluator, a demand-rescaling feature, and the vacation-balance metrics. All dispersion measures are oriented so that $0$ is best (perfectly even).
 
@@ -369,7 +381,7 @@ The notation used throughout is collected in Table~\ref{tab:notation} of Appendi
    which penalizes a gap ten times as heavily as a surplus and matches our training model \eqref{eq:mod1:obj}. We therefore compare solutions by $\mathrm{Under}$ first, then $\mathrm{Over}$.
 
    \subsection{Demand rescaling feature}
-   The helper \texttt{scale\_to\_range\_neg\_1\_to\_1} linearly rescales a series $h$ to a symmetric $[-1,1]$ range, mapping the minimum to $-1$, the maximum to $+1$, and a flat series to $0$:
+   The helper \texttt{ScaleToRangeNeg1To1} linearly rescales a series $h$ to a symmetric $[-1,1]$ range, mapping the minimum to $-1$, the maximum to $+1$, and a flat series to $0$:
    \begin{equation}
    \varsigma(h) =
    \begin{cases}
@@ -380,9 +392,9 @@ The notation used throughout is collected in Table~\ref{tab:notation} of Appendi
    It is applied to two accumulations of desk demand, per $(\text{shift},\text{date})$ and per $(\text{shift},\text{date},\text{work center})$, and its inverse (the inverted, centered volume used to rank days for vacation) underpins the quota in the previous section; the full routine is Algorithm~\ref{alg:scale}.
 
    \subsection{Dispersion measures}
-   For a vector $v=(v_1,\dots,v_N)$ with $v_i \ge 0$ we use four scale-free dispersion measures, each $0$ when all values are equal.
+   For a vector $v=(v_1,\dots,v_N)$ with $v_i \ge 0$ we use four scale-free dispersion measures, each $0$ when all values are equal \citep{allison1978measures,cowell2011measuring}.
 
-   \paragraph{Coefficient of variation}
+   \paragraph{Coefficient of variation} The coefficient of variation is a standard scale-free dispersion measure \citep{allison1978measures}:
       \begin{equation}
       \mathrm{CV}(v) = \frac{\sigma_v}{\bar v}, \qquad
       \bar v = \frac1N\sum_i v_i, \qquad
@@ -394,11 +406,11 @@ The notation used throughout is collected in Table~\ref{tab:notation} of Appendi
       G(v) = \frac{2\sum\limits_{i=1}^{N} i\,v_{(i)} - (N+1)\sum\limits_{i=1}^{N} v_{(i)}}
                   {N \sum\limits_{i=1}^{N} v_{(i)}},
       \end{equation}
-      the standard $0$-to-$1$ inequality measure ($0$ = perfectly even, $\tfrac{N-1}{N}$ = fully concentrated). A degenerate vector with zero total returns $0$.
+      the standard $0$-to-$1$ inequality measure \citep{gini1921measurement,allison1978measures} ($0$ = perfectly even, $\tfrac{N-1}{N}$ = fully concentrated). A degenerate vector with zero total returns $0$.
 
-   \paragraph{Max-to-mean ratio} $\ \max_i v_i \,/\, \bar v \ge 1$, equal to $1$ only when $v$ is flat; it flags a single overloaded element.
+   \paragraph{Max-to-mean ratio} $\ \max_i v_i \,/\, \bar v \ge 1$, equal to $1$ only when $v$ is flat; it flags a single overloaded element \citep{allison1978measures}.
 
-   \paragraph{Range} The reported \emph{mean}, \emph{min} and \emph{max} give the absolute spread. For grouped profiles we add a \emph{between-group} dispersion: the dispersion measures above applied to the vector of \emph{group means}, which detects whether groups differ from one another (as opposed to being internally uneven).
+   \paragraph{Range} The reported \emph{mean}, \emph{min} and \emph{max} give the absolute spread. For grouped profiles we add a \emph{between-group} dispersion: the dispersion measures above applied to the vector of \emph{group means}, which detects whether groups differ from one another (as opposed to being internally uneven) \citep{cowell2011measuring}.
 
    \subsection{Across-line and across-year balance} \label{subsec:across_line_year}
    Let $v_\ell$ be the total vacation days of line $\ell$ over the year; then $\{v_\ell\}_\ell$ is scored with the four measures above, overall, by \emph{primary} qualification, and by \emph{every held} qualification (overlapping groups, so a line contributes to each qualification it holds), plus the between-group dispersion of each grouping.
@@ -406,9 +418,9 @@ The notation used throughout is collected in Table~\ref{tab:notation} of Appendi
    Temporal spread is scored on the vacation counts bucketed by day, week and month. Raw monthly counts are distorted by unequal bucket lengths, so we also report \emph{per-working-day} normalized versions. For a bucket $c$ (a week or a month),
    \begin{equation}
       \mathrm{rate}_c \;=\;
-      \frac{\#\{\text{vacation line-days in } c\}}{\#\{\text{working days in } c\}},
+      \frac{\#\text{vacation line-days in } c}{\#\text{working days in } c},
    \end{equation}
-   and we compare the dispersion of those rates rather than the raw counts. Per-line month concentration is measured by the Herfindahl index over the months in which a line takes vacation,
+   and we compare the dispersion of those rates rather than the raw counts. Per-line month concentration is measured by the Herfindahl index \citep{hirschman1945national,herfindahl1950concentration,rhoades1993herfindahl} over the months in which a line takes vacation,
    \begin{equation}
       H_\ell = \sum\limits_{m=1}^{12}\left(\frac{v_{\ell m}}{v_\ell}\right)^{2}
             \;\in\; \Big[\tfrac1{12},\,1\Big],
@@ -435,25 +447,27 @@ The notation used throughout is collected in Table~\ref{tab:notation} of Appendi
 
    \begin{table}[t]
       \centering
-      \caption{Effective-supply coverage (shared evaluator). Lower is better for both under- and over-coverage; ``fill rate'' is capped at 100\% by the evaluator and is not discriminative.}
+      \caption{Effective-supply coverage (shared evaluator) and runtime. Lower is better for both under- and over-coverage; ``fill rate'' is capped at 100\% by the evaluator and is not discriminative. ``Solver'' is the summed training-MIP solve time over the 21 (shift, month) programs (not applicable to the random layer); ``Wall'' is the end-to-end pipeline wall-clock on the experimental machine.}
       \label{tab:coverage}
-      \begin{tabular}{lrrrr}
+      \small
+      \setlength{\tabcolsep}{4pt}
+      \begin{tabular}{lrrrrrr}
       \toprule
-      Training layer & Supply & Under & Over & Fill rate \\
+      Training layer & Supply & Under & Over & Fill rate & Solver (s) & Wall (s) \\
       \midrule
-      Random placement  & 83,885 & 4,417 & 6,050 & 100.0\% \\
-      BLT (Gurobi)      & 83,888 & 4,230 & 5,866 & 100.0\% \\
-      BLT (FICO Xpress) & 83,892 & 4,221 & 5,861 & 100.0\% \\
+      Random placement  & 83,885 & 4,417 & 6,050 & 100.0\% & --- & 3.66 \\
+      BLT (Gurobi)      & 83,888 & 4,230 & 5,866 & 100.0\% & 0.18 & 3.72 \\
+      BLT (FICO Xpress) & 83,892 & 4,221 & 5,861 & 100.0\% & 0.27 & 5.70 \\
       \bottomrule
       \end{tabular}
    \end{table}
 
-   \paragraph{Training-stage objective} Both engines attain the same optimal training objective, $\sum (p^{under}\,u + p^{surplus}\,o) = 49,360$ over the 21 (shift, month) programs, with each subprogram solved to proven optimality in well under 0.05~s (total solve time $< 0.3$~s for the whole year). The identity of the totals across engines and across the single-shift and (shift, month) formulations confirms the decomposition is exact.
+   \paragraph{Training-stage objective} Both engines attain the same optimal training objective, $\sum (p^{under}\,u + p^{surplus}\,o) = 49,360$ over the 21 (shift, month) programs, each solved to proven optimality. The summed solver time is 0.18~s with Gurobi and 0.27~s with Xpress, and the end-to-end pipeline takes 3.7~s (random and Gurobi) to 5.7~s (Xpress) on the experimental machine (Table~\ref{tab:coverage}). The identity of the totals across engines and across the single-shift and (shift, month) formulations confirms the decomposition is exact.
 
    \paragraph{Improvement} Relative to random placement, the BLT layer reduces under-coverage by 187 to 196 seat-days (4.2 to 4.4\%) and surplus supply by 189 seat-days (3.1\%). The gain comes from relocating mandatory training days onto slack-rich, low-demand days; the number of bid lines is unchanged. The residual under-coverage is dominated by the interaction of vacation with the roster and by the rounding residual of integer bid-line sizing, not by training placement.
 
    \subsection{Reported values}\label{subsec:reported_values}
-      Table~\ref{tab:balance} reports the full metric set for the exact (Gurobi) vacation assignment. Vacation is near-proportional across lines (Gini $0.029$) and essentially identical across qualification groups (between-group Gini $0.005$ by primary, $0.002$ by held qualification). Across the year the daily and per-working-day rates are even (Gini $0.025$ to $0.030$); the raw \emph{monthly} Gini is larger ($0.087$) only because months differ in length, and it drops to $0.025$ once normalized by working days. The Herfindahl mean of $0.109$ (against the ideal $0.083=1/12$) confirms each line spreads its vacation across many months.
+      Table~\ref{tab:balance} reports the full metric set for the exact (Gurobi) vacation assignment and Table~\ref{tab:balance_xpress} for the exact (Xpress) one. The two engines agree closely: vacation is near-proportional across lines (Gini $0.026$ to $0.029$) and essentially identical across qualification groups (between-group Gini $\le 0.005$ by primary and held qualification). Across the year the daily and per-working-day rates are even (Gini $0.025$ to $0.030$); the raw \emph{monthly} Gini is larger ($0.087$) only because months differ in length, and it drops to $0.025$ once normalized by working days. The Herfindahl mean of $0.109$ (against the ideal $0.083=1/12$) confirms each line spreads its vacation across many months.
 
       \begin{table}[t]
          \centering
@@ -475,6 +489,30 @@ The notation used throughout is collected in Table~\ref{tab:notation} of Appendi
          \quad monthly per working day     & 27.156 & [25.13, 28.94] & 0.025 & 0.044 \\
          \multicolumn{5}{l}{\emph{Per bid line (month Herfindahl)}}\\
          \quad month concentration $H_\ell$ & 0.109 & [0.087, 0.156] & 0.056 & 0.103 \\
+         \bottomrule
+         \end{tabular}
+      \end{table}
+
+      \begin{table}[t]
+         \centering
+         \caption{Vacation balance metrics for the exact (Xpress) assignment. All columns are dispersion measures where $0$ is best. Between-group rows apply the measures to the vector of group means.}
+         \label{tab:balance_xpress}
+         \begin{tabular}{lrrrr}
+         \toprule
+         Dimension & Mean & Range & Gini & CV \\
+         \midrule
+         \multicolumn{5}{l}{\emph{Across bid lines (vacation days per line)}}\\
+         \quad overall                     & 19.687 & [17, 22] & 0.026 & 0.048 \\
+         \quad between primary groups      & 19.706 & [19.50, 20.00] & 0.004 & 0.008 \\
+         \quad between held groups         & 19.687 & [19.61, 19.80] & 0.002 & 0.003 \\
+         \multicolumn{5}{l}{\emph{Across the year (vacations per bucket)}}\\
+         \quad daily                       & 27.008 & [25, 29] & 0.030 & 0.052 \\
+         \quad weekly                      & 188.538 & [174, 202] & 0.026 & 0.045 \\
+         \quad monthly (raw)               & 754.154 & [314, 869] & 0.087 & 0.201 \\
+         \quad weekly per working day      & 27.014 & [25.00, 29.00] & 0.025 & 0.044 \\
+         \quad monthly per working day     & 27.156 & [25.13, 28.94] & 0.025 & 0.044 \\
+         \multicolumn{5}{l}{\emph{Per bid line (month Herfindahl)}}\\
+         \quad month concentration $H_\ell$ & 0.109 & [0.09, 0.15] & 0.058 & 0.105 \\
          \bottomrule
          \end{tabular}
       \end{table}
