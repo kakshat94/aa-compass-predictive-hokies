@@ -7,6 +7,7 @@
 \usepackage{amssymb}
 \usepackage{dsfont}
 \usepackage{booktabs}
+\usepackage{longtable}
 \usepackage{url}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
@@ -411,14 +412,23 @@ The notation used throughout is collected in Table~\ref{tab:notation} of Appendi
 % ========================================================================== %
    Table~\ref{tab:notation} lists every symbol used in the manuscript, grouped into sets and indices, parameters, and decision variables.
 
-   \begin{table}[ht]
-      \centering
+   \begin{longtable}{@{}l p{0.68\textwidth}@{}}
       \caption{Notation: sets and indices, then parameters, then decision variables.}
-      \label{tab:notation}
-      \begin{tabular}{@{}l p{0.68\textwidth}@{}}
+      \label{tab:notation}\\
       \toprule
       Symbol & Meaning \\
       \midrule
+      \endfirsthead
+      \multicolumn{2}{@{}l}{\small\emph{Table~\ref{tab:notation} (continued)}}\\
+      \toprule
+      Symbol & Meaning \\
+      \midrule
+      \endhead
+      \midrule
+      \multicolumn{2}{@{}r}{\small\emph{Continued on next page}}\\
+      \endfoot
+      \bottomrule
+      \endlastfoot
       \multicolumn{2}{@{}l}{\emph{Sets and indices}}\\
       $\mathcal{W}$, $w$ & set of work centers; a work center index \\
       $\mathcal{S}$, $s$ & set of shifts; a shift index \\
@@ -463,9 +473,7 @@ The notation used throughout is collected in Table~\ref{tab:notation} of Appendi
       $u_{wt}$ & under-coverage at $(w,t)$ \\
       $o_{wt}$ & over-coverage at $(w,t)$ \\
       $\nu_{\ell t}$ & 1 if line $\ell$ is on vacation on date $t$, else 0 \\
-      \bottomrule
-      \end{tabular}
-   \end{table}
+   \end{longtable}
 
 % ========================================================================== %
 \section{Qualification assignment algorithms}\label{app:quals}
