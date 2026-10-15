@@ -38,10 +38,10 @@ class ProjectConfig:
     ) -> Dict[str, Dict[str, Any]]:
         """
         Parses Demand.csv and params.yaml to generate date sets for each WorkCenter:
-          - 'demand_start_window': 30-day window from start date [List[str]]
-          - 'training_optimizer': List of lists where each inner list corresponds 
-                                  to dates in a specific TrainingMonthOptimizer month [List[List[str]]]
-          - 'training_month': List of lists corresponding to TrainingMonths [List[List[str]]]
+        - 'demand_days': 30-day window from start date [List[str]]
+        - 'training_optimizer': List of lists where each inner list corresponds 
+                                to dates in a specific TrainingMonthOptimizer month [List[List[str]]]
+        - 'training_days': List of lists corresponding to TrainingMonths [List[List[str]]]
         """
         params = cls.load_parameters(yaml_path)
         

@@ -1,6 +1,7 @@
 import os
 import pandas as pd
 import numpy as np
+from collections import Counter, defaultdict
 from datetime import datetime, timedelta
 from typing import Dict, Tuple, List, Any
 
@@ -19,6 +20,11 @@ class SupplyGenerator:
         'MIDNIGHT': {'start': '21:00:00', 'end': '05:00:00', 'length': 8, 'code': 'MD'}
     }
 
+    # tech_id block convention (Data Specification section 4.2)
+    CORE = ["Domestic", "Latin", "Europe", "Pacific"]
+    SPEC = ["ATC", "ROC", "CHF", "OC"]
+    SHIFTS = ["MORNING", "EVENING", "MIDNIGHT"]
+
     SUPPLY_COLUMNS = [
         'INDEX', 'MAJOR_WORK_TYPE', 'START_TIME', 'EMPLOYEE_TITLE', 'WORK_CENTER_ID',
         'CONTRACTOR_FLAG', 'CLUSTER', 'EMPLOYEE_WORK_CENTER_ID', 'TECH_ID', 'END_TIME',
@@ -29,6 +35,23 @@ class SupplyGenerator:
 
     def __init__(self, coverage_vectors: Dict):
         self.coverage_vectors = coverage_vectors
+
+    @staticmethod
+    def assign_tech_ids(lines) -> Dict[int, Tuple[str, str]]:
+        """lines: iterable of (primary_work_center, shift_type) for every bid line you create.
+        Returns {tech_id: (work_center, shift)} following DS section 4.2."""
+        counts = Counter(lines)
+        ids, nxt = {}, 100000
+        for wc in SupplyGenerator.CORE:
+            for sh in SupplyGenerator.SHIFTS:
+                for _ in range(counts[(wc, sh)]):
+                    ids[nxt] = (wc, sh); nxt += 1
+        nxt = 9100000
+        for wc in SupplyGenerator.SPEC:
+            for sh in SupplyGenerator.SHIFTS:
+                for _ in range(counts[(wc, sh)]):
+                    ids[nxt] = (wc, sh); nxt += 1
+        return ids
 
     @staticmethod
     def _format_date(dt: datetime) -> str:
@@ -45,6 +68,32 @@ class SupplyGenerator:
         all_regular_rows: List[Dict] = []
         all_special_training_rows: List[Dict] = []
         all_standard_training_rows: List[Dict] = []
+
+        # Pass A: collect every selected bidline across all shift models.
+        selected: List[Tuple[str, str, str, str]] = []  # (shift_type, wc, num_id, off_str)
+        for shift_key, model in orch_models.items():
+            st = shift_key.upper()
+            if st not in self.SHIFT_SCHEDULES:
+                continue
+            for (wc, num_id, off_str), var in model.X.items():
+                if var.X > 0.5:
+                    selected.append((st, wc, num_id, off_str))
+
+        # Assign DS section 4.2 integer tech ids once over the whole solution.
+        ids = self.assign_tech_ids([(wc, st) for st, wc, *_ in selected])
+        pool: Dict[Tuple[str, str], List[int]] = defaultdict(list)
+        for tid, group in ids.items():
+            pool[group].append(tid)
+        for group in pool.values():
+            group.sort()
+        used: Dict[Tuple[str, str], int] = defaultdict(int)
+        tech_id_of: Dict[Tuple[str, str, str, str], int] = {}
+        for st, wc, num_id, off_str in selected:
+            group = (wc, st)
+            if group not in pool:
+                raise ValueError(f"No DS section 4.2 id block for work center/shift {group}")
+            tech_id_of[(st, wc, num_id, off_str)] = pool[group][used[group]]
+            used[group] += 1
 
         for shift_key, model in orch_models.items():
             shift_type = shift_key.upper()
@@ -67,10 +116,12 @@ class SupplyGenerator:
             # Step 1: Populate regular records
             for (wc, num_id, off_str), val in X_dict.items():
                 if val > 0.5:
-                    wc_prefix = wc[0].upper()
-                    num_code = num_id.replace('Number', 'N')
-                    off_code = off_str.replace('Offset', 'O')
-                    tech_id = f"{wc_prefix}_{num_code}_{off_code}_{shift_code}"
+                    # Old string tech id — superseded by the DS section 4.2 integer ids below.
+                    # wc_prefix = wc[0].upper()
+                    # num_code = num_id.replace('Number', 'N')
+                    # off_code = off_str.replace('Offset', 'O')
+                    # tech_id = f"{wc_prefix}_{num_code}_{off_code}_{shift_code}"
+                    tech_id = tech_id_of[(shift_type, wc, num_id, off_str)]
 
                     cov_vec = self.coverage_vectors.get(off_str, {})
 
@@ -157,6 +208,32 @@ class SupplyGenerator:
         master_regular_df.to_csv(regular_out_path, index=False)
         master_standard_training_df.to_csv(standard_training_out_path, index=False)
         master_special_training_df.to_csv(special_training_out_path, index=False)
+
+        """ Uncomment if want it to be applied in the pipeline
+        # --- qualification + training + vacation pipeline (members/daniel) ---
+        # Runs Phase 1-3 (primary/secondary qualifications), Then, the random
+        # training assignment, THEN the vacation assignment. Training needs the
+        # full working-day roster (regular + both training files) plus the
+        # qualifications; vacation then runs on the roster left after training.
+        # Invoked once, here, after the three files are written; it writes:
+        #   outputs/Supply_Regular_qualified.csv
+        #   outputs/standard_training_data.csv / outputs/standard_training_scheduled_df.csv
+        #   outputs/intl_special_training_data.csv / outputs/intl_special_training_scheduled_df.csv
+        #   outputs/vacation_data.csv / outputs/supply_data_after_vacation_shrinkage.csv
+        # This supersedes the qualification-only call below.
+        from members.daniel.main import run_pipeline
+        run_pipeline(
+            regular_path=regular_out_path,
+            standard_training_path=standard_training_out_path,
+            special_training_path=special_training_out_path,
+        )
+
+        # --- qualification pipeline only (Phase 1-3, members/daniel) ---
+        # from members.daniel.qualification_mapper import apply_qualification_pipeline
+        # apply_qualification_pipeline(
+        #     regular_out_path, standard_training_out_path, special_training_out_path
+        # )
+        """
 
         print(f"\n================ EXPORT COMPLETE ================")
         print(f"Total Regular Shifts  : {len(master_regular_df):,} -> Saved to '{regular_out_path}'")

@@ -140,11 +140,11 @@ def verify_training(
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Verify the training solution.")
-    parser.add_argument("--regular", default="data/Supply_Regular_qualified.csv")
-    parser.add_argument("--standard-data", default="data/standard_training_data.csv")
-    parser.add_argument("--intl-data", default="data/intl_special_training_data.csv")
-    parser.add_argument("--standard-scheduled", default="data/standard_training_scheduled_df.csv")
-    parser.add_argument("--intl-scheduled", default="data/intl_special_training_scheduled_df.csv")
+    parser.add_argument("--regular", default="outputs/Supply_Regular_qualified.csv")
+    parser.add_argument("--standard-data", default="outputs/standard_training_data.csv")
+    parser.add_argument("--intl-data", default="outputs/intl_special_training_data.csv")
+    parser.add_argument("--standard-scheduled", default="outputs/standard_training_scheduled_df.csv")
+    parser.add_argument("--intl-scheduled", default="outputs/intl_special_training_scheduled_df.csv")
     parser.add_argument("--params", default="members/akshat/params.yaml")
     parser.add_argument("--class-size", type=int, default=CLASS_SIZE_DEFAULT)
     args = parser.parse_args()

@@ -1,3 +1,7 @@
+"""
+Plot demand data.
+"""
+
 import argparse
 import json
 import os

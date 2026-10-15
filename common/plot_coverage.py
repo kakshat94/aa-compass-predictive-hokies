@@ -1,3 +1,6 @@
+"""
+Plot coverage data.
+"""
 import argparse
 import json
 import os

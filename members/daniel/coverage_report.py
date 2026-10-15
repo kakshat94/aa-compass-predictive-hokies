@@ -31,11 +31,11 @@ import pandas as pd  # noqa: E402
 from common.coverage_report import CoverageReporter  # noqa: E402
 
 DEMAND_PATH = "data/Demand.csv"
-REGULAR_PATH = "data/Supply_Regular_qualified.csv"
-STANDARD_TRAINING_PATH = "data/standard_training_data.csv"
-INTL_TRAINING_PATH = "data/intl_special_training_data.csv"
-VACATION_PATH = "data/vacation_data.csv"
-EFFECTIVE_PATH = "data/supply_data_after_vacation_shrinkage.csv"
+REGULAR_PATH = "outputs/Supply_Regular_qualified.csv"
+STANDARD_TRAINING_PATH = "outputs/standard_training_data.csv"
+INTL_TRAINING_PATH = "outputs/intl_special_training_data.csv"
+VACATION_PATH = "outputs/vacation_data.csv"
+EFFECTIVE_PATH = "outputs/supply_data_after_vacation_shrinkage.csv"
 
 
 def _key_set(df: pd.DataFrame) -> set:

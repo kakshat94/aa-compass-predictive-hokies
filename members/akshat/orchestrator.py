@@ -1,3 +1,8 @@
+"""
+Orchestrator class for managing workforce optimization models.
+It coordinates demand data, work center day sets, and bidline generation.
+"""
+
 import xpress as xp
 import gurobipy as gp
 import pandas as pd
@@ -7,6 +12,10 @@ from members.akshat.model import WorkforceOptimizer
 from members.akshat.bidline import BidlineGenerator
 
 class Orchestrator:
+    """
+    Orchestrator class for managing workforce optimization models.
+    It coordinates demand data, work center day sets, and bidline generation.
+    """
     def __init__(self, demand_df: pd.DataFrame, workcenter_day_sets: dict):
         self.demand_df = demand_df.copy()
         self.demand_df['SHIFT_DATE'] = pd.to_datetime(self.demand_df['SHIFT_DATE']).dt.strftime('%Y-%m-%d')
@@ -20,16 +29,16 @@ class Orchestrator:
 
 
     def get_max_bidlines(self) -> Dict:
-            max_bidlines = {}
-            for wc in self.wc_day_sets.keys():
-                max_bidlines[wc] = {}
-                max_d = self.demand_df[self.demand_df['WORK_CENTER']==wc].groupby('SHIFT_TYPE')['DEMAND'].max().to_dict()
-                for shift, value in max_d.items():
-                    q, r = divmod(value, 8)
-                    max_bidlines[wc][shift] = 15*q + 2*r
-                
+        max_bidlines = {}
+        for wc in self.wc_day_sets.keys():
+            max_bidlines[wc] = {}
+            max_d = self.demand_df[self.demand_df['WORK_CENTER']==wc].groupby('SHIFT_TYPE')['DEMAND'].max().to_dict()
+            for shift, value in max_d.items():
+                q, r = divmod(value, 8)
+                max_bidlines[wc][shift] = 15*q + 2*r
             
-            return max_bidlines
+        
+        return max_bidlines
 
 
     def initiate_models(self):
@@ -61,7 +70,7 @@ class Orchestrator:
             if j=='MIDNIGHT':
                 for wc in w_ctrs:
                     demand[wc] = {d: self.demand_df[(self.demand_df['SHIFT_TYPE']==j) & (self.demand_df['WORK_CENTER']==wc) & (self.demand_df['SHIFT_DATE']==d)]['DEMAND'].values[0]
-                                  for d in coverage_days[wc]}
+                                for d in coverage_days[wc]}
                 self.models[j] = WorkforceOptimizer(j, demand, coverage_days, all_training_days, self.wc_day_sets, self.max_bidlines, self.coverage_vectors, gp.Env())
                 self.models[j].build_model()
                 self.models[j].model.optimize()

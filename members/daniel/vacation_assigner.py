@@ -15,8 +15,8 @@ Implements the rules in COMPASS_Phase_II_Problem_Statement.md and the helpers in
         from bid lines that already have many vacation days).
 
 Writes:
-    data/vacation_data.csv                    (25-column bid line schema)
-    data/supply_data_after_vacation_shrinkage.csv
+    outputs/vacation_data.csv                    (25-column bid line schema)
+    outputs/supply_data_after_vacation_shrinkage.csv
 """
 
 from __future__ import annotations
@@ -130,11 +130,12 @@ def assign_vacation(
 def write_vacation_outputs(
     effective_supply: pd.DataFrame,
     vacation_data: pd.DataFrame,
-    data_dir: str = "data",
+    output_dir: str = "outputs",
 ) -> Dict[str, str]:
+    os.makedirs(output_dir, exist_ok=True)
     paths = {
-        "vacation": os.path.join(data_dir, "vacation_data.csv"),
-        "effective_supply": os.path.join(data_dir, "supply_data_after_vacation_shrinkage.csv"),
+        "vacation": os.path.join(output_dir, "vacation_data.csv"),
+        "effective_supply": os.path.join(output_dir, "supply_data_after_vacation_shrinkage.csv"),
     }
     vacation_data.to_csv(paths["vacation"], index=False)
     effective_supply.to_csv(paths["effective_supply"], index=False)
@@ -147,14 +148,14 @@ def run_vacation(
     base_vacation: int = BASE_VACATION_DEFAULT,
     max_variable: int = MAX_VARIABLE_DEFAULT,
     seed: int = VACATION_SEED_DEFAULT,
-    data_dir: str = "data",
+    output_dir: str = "outputs",
     write: bool = True,
 ):
     """Scale the volume, assign vacation, optionally write CSVs. Returns a bundle dict."""
     scaled_volume = scale_demand_volume(volume_path, base_vacation, max_variable)
     totals = quota_by_date(scaled_volume, base_vacation)
     effective, vacation = assign_vacation(regular_df, totals, base_vacation=base_vacation, seed=seed)
-    paths = write_vacation_outputs(effective, vacation, data_dir) if write else {}
+    paths = write_vacation_outputs(effective, vacation, output_dir) if write else {}
     return {
         "scaled_volume": scaled_volume,
         "effective_supply": effective,

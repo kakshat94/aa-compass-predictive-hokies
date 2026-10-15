@@ -33,7 +33,7 @@
 \author[1,3]{Jiayi Xue}
 
 \begin{abstract}
-   American Airlines plans its flight-dispatcher workforce a full year ahead, deciding how many bid lines to create across eight work centers and three shifts and how to schedule them so that every desk is staffed without carrying unnecessary staff. Phase I poses the pure bid line covering problem. Phase II adds \emph{shrinkage}: mandatory training and vacation that consume scheduled working days, together with the rules that govern it. We report a two-part solution. For Phase I we exploit the exact separability of the problem into independent work-center/shift covering model and solve the small integer programs exactly. For Phase II, we observed that the only couplings introduced are per-day shared capacities (the 12-seat training class and the daily vacation quota) adding to the addition of possible flex days. We build an exact mixed-integer model that places each mandatory training day where it does least damage to coverage. The training model decomposes, without loss, into one small program per (shift, month) pair, which is solved using Gurobi and Xpress solvers. On the competition instance the exact training layer reduces under-coverage from 4,417 to 4,221 seat-days and surplus supply from 6,050 to 5,861 relative to a random placement.
+   American Airlines plans its flight-dispatcher workforce a full year ahead, deciding how many bid lines to create across eight work centers and three shifts and how to schedule them so that every desk is staffed without carrying unnecessary staff. Phase I poses the pure bid line covering problem. Phase II adds \emph{shrinkage}: mandatory training and vacation that consume scheduled working days, together with the rules that govern it. We report a two-part solution. For Phase I we exploit the exact separability of the problem into independent work-center/shift covering model and solve the small integer problems exactly. For Phase II, we observed that the only couplings introduced are per-day shared capacities (the 12-seat training class and the daily vacation quota) adding to the addition of possible flex days. We build an exact mixed-integer model that places each mandatory training day where it does least damage to coverage. The training model decomposes, without loss, into one small problem per (shift, month) pair, which is solved using Gurobi and Xpress solvers. On the competition instance the exact training layer reduces under-coverage from 4,503 to 4,174 seat-days and surplus supply from 6,136 to 5,807 relative to a random placement.
 \end{abstract}
 
 %\begin{keyword}
@@ -52,10 +52,10 @@ The competition releases the problem in two phases. Phase I is the core scheduli
 This manuscript documents the model we implemented:
 \begin{enumerate}
    \item for Phase I, we exploit the exact separability of the problem into independent work-center/shift covering models, which decomposes into 24 independent cyclic-covering problems, for this small problems an exact integer model is implemented;
-   \item an exact Phase II training model that chooses training days to minimize coverage damage subject to the mandatory-training, one-per-day and shared class-size rules, with a lossless decomposition into (shift, month) programs.
+   \item an exact Phase II training model that chooses training days to minimize coverage damage subject to the mandatory-training, one-per-day and shared class-size rules, with a lossless decomposition into (shift, month) problems.
 \end{enumerate}
 
-The notation used throughout is collected in Table~\ref{tab:notation} of Appendix~\ref{app:notation}, grouped into sets and indices, parameters, and decision variables.
+The notation used throughout is collected in Table~\ref{tab:notation} of \ref{app:notation}, grouped into sets and indices, parameters, and decision variables.
 
 % ========================================================================== %
 \section{Problem description}
@@ -172,7 +172,7 @@ The notation used throughout is collected in Table~\ref{tab:notation} of Appendi
 \section{Phase I methodology}
 % ========================================================================== %
    \subsection{Separability and the offset-covering structure}
-      A bid line is fixed to one work center and one shift, and coverage constraints never couple two work centers. The Phase I problem therefore decomposes into 24 independent subproblems, one per work-center/shift combination. Within a subproblem the only real decision is how many bid lines to create at each of the 15 offsets. With $n_\kappa$ the number of lines created at offset $\kappa$ ($\kappa \in \{0,\ldots,14\}$) and $\alpha_{\kappa\delta}\in\{0,1\}$ indicating whether offset $\kappa$ works cycle position $\delta$ ($\delta \in \{0,\ldots,14\}$), the base model is the integer program
+      A bid line is fixed to one work center and one shift, and coverage constraints never couple two work centers. The Phase I problem therefore decomposes into 24 independent subproblems, one per work-center/shift combination. Within a subproblem the only real decision is how many bid lines to create at each of the 15 offsets. With $n_\kappa$ the number of lines created at offset $\kappa$ ($\kappa \in \{0,\ldots,14\}$) and $\alpha_{\kappa\delta}\in\{0,1\}$ indicating whether offset $\kappa$ works cycle position $\delta$ ($\delta \in \{0,\ldots,14\}$), the base model is the integer program:
       \begin{equation}
          \min \; \sum\limits_{\kappa=0}^{14} n_\kappa
          \quad\text{s.t.}\quad
@@ -180,7 +180,7 @@ The notation used throughout is collected in Table~\ref{tab:notation} of Appendi
          \qquad n_\kappa \in \mathbb{Z}_{\ge 0},
          \label{eq:phase1}
       \end{equation}
-      a cyclic covering problem of the classical days-off/tour-scheduling family \citep{baker1974scheduling,alfares2004survey,ernst2004staff}. We enumerate the offset vectors directly rather than encode the cycle as constraints, so the model contains only 15 integer variables per subproblem.
+      This is a cyclic covering problem of the classical days-off/tour-scheduling family \citep{baker1974scheduling,alfares2004survey,ernst2004staff}. We enumerate the offset vectors directly rather than encode the cycle as constraints, so the model contains only 15 integer variables per subproblem.
 
 % ========================================================================== %
 \section{Phase II methodology}
@@ -188,7 +188,7 @@ The notation used throughout is collected in Table~\ref{tab:notation} of Appendi
    The Phase II rules introduce only two per-day shared capacities: the training class of 12 seats per (day, shift) across all work centers, and the daily vacation quota of 25 to 29 dispatchers across all shifts and work centers. The daily demand, the offset calendar, and the working-day restriction all stay per-slot, which shapes the model below.
 
    \subsection{Qualification assignment}
-   We implement the supplied three-step pseudocode: rank historical employees by qualification breadth and map them onto bid lines; build the historical co-occurrence table $P(\text{holds }y \mid \text{primary}=x)$; and sample secondary qualifications in those proportions. The resulting qualification mix fixes the training load and hence the shrinkage. This stage is preprocessing and does not enter the optimization; the full pseudocode is given as Algorithms~\ref{alg:map}--\ref{alg:sprinkle} in Appendix~\ref{app:quals}. The corresponding table with values to match (proportion) is shown below in Table~\ref{tab:prevalence_primary_secondary_quals}.
+   We implement the supplied three-step pseudocode: rank historical employees by qualification breadth and map them onto bid lines; build the historical co-occurrence table $P(\text{holds }y \mid \text{primary}=x)$; and sample secondary qualifications in those proportions. The resulting qualification mix fixes the training load and hence the shrinkage. This stage is preprocessing and does not enter the optimization; the full pseudocode is given as Algorithms~\ref{alg:map}--\ref{alg:sprinkle} in \ref{app:quals}. The corresponding table with values to match (proportion) is shown below in Table~\ref{tab:prevalence_primary_secondary_quals}.
 
    \begin{table}[h!]
       \centering
@@ -230,11 +230,11 @@ The notation used throughout is collected in Table~\ref{tab:notation} of Appendi
    Constraint \eqref{eq:mod1:con6} imposes integrality on $z_{wt}$ and nonnegativity on $u_{wt}$ and $o_{wt}$, and constraint \eqref{eq:mod1:con7} fixes $y_{rt}$ as binary.
 
    The penalties $p^{under}$ and $p^{surplus}$ highlight an asymmetric treatment of under-coverage and surplus. 
-   %Because $z_{wt}$ is integer in \eqref{eq:mod1:con4} and the coverage terms in \eqref{eq:mod1:con5} make the objective convex, \eqref{eq:mod1:obj} is an exact convex-cost assignment program: training is pushed onto slack-rich, low-demand days and away from cells that are already tight. 
+   %Because $z_{wt}$ is integer in \eqref{eq:mod1:con4} and the coverage terms in \eqref{eq:mod1:con5} make the objective convex, \eqref{eq:mod1:obj} is an exact convex-cost assignment problem: training is pushed onto slack-rich, low-demand days and away from cells that are already tight. 
    %This objective mirrors the explicit treatment of excess off-days and idle time in the scheduling literature (Section~\ref{sec:lit}).
 
    \begin{remark}[Lossless (shift, month) decomposition] 
-      Training months never share calendar dates. The class cap, the per-bid line-per-day rule, and coverage are all per-date constraints, so nothing couples two months and the union of the per-(shift, month) optima is the global optimum. We solve one program per (shift, month) pair.
+      Training months never share calendar dates. The class cap, the per-bid line-per-day rule, and coverage are all per-date constraints, so nothing couples two months and the union of the per-(shift, month) optima is the global optimum. We solve one MIP per (shift, month) pair.
    \end{remark}
 
    \subsection{Random placement}\label{subsec:random_placement}
@@ -462,16 +462,17 @@ The notation used throughout is collected in Table~\ref{tab:notation} of Appendi
 % ========================================================================== %
 \section{Computational experiments} \label{sec:computational_experiments}
 % ========================================================================== %
-   \paragraph{Implementation} Every number reported in Section~\ref{sec:results} comes from one reproducible pipeline that runs in five stages: (1) it reads the three supply files (the regular roster plus the two training files); (2) it assigns each bid line its primary and secondary qualifications with the supplied three-phase procedure (Appendix~\ref{app:quals}); (3) it assigns training with either a random placement or the exact BLT model; (4) it assigns vacation using the operational-volume quota; and (5) it scores the effective supply (the roster less training and vacation) against demand with the shared evaluator. The training layer is selected by a flag (\texttt{---random} or \texttt{---exact-mip}); the exact layer is solver-agnostic (\texttt{---solver gurobi} or \texttt{---solver xpress}) through a thin adapter that maps a common modeling interface onto the Gurobi and Xpress Python APIs \citep{gurobi2026,xpress2026}. All random seeds are fixed, so the results reproduce from the supplied data.
+   \paragraph{Implementation} Every result reported in Section~\ref{sec:results} comes from one reproducible pipeline that runs in five stages: (1) it reads the three supply files (the regular roster plus the two training files); (2) it assigns each bid line its primary and secondary qualifications with the supplied three-phase procedure (\ref{app:quals}); (3) it assigns training with either a random placement or the exact bid lines with training (or, BLT) model; (4) it assigns vacation using the operational-volume quota; and (5) it scores the effective supply (the roster less training and vacation) against demand with the shared evaluator. The training layer is selected by a flag (\texttt{---random} or \texttt{---exact-mip}); the exact layer is solver-agnostic (\texttt{---solver gurobi} or \texttt{---solver xpress}) through a thin adapter that maps a common modeling interface onto the Gurobi and Xpress Python APIs \citep{gurobi2026,xpress2026}. All random seeds are fixed, so the results reproduce from the supplied data.
 
-   \paragraph{Validation} Every run is checked against the competition rules by an independent verifier: each held qualification is trained exactly once per eligible month; training falls on a working day, never twice on the same day, and never on a flex or vacation day; and no more than 12 trainees occupy any (date, shift). The shrinkage files are also reconciled (regular $=$ effective $+$ vacation; vacation $\subseteq$ roster; training disjoint from roster and vacation). All checks pass for both solvers.
+   \paragraph{Validation} Every run is checked against the competition rules by an verifier script: each held qualification is trained exactly once per eligible month; training falls on a working day, never twice on the same day, and never on a flex or vacation day; and no more than 12 trainees occupy any (date, shift). The shrinkage files are also reconciled (regular $=$ effective $+$ vacation; vacation $\subseteq$ roster; training disjoint from roster and vacation). All checks pass for both solvers.
 
 % ========================================================================== %
 \section{Results} \label{sec:results}
 % ========================================================================== %
 
    \subsection{Phase I and training load}
-      \paragraph{Roster and slack} Our Phase I model creates 498 bid lines. Before any shrinkage, the qualified roster versus demand shows 668 under-covered seat-days (a rounding residual of integer bid line sizing) and 12,033 surplus seat-days spread over 4,511 cells, of which 2,000 have slack exactly 1. This slack distribution is the main lever for Phase II: placing a removal on a slack-rich cell costs only surplus, while placing it on a slack-1 cell opens a gap.
+      \paragraph{Roster and slack} Our Phase I model creates 498 bid lines. Before any shrinkage, the qualified roster versus demand shows 72 under-covered seat-days (a rounding residual of integer bid line sizing) and 13,538 surplus seat-days spread over 4,949 cells, of which 2,178 have slack exactly 1. 
+      %This slack distribution is the main lever for Phase II: placing a removal on a slack-rich cell costs only surplus, while placing it on a slack-1 cell opens a gap.
 
       \paragraph{Training load} With 498 lines the roster needs 2,103 training seat-days per year, concentrated in three synchronized peak months (February, May and September, when every line trains for Domestic: 498 seats each) plus March (250), October (210), April (90) and November (59). Because the class cap is shared per (day, shift), peak utilization is about 58\%, so the cap rarely binds globally and the question is \emph{where} to place the removals rather than whether they fit.
 
@@ -479,7 +480,7 @@ The notation used throughout is collected in Table~\ref{tab:notation} of Appendi
    We compare two training layers and, for each, report supply, coverage and runtime:
    \begin{itemize}
       \item \textbf{Random placement} (baseline): each requirement gets a uniformly random eligible working day, subject to the mandatory-training, one-per-line-per-day and class-size rules (Section~\ref{subsec:random_placement}).
-      \item \textbf{Exact BLT model}: the coverage-minimizing mixed-integer program of Section~\ref{subsec:exact_training}, solved to proven optimality by each of two engines:
+      \item \textbf{Exact bid lines with training (BLT) model}: the coverage-minimizing mixed-integer program of Section~\ref{subsec:exact_training}, solved to proven optimality by each of two solvers:
       \begin{itemize}
          \item Gurobi;
          \item FICO Xpress.
@@ -490,7 +491,7 @@ The notation used throughout is collected in Table~\ref{tab:notation} of Appendi
 
    \begin{table}[t]
       \centering
-      \caption{Effective-supply coverage (shared evaluator) and runtime. Lower is better for both under- and over-coverage; ``fill rate'' is capped at 100\% by the evaluator and is not discriminative. ``Solver'' is the \emph{alone} MIP solve time over the 21 (shift, month) programs (not applicable to the random layer); ``ETE'' (end-to-end) is the full pipeline wall-clock on the experimental machine.}
+      \caption{Effective-supply coverage (shared evaluator) and runtime. Lower is better for both under- and over-coverage; ``fill rate'' is capped at 100\% by the evaluator and is not discriminative. ``Solver'' is the \emph{alone} MIP solve time over the 21 (shift, month) subproblems (not applicable to the random layer); ``ETE'' (end-to-end) is the full pipeline wall-clock on the experimental machine.}
       \label{tab:coverage}
       \small
       \setlength{\tabcolsep}{4pt}
@@ -498,21 +499,22 @@ The notation used throughout is collected in Table~\ref{tab:notation} of Appendi
       \toprule
       Training layer & Supply & Under & Over & Fill rate & Solver (s) & ETE (s) \\
       \midrule
-      Random placement  & 83,885 & 4,417 & 6,050 & 100.0\% & --- & 3.66 \\
-      BLT (Gurobi)      & 83,888 & 4,230 & 5,866 & 100.0\% & 0.18 & 3.72 \\
-      BLT (FICO Xpress) & 83,892 & 4,221 & 5,861 & 100.0\% & 0.27 & 5.70 \\
+      Random placement  & 83,885 & 4,503 & 6,136 & 100.0\% & --- & 4.49 \\
+      BLT (Gurobi)      & 83,888 & 4,209 & 5,845 & 100.0\% & 0.19 & 4.23 \\
+      BLT (FICO Xpress) & 83,885 & 4,174 & 5,807 & 100.0\% & 0.28 & 5.46 \\
       \bottomrule
       \end{tabular}
    \end{table}
 
-   \paragraph{Training-stage objective} Both engines attain the same optimal training objective, $\sum (p^{under}\,u + p^{surplus}\,o) = 49,360$ over the 21 (shift, month) programs, each solved to proven optimality. The solver time \emph{alone} is 0.18~s with Gurobi and 0.27~s with Xpress, and the end-to-end pipeline takes 3.7~s (random and Gurobi) to 5.7~s (Xpress) on the experimental machine\footnote{Macbook air M4 16gb of RAM and running python scripts} (Table~\ref{tab:coverage}). The identity of the totals across engines and across the single-shift and (shift, month) formulations confirms the decomposition is exact.
+   \paragraph{Training-stage objective} Both solvers attain the same optimal training objective, $\sum (p^{under}\,u + p^{surplus}\,o) = 49,480$ over the 21 (shift, month) subproblems, each solved to proven optimality. The solver time \emph{alone} is 0.19~s with Gurobi and 0.28~s with Xpress, and the end-to-end pipeline takes 4.2~s (Gurobi) to 5.5~s (Xpress) on the experimental machine\footnote{Macbook air M4 16GB of RAM and running Python scripts} (Table~\ref{tab:coverage}). 
+   %The identity of the totals across solvers and across the single-shift and (shift, month) formulations confirms the decomposition is exact.
 
-   \paragraph{Improvement} Relative to random placement, the BLT layer reduces under-coverage by 187 to 196 seat-days (4.2 to 4.4\%) and surplus supply by 189 seat-days (3.1\%). The gain comes from relocating mandatory training days onto slack-rich, low-demand days; the number of bid lines is unchanged. The residual under-coverage is dominated by the interaction of vacation with the roster and by the rounding residual of integer bid line sizing, not by training placement.
+   \paragraph{Improvement} Relative to random placement, the BLT layer reduces under-coverage by 294 to 329 seat-days (6.5 to 7.3\%) and surplus supply by 291 to 329 seat-days (4.7 to 5.4\%). The gain comes from relocating mandatory training days onto low-demand days; the number of bid lines is unchanged. The residual under-coverage is dominated by the interaction of vacation with the roster and by the rounding residual of integer bid line sizing, not by training placement.
 
    \subsection{Vacation results}\label{subsec:vacation_results}
       \paragraph{Vacation assignment} The procedure assigns 9,804 vacation line-days across 363 dates, with the daily count exactly in $[25,29]$ (mean $27.0$) and every rule respected.
 
-      \paragraph{Vacation balance} Table~\ref{tab:balance} reports the full metric set for the exact (Gurobi) vacation assignment and Table~\ref{tab:balance_xpress} for the exact (Xpress) one. The two engines agree closely: vacation is near-proportional across lines (Gini $0.026$ to $0.029$) and essentially identical across qualification groups (between-group Gini $\le 0.005$ by primary and held qualification). Across the year the daily and per-working-day rates are even (Gini $0.025$ to $0.030$); the raw \emph{monthly} Gini is larger ($0.087$) only because months differ in length, and it drops to $0.025$ once normalized by working days. The Herfindahl mean of $0.109$ (against the ideal $0.083=1/12$) confirms each line spreads its vacation across many months.
+      \paragraph{Vacation balance} Table~\ref{tab:balance} reports the full metric set for the exact (Gurobi) vacation assignment and Table~\ref{tab:balance_xpress} for the exact (Xpress) one. The two solvers agree closely: vacation is near-proportional across lines (Gini $0.026$ to $0.027$) and essentially identical across qualification groups (between-group Gini $\le 0.005$ by primary and held qualification). Across the year the daily and per-working-day rates are even (Gini $0.025$ to $0.030$); the raw \emph{monthly} Gini is larger ($0.087$) only because months differ in length, and it drops to $0.025$ once normalized by working days. The Herfindahl mean of $0.109$ (against the ideal $0.083=1/12$) confirms each line spreads its vacation across many months.
 
       \begin{table}[t]
          \centering
@@ -523,9 +525,9 @@ The notation used throughout is collected in Table~\ref{tab:notation} of Appendi
          Dimension & Mean & Range & Gini & CV \\
          \midrule
          \multicolumn{5}{l}{\emph{Across bid lines (vacation days per line)}}\\
-         \quad overall                     & 19.687 & [17, 23] & 0.029 & 0.052 \\
-         \quad between primary groups      & 19.665 & [19.17, 19.96] & 0.005 & 0.011 \\
-         \quad between held groups         & 19.718 & [19.62, 19.84] & 0.002 & 0.003 \\
+         \quad overall                     & 19.687 & [17, 23] & 0.026 & 0.048 \\
+         \quad between primary groups      & 19.718 & [19.38, 19.92] & 0.004 & 0.008 \\
+         \quad between held groups         & 19.660 & [19.46, 19.77] & 0.003 & 0.005 \\
          \multicolumn{5}{l}{\emph{Across the year (vacations per bucket)}}\\
          \quad daily                       & 27.008 & [25, 29] & 0.030 & 0.052 \\
          \quad weekly                      & 188.538 & [174, 202] & 0.026 & 0.045 \\
@@ -533,7 +535,7 @@ The notation used throughout is collected in Table~\ref{tab:notation} of Appendi
          \quad weekly per working day      & 27.014 & [25.00, 29.00] & 0.025 & 0.044 \\
          \quad monthly per working day     & 27.156 & [25.13, 28.94] & 0.025 & 0.044 \\
          \multicolumn{5}{l}{\emph{Per bid line (month Herfindahl)}}\\
-         \quad month concentration $H_\ell$ & 0.109 & [0.087, 0.156] & 0.056 & 0.103 \\
+         \quad month concentration $H_\ell$ & 0.109 & [0.09, 0.17] & 0.055 & 0.101 \\
          \bottomrule
          \end{tabular}
       \end{table}
@@ -547,9 +549,9 @@ The notation used throughout is collected in Table~\ref{tab:notation} of Appendi
          Dimension & Mean & Range & Gini & CV \\
          \midrule
          \multicolumn{5}{l}{\emph{Across bid lines (vacation days per line)}}\\
-         \quad overall                     & 19.687 & [17, 22] & 0.026 & 0.048 \\
-         \quad between primary groups      & 19.706 & [19.50, 20.00] & 0.004 & 0.008 \\
-         \quad between held groups         & 19.687 & [19.61, 19.80] & 0.002 & 0.003 \\
+         \quad overall                     & 19.687 & [17, 22] & 0.027 & 0.050 \\
+         \quad between primary groups      & 19.652 & [19.46, 19.86] & 0.004 & 0.007 \\
+         \quad between held groups         & 19.678 & [19.55, 19.80] & 0.002 & 0.004 \\
          \multicolumn{5}{l}{\emph{Across the year (vacations per bucket)}}\\
          \quad daily                       & 27.008 & [25, 29] & 0.030 & 0.052 \\
          \quad weekly                      & 188.538 & [174, 202] & 0.026 & 0.045 \\
@@ -557,7 +559,7 @@ The notation used throughout is collected in Table~\ref{tab:notation} of Appendi
          \quad weekly per working day      & 27.014 & [25.00, 29.00] & 0.025 & 0.044 \\
          \quad monthly per working day     & 27.156 & [25.13, 28.94] & 0.025 & 0.044 \\
          \multicolumn{5}{l}{\emph{Per bid line (month Herfindahl)}}\\
-         \quad month concentration $H_\ell$ & 0.109 & [0.09, 0.15] & 0.058 & 0.105 \\
+         \quad month concentration $H_\ell$ & 0.109 & [0.09, 0.15] & 0.053 & 0.095 \\
          \bottomrule
          \end{tabular}
       \end{table}
@@ -565,11 +567,9 @@ The notation used throughout is collected in Table~\ref{tab:notation} of Appendi
 % ========================================================================== %
 \section{Discussion}
 % ========================================================================== %
-   \paragraph{Why exactness on tiny models} The Phase I subproblems have 15 integer variables, and the Phase II training programs decompose into small, independent pieces. At these sizes exact integer optimization is both faster and more defensible than LP-rounding heuristics, particularly given that the 15-offset covering relaxation is empirically fractional. In practice this gives a solver-agnostic pipeline that makes its optimal decisions in fractions of a second.
+   \paragraph{The coupling} Phase II breaks Phase I's separability only through per-day shared capacities. Recognizing this reduces the whole shrinkage layer to convex-cost assignment problems and yields the (shift, month) decomposition without any heuristic repair.
 
-   \paragraph{The coupling that matters} Phase II breaks Phase I's separability only through per-day shared capacities. Recognizing this reduces the whole shrinkage layer to convex-cost assignment programs and yields the lossless (shift, month) decomposition, which also sidesteps the row and column limits of a community solver license without any heuristic repair.
-
-   \paragraph{Vacation and future work} Vacation is currently assigned greedily after training. A joint model that co-optimizes vacation and training against coverage, or a conservative sizing of the roster against shrinkage using a robustness budget, is one extension. Column generation over full line plans (offset $+$ flex $+$ vacation $+$ training $+$ qualifications), in the set-partitioning tradition of airline crew scheduling (Section~\ref{sec:lit}), would make the shrinkage layer explicit instead of sequential and is a path to a fully integrated model.
+   \paragraph{Vacation and future work} Vacation is currently assigned greedily after training. A joint model that co-optimizes vacation and training against coverage, or a conservative sizing of the roster against shrinkage using a robustness budget, is one extension. Column generation over full line plans (offset $+$ flex $+$ vacation $+$ training $+$ qualifications), in the set-partitioning tradition of airline crew scheduling \cite{dantzig1960decomposition,vance1997airline,desaulniers2005column}, would make the shrinkage layer explicit instead of sequential and is a path to a fully integrated model.
 
 % ========================================================================== %
 %\section{Conclusion}
@@ -586,8 +586,8 @@ The notation used throughout is collected in Table~\ref{tab:notation} of Appendi
 % ========================================================================== %
    Table~\ref{tab:notation} lists every symbol used in the manuscript, grouped into sets and indices, parameters, and decision variables.
 
-   \begin{longtable}{@{}l p{0.78\textwidth}@{}}
-      \caption{Notation: sets and indices, then parameters, then decision variables.}
+   \begin{longtable}{@{}l p{0.88\textwidth}@{}}
+      \caption{Notation: Sets and indices, then parameters, then decision variables.}
       \label{tab:notation}\\
       \toprule
       Symbol & Meaning \\

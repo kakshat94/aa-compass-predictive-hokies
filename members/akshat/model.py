@@ -18,8 +18,10 @@ class WorkforceOptimizer:
         self.construct_var_sets()
 
     def construct_var_sets(self):
-        self.X_set = [(wc, f"Number{i}", j) for wc in self.max_bidlines.keys() for i in range(self.max_bidlines[wc][self.shift]) for j in self.coverage_vectors.keys()]
-        self.Y_set = [(wc, f"Number{i}", j, k) for wc in self.max_bidlines.keys() for i in range(self.max_bidlines[wc][self.shift]) for j in self.coverage_vectors.keys() for k in list(set(self.coverage_days[wc]) | set(self.training_days))]
+        self.X_set = [(wc, f"Number{i}", j) for wc in self.max_bidlines.keys() for i in range(self.max_bidlines[wc][self.shift]) 
+                        for j in self.coverage_vectors.keys()]
+        self.Y_set = [(wc, f"Number{i}", j, k) for wc in self.max_bidlines.keys() for i in range(self.max_bidlines[wc][self.shift]) 
+                        for j in self.coverage_vectors.keys() for k in list(set(self.coverage_days[wc]) | set(self.training_days))]
     
     def build_model(self):
         """
@@ -63,8 +65,8 @@ class WorkforceOptimizer:
                     (gp.quicksum(self.Y[wc, number, offset, day]
                                  #+ F[wc, number, offset] * (1 - self.coverage_vectors[offset][day])
                                  #- Z[wc, number, offset] * (1 - self.coverage_vectors[offset][day])
-                                 for wc, number, offset in self.X_set)                          
-                     <= 12 for day in self.training_days),
+                                for wc, number, offset in self.X_set)                          
+                    <= 12 for day in self.training_days),
                     name="alltrain"
                 )
 
@@ -108,7 +110,7 @@ class WorkforceOptimizer:
                                         == 0 for (wc, number, offset) in self.X_set if wc==w),
                                     name="special_train_0s"
                                 )
-         
+
                 else:
                     self.special_train[w] = {}
                     special_train_day = list({item for sublist in self.wc_day_sets[w]['training_days'] for item in sublist})

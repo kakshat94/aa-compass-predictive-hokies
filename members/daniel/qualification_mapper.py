@@ -78,7 +78,7 @@ def _display_to_column(name: str) -> str:
 
 
 def _default_out_path(path: str) -> str:
-    """``data/Supply_Regular.csv`` -> ``data/Supply_Regular_qualified.csv``."""
+    """``Supply_Regular.csv`` -> ``Supply_Regular_qualified.csv``."""
     root, ext = os.path.splitext(path)
     return f"{root}_qualified{ext}"
 

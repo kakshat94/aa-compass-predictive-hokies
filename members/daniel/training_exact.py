@@ -317,17 +317,33 @@ def _main() -> int:
     parser = argparse.ArgumentParser(
         description="Exact (MIP) training assignment -- standalone runner (members/daniel)."
     )
-    parser.add_argument("--regular", default="data/Supply_Regular.csv")
-    parser.add_argument("--standard", default="data/Supply_Standard_Training.csv")
-    parser.add_argument("--special", default="data/Supply_Special_Training.csv")
-    parser.add_argument("--qual-data", default="data/Supply_sample.csv")
+    parser.add_argument("--input-data-dir", default="data",
+                        help="Directory with the competition inputs (Demand.csv, Supply_sample.csv).")
+    parser.add_argument("--output-data-dir", default="outputs/exact_gurobi",
+                        help="Directory for the generated training files (default outputs/exact_gurobi).")
+    parser.add_argument("--regular", default=None,
+                        help="Phase I regular roster (default outputs/Supply_Regular.csv).")
+    parser.add_argument("--standard", default=None,
+                        help="Phase I standard-training roster (default outputs/Supply_Standard_Training.csv).")
+    parser.add_argument("--special", default=None,
+                        help="Phase I special-training roster (default outputs/Supply_Special_Training.csv).")
+    parser.add_argument("--qual-data", default=None,
+                        help="Qualification reference (default <input-data-dir>/Supply_sample.csv).")
     parser.add_argument("--params", default="members/akshat/params.yaml")
-    parser.add_argument("--demand", default="data/Demand.csv")
-    parser.add_argument("--data-dir", default="data/exact_gurobi")
+    parser.add_argument("--demand", default=None,
+                        help="Desk demand (default <input-data-dir>/Demand.csv).")
     parser.add_argument("--solver", choices=["gurobi", "xpress"], default="gurobi")
     parser.add_argument("--class-size", type=int, default=CLASS_SIZE_DEFAULT)
     parser.add_argument("--time-limit", type=float, default=120.0)
     args = parser.parse_args()
+
+    in_dir = args.input_data_dir
+    out_dir = args.output_data_dir
+    regular_path = args.regular or "outputs/Supply_Regular.csv"
+    standard_path = args.standard or "outputs/Supply_Standard_Training.csv"
+    special_path = args.special or "outputs/Supply_Special_Training.csv"
+    qual_data_path = args.qual_data or os.path.join(in_dir, "Supply_sample.csv")
+    demand_path = args.demand or os.path.join(in_dir, "Demand.csv")
 
     from members.daniel.qualification_mapper import (  # local import keeps CLI light
         DEFAULT_PRIORITY_LIST,
@@ -338,10 +354,10 @@ def _main() -> int:
     )
     from members.daniel.training_assigner import write_training_outputs
 
-    frames = [pd.read_csv(p) for p in (args.regular, args.standard, args.special)]
+    frames = [pd.read_csv(p) for p in (regular_path, standard_path, special_path)]
     base_columns = list(frames[0].columns)
     cohort = pd.concat(frames, ignore_index=True)
-    qual_data = pd.read_csv(args.qual_data)
+    qual_data = pd.read_csv(qual_data_path)
 
     merged = map_qualifications_to_supply(cohort, qual_data, DEFAULT_PRIORITY_LIST)
     merged = sprinkle_qualifications(
@@ -352,18 +368,18 @@ def _main() -> int:
     )
     merged = merged[base_columns]
 
-    os.makedirs(args.data_dir, exist_ok=True)
-    log_path = os.path.join(args.data_dir, f"training_{args.solver}.log")
+    os.makedirs(out_dir, exist_ok=True)
+    log_path = os.path.join(out_dir, f"training_{args.solver}.log")
     result = assign_training_exact(
         merged,
         load_training_months(args.params),
         class_size=args.class_size,
         solver=args.solver,
-        demand_path=args.demand,
+        demand_path=demand_path,
         time_limit=args.time_limit,
         log_path=log_path,
     )
-    write_training_outputs(result, args.data_dir)
+    write_training_outputs(result, out_dir)
 
     print("\n============== EXACT TRAINING (T1) ==============")
     print(f"solver       : {args.solver}")

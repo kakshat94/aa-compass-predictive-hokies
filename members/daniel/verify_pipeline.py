@@ -109,9 +109,9 @@ def verify_outputs(paths):
 def main():
     parser = argparse.ArgumentParser(description="Verify the qualification pipeline.")
     parser.add_argument("--reference-dir", default=DEFAULT_REFERENCE_DIR)
-    parser.add_argument("--regular", default="data/Supply_Regular_qualified.csv")
-    parser.add_argument("--standard", default="data/standard_training_data.csv")
-    parser.add_argument("--special", default="data/intl_special_training_data.csv")
+    parser.add_argument("--regular", default="outputs/Supply_Regular_qualified.csv")
+    parser.add_argument("--standard", default="outputs/standard_training_data.csv")
+    parser.add_argument("--special", default="outputs/intl_special_training_data.csv")
     args = parser.parse_args()
 
     failures = 0

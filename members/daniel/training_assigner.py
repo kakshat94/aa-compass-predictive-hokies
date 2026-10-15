@@ -248,14 +248,15 @@ def assign_training(
     return build_result_from_marks(df, training_months, failures)
 
 
-def write_training_outputs(result: TrainingResult, data_dir: str = "data") -> Dict[str, str]:
+def write_training_outputs(result: TrainingResult, output_dir: str = "outputs") -> Dict[str, str]:
     """Write the regular roster plus the four reference-style training files."""
+    os.makedirs(output_dir, exist_ok=True)
     paths = {
-        "regular": os.path.join(data_dir, "Supply_Regular_qualified.csv"),
-        "standard_data": os.path.join(data_dir, "standard_training_data.csv"),
-        "intl_data": os.path.join(data_dir, "intl_special_training_data.csv"),
-        "standard_scheduled": os.path.join(data_dir, "standard_training_scheduled_df.csv"),
-        "intl_scheduled": os.path.join(data_dir, "intl_special_training_scheduled_df.csv"),
+        "regular": os.path.join(output_dir, "Supply_Regular_qualified.csv"),
+        "standard_data": os.path.join(output_dir, "standard_training_data.csv"),
+        "intl_data": os.path.join(output_dir, "intl_special_training_data.csv"),
+        "standard_scheduled": os.path.join(output_dir, "standard_training_scheduled_df.csv"),
+        "intl_scheduled": os.path.join(output_dir, "intl_special_training_scheduled_df.csv"),
     }
     result.regular.to_csv(paths["regular"], index=False)
     result.standard_data.to_csv(paths["standard_data"], index=False)
