@@ -5,7 +5,3 @@
 *.sol
 __pycache__/
 .venv/
-
-# Generated outputs (regenerate with the pipelines / evaluator)
-outputs/
-members/daniel/outputs/
