@@ -106,6 +106,7 @@ def run_pipeline(
     output_dir: str = "outputs",
     dedupe: bool = False,
     freeze_phase1_training: bool = False,
+    run_vacation_stage: bool = True,
     write: bool = True,
 ):
     """Run qualifications (Phase 1-3), training assignment, then vacation.
@@ -117,6 +118,9 @@ def run_pipeline(
     ``freeze_phase1_training`` keeps the training days in the two Phase I
     training files exactly where they are and only schedules the missing
     secondary-qualification trainings around them.
+
+    ``run_vacation_stage=False`` stops after training (and writing the training
+    files) so an external vacation/flex pipeline can take over.
     """
     priority_list = priority_list or DEFAULT_PRIORITY_LIST
 
@@ -169,17 +173,22 @@ def run_pipeline(
             )
 
     # --- Stage 3: vacation (after training files are produced) ---
-    vacation = run_vacation(
-        training.regular,
-        volume_path=volume_path,
-        base_vacation=vac_base,
-        max_variable=vac_variable,
-        seed=vac_seed,
-        output_dir=output_dir,
-        write=write,
-    )
-
-    metrics = compute_balance_metrics(vacation["vacation_data"], training.regular, priority_list)
+    if run_vacation_stage:
+        vacation = run_vacation(
+            training.regular,
+            volume_path=volume_path,
+            base_vacation=vac_base,
+            max_variable=vac_variable,
+            seed=vac_seed,
+            output_dir=output_dir,
+            write=write,
+        )
+        metrics = compute_balance_metrics(
+            vacation["vacation_data"], training.regular, priority_list
+        )
+    else:
+        vacation = None
+        metrics = None
 
     return {
         "training": training,
