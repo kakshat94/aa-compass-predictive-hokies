@@ -11,6 +11,7 @@ class WorkforceOptimizer:
         self.demand = demand
         self.coverage_days = coverage_days
         self.training_days = training_days
+        self.all_training_days = list(set().union(*self.training_days.values()))
         self.wc_day_sets = wc_day_sets
         self.max_bidlines = max_bidlines
         self.coverage_vectors = coverage_vectors
@@ -21,7 +22,7 @@ class WorkforceOptimizer:
         self.X_set = [(wc, f"Number{i}", j) for wc in self.max_bidlines.keys() for i in range(self.max_bidlines[wc][self.shift]) 
                         for j in self.coverage_vectors.keys()]
         self.Y_set = [(wc, f"Number{i}", j, k) for wc in self.max_bidlines.keys() for i in range(self.max_bidlines[wc][self.shift]) 
-                        for j in self.coverage_vectors.keys() for k in list(set(self.coverage_days[wc]) | set(self.training_days))]
+                        for j in self.coverage_vectors.keys() for k in list(set(self.coverage_days[wc]) | set(self.all_training_days))]
     
     def build_model(self):
         """
@@ -62,15 +63,25 @@ class WorkforceOptimizer:
                 )
 
         self.alltrain = self.model.addConstrs(
+                    (gp.quicksum(self.Y[w, number, offset, day]
+                                 #+ F[wc, number, offset] * (1 - self.coverage_vectors[offset][day])
+                                 #- Z[wc, number, offset] * (1 - self.coverage_vectors[offset][day])
+                                for w, number, offset in self.X_set if w==wc)                          
+                    <= 12 for wc in self.training_days.keys() for day in self.training_days[wc] if wc!='Domestic'),
+                    name="specialtrain"
+                )
+
+        all_domestic_train_days = list({item for sublist in self.wc_day_sets['Domestic']['training_days'] for item in sublist})
+
+        self.domestictrain = self.model.addConstrs(
                     (gp.quicksum(self.Y[wc, number, offset, day]
                                  #+ F[wc, number, offset] * (1 - self.coverage_vectors[offset][day])
                                  #- Z[wc, number, offset] * (1 - self.coverage_vectors[offset][day])
                                 for wc, number, offset in self.X_set)                          
-                    <= 12 for day in self.training_days),
-                    name="alltrain"
+                    <= 12 for day in all_domestic_train_days),
+                    name="domestictrain"
                 )
 
-        all_domestic_train_days = list({item for sublist in self.wc_day_sets['Domestic']['training_days'] for item in sublist})
         self.dom_trainbid_const = {}
         self.special_train = {}
         for w in self.wc_day_sets.keys():

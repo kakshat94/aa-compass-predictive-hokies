@@ -49,7 +49,7 @@ class Orchestrator:
         # Create Gurobi environment and model
         coverage_days = {}
         #coverage_days_midnight = {}
-        all_training_days = []
+        all_training_days = {}
         #all_training_days_midnight = []
         for wc, d in self.wc_day_sets.items():
             training_days = [item for sublist in d['training_days'] for item in sublist]
@@ -60,7 +60,7 @@ class Orchestrator:
                 coverage_days[wc] = coverage_days[wc] + [item for sublist in self.wc_day_sets['Domestic']['training_days'] for item in sublist]
             #midnight_days = [datetime.strptime(c, "%Y-%m-%d") + pd.Timedelta(days=1) for c in coverage_days[wc]]
             #coverage_days_midnight[wc] = [d.strftime("%Y-%m-%d") for d in midnight_days]
-            all_training_days.extend(training_days)
+            all_training_days[wc] = training_days
             #all_training_days_midnight.extend(training_days_midnight)
         self.models = {}
         total_bids = 0

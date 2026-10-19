@@ -17,14 +17,16 @@ work_centers:
       - "April"
 
   Latin:
-    demand_start_date: "02/17"   # February 17
+    demand_start_date: 
+      - "02/17"   # February 17  
+      - "11/18"   # February 17
     training_month_optimizer:
       - "October"
     training_months:
       - "October"
 
   Europe:
-    demand_start_date: "06/14"   # June 14
+    demand_start_date: "06/18"   # June 14
     training_month_optimizer:
       - "March"
     training_months:

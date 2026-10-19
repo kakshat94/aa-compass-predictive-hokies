@@ -61,17 +61,32 @@ class ProjectConfig:
             demand_start_dates = []
             start_date_str = rules.get('demand_start_date')
             
-            if start_date_str:
-                full_start_str = f"{start_date_str}/{primary_year}"
-                start_dt = datetime.strptime(full_start_str, "%m/%d/%Y")
-                end_dt = start_dt + pd.Timedelta(days=29)  # 30 days total inclusive
-                
-                demand_start_dates = sorted(
-                    wc_df[
-                        (wc_df['SHIFT_DATE_DT'] >= start_dt) & 
-                        (wc_df['SHIFT_DATE_DT'] <= end_dt)
-                    ]['DATE_STR'].unique().tolist()
-                )
+            if wc=="Latin":
+                demand_start_dates = []
+                for sd in start_date_str:
+                    full_start_str = f"{sd}/{primary_year}"
+                    start_dt = datetime.strptime(full_start_str, "%m/%d/%Y")
+                    end_dt = start_dt + pd.Timedelta(days=50)
+                    demand_start_dates.extend(sorted(
+                                            wc_df[
+                                                (wc_df['SHIFT_DATE_DT'] >= start_dt) & 
+                                                (wc_df['SHIFT_DATE_DT'] <= end_dt)
+                                            ]['DATE_STR'].unique().tolist()
+                                        ))
+            else:
+                if start_date_str:
+                    full_start_str = f"{start_date_str}/{primary_year}"
+                    start_dt = datetime.strptime(full_start_str, "%m/%d/%Y")
+                    if wc=="Europe":
+                        end_dt = start_dt + pd.Timedelta(days=32)  # 30 days total inclusive
+                    else:
+                        end_dt = start_dt + pd.Timedelta(days=29)
+                    demand_start_dates = sorted(
+                        wc_df[
+                            (wc_df['SHIFT_DATE_DT'] >= start_dt) & 
+                            (wc_df['SHIFT_DATE_DT'] <= end_dt)
+                        ]['DATE_STR'].unique().tolist()
+                    )
 
             # 2. Training Month Optimizer Set (List of Lists per month)
             opt_months = rules.get('training_month_optimizer', [])
