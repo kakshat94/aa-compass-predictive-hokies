@@ -1,9 +1,16 @@
 import xpress as xp
 import gurobipy as gp
 import pandas as pd
+import yaml
+import os
 from typing import Dict, Any
 from members.akshat.config import ProjectConfig
 from members.akshat.bidline import BidlineGenerator
+
+_PARAMS_PATH = os.path.join(os.path.dirname(__file__), "params.yaml")
+with open(_PARAMS_PATH) as _f:
+    _PARAMS = yaml.safe_load(_f)
+_FLEX_PARAMS: Dict[str, int] = {wc: cfg["max_flex_days"] for wc, cfg in _PARAMS.get("flex_days", {}).items()}
 
 class WorkforceOptimizer:
     def __init__(self, shift: str, demand: dict, coverage_days: dict, training_days: list, wc_day_sets: dict, max_bidlines: dict, coverage_vectors: dict, env: gp.Env):
@@ -41,11 +48,11 @@ class WorkforceOptimizer:
                     vtype=gp.GRB.BINARY, 
                     name="train"
                 )
-        # F = self.model.addVars(
-        #                     self.F_set,  
-        #                     vtype=gp.GRB.BINARY, 
-        #                     name="flex"
-        #                 )
+        self.F = self.model.addVars(
+                            self.Y_set,  
+                            vtype=gp.GRB.BINARY, 
+                            name="flex"
+                        )
         # Z = self.model.addVars(
         #                     self.Z_set,  
         #                     vtype=gp.GRB.BINARY, 
@@ -55,7 +62,7 @@ class WorkforceOptimizer:
         self.cov = self.model.addConstrs(
                     (gp.quicksum(self.X[wc, number, offset] * self.coverage_vectors[offset][day] 
                                 - self.Y[wc, number, offset, day] * self.coverage_vectors[offset][day]
-                                #+ F[wc, number, offset, day] * (1 - self.coverage_vectors[offset][day])
+                                + self.F[wc, number, offset, day] * (1 - self.coverage_vectors[offset][day])
                                 #- Z[wc, number, offset, day] * (1 - self.coverage_vectors[offset][day])
                                 for wc, number, offset in self.X_set if wc == w)                          
                     >= self.demand[w][day] for w in self.demand.keys() for day in self.coverage_days[w]),
@@ -82,9 +89,46 @@ class WorkforceOptimizer:
                     name="domestictrain"
                 )
 
+
+        self.model.addConstrs(
+                    (gp.quicksum(self.F[wc, number, offset, day]
+                                    for day in self.coverage_days[wc] if day  in {i: e for i,e in self.coverage_vectors[offset].items() if e==1}.keys())
+                                == 0 for (wc, number, offset) in self.X_set),
+                                name="flex_day_0s"
+                    )
+        self.model.addConstrs(
+                            (self.F[wc, number, offset, day]
+                                        <= self.X[wc, number, offset] for (wc, number, offset) in self.X_set
+                                        for day in self.coverage_days[wc] if day in {i: e for i,e in self.coverage_vectors[offset].items() if e==0}.keys()),
+                                        name="flex_day_activation"
+                            )
+
+        # self.model.addConstrs(
+        #                             (self.F[wc, number, offset, day]
+        #                                         <= (1- self.Y[wc, number, offset, day]) for (wc, number, offset, day) in self.Y_set),
+        #                                         name="flex_day_training"
+        #                             )
+
         self.dom_trainbid_const = {}
         self.special_train = {}
+        self.flex_day = {}
+        self.no_flex_day = {}
         for w in self.wc_day_sets.keys():
+            if w in _FLEX_PARAMS:
+                max_flex = _FLEX_PARAMS[w]
+                self.flex_day[w] = self.model.addConstrs(
+                            (gp.quicksum(self.F[wc, number, offset, day]
+                                                for wc, number, offset, day in self.Y_set if wc==w and number==n and offset==off and day in {i: e for i,e in self.coverage_vectors[offset].items() if e==0}.keys())
+                                            <= max_flex * self.X[w_c, n, off] for (w_c, n, off) in self.X_set if w_c==w),
+                                            name=f"flex_day_{w}"
+                    )
+            else:
+                self.no_flex_day[w] = self.model.addConstrs(
+                                            (gp.quicksum(self.F[wc, number, offset, day]
+                                                                for wc, number, offset, day in self.Y_set if wc==w and number==n and offset==off)
+                                                            == 0 for (w_c, n, off) in self.X_set if w_c==w),
+                                                            name=f"no_flex_day_{w}"
+                                    )
             if w=='Domestic':
                 for i, per in enumerate(self.wc_day_sets[w]['training_days']):
                     self.dom_trainbid_const[f"Period{i}"] = self.model.addConstrs(
@@ -106,8 +150,16 @@ class WorkforceOptimizer:
                                 == 0 for (wc, number, offset) in self.X_set if wc==w),
                             name="domestic_train_0s_2"
                         )
+                self.flex_day = self.model.addConstrs(
+                            (gp.quicksum(self.F[wc, number, offset, day]
+                                                for wc, number, offset, day in self.Y_set if wc==w and number==n and offset==off)
+                                            == 0 for off, n in self.max_bidlines[w].items()),
+                                            name="flex_day"
+                    )
+                
                 
             else:
+                
                 if len(self.wc_day_sets[w]['training_days'])==1:
                     self.special_train[w] = self.model.addConstrs(
                         (gp.quicksum(self.Y[wc, number, offset, day]
@@ -144,6 +196,8 @@ class WorkforceOptimizer:
                                     == 0 for (wc, number, offset) in self.X_set if wc==w),
                                 name="special_train_0s_2"
                             )
+
+            
 
         self.model.setObjective(
             gp.quicksum(self.X[wc, number, offset] for (wc, number, offset) in self.X_set),

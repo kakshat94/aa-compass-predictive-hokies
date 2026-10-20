@@ -54,14 +54,12 @@ class CoverageReporter:
         total_supply = report_df['SUPPLY'].sum()
         total_under = report_df['UNDER_COVERAGE'].sum()
         total_over = report_df['OVER_COVERAGE'].sum()
-        fill_rate = round((min(total_supply, total_demand) / total_demand) * 100, 2)
 
         print(f"\n================ COVERAGE SUMMARY: {member_name} ================")
         print(f"Total Demand Required : {total_demand:,}")
         print(f"Total Supply Provided : {total_supply:,}")
         print(f"Unmet Demand (Under)  : {total_under:,}")
         print(f"Surplus Supply (Over) : {total_over:,}")
-        print(f"Overall Fill Rate (%) : {fill_rate}%")
         print("=================================================================\n")
 
 

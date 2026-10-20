@@ -6,10 +6,17 @@ It coordinates demand data, work center day sets, and bidline generation.
 import xpress as xp
 import gurobipy as gp
 import pandas as pd
+import yaml
+import os
 from datetime import datetime
 from typing import Dict, Any
 from members.akshat.model import WorkforceOptimizer
 from members.akshat.bidline import BidlineGenerator
+
+_PARAMS_PATH = os.path.join(os.path.dirname(__file__), "params.yaml")
+with open(_PARAMS_PATH) as _f:
+    _PARAMS = yaml.safe_load(_f)
+_MORNING_EQUALS_EVENING: bool = _PARAMS.get("shifts", {}).get("morning_equals_evening", False)
 
 class Orchestrator:
     """
@@ -64,7 +71,8 @@ class Orchestrator:
             #all_training_days_midnight.extend(training_days_midnight)
         self.models = {}
         total_bids = 0
-        for j in self.shifts:
+        active_shifts = [j for j in self.shifts if not (_MORNING_EQUALS_EVENING and j == 'EVENING')]
+        for j in active_shifts:
             demand = {}
             
             if j=='MIDNIGHT':
@@ -82,6 +90,6 @@ class Orchestrator:
                 self.models[j] = WorkforceOptimizer(j, demand, coverage_days, all_training_days, self.wc_day_sets, self.max_bidlines, self.coverage_vectors, gp.Env())
                 self.models[j].build_model()
                 self.models[j].model.optimize()
-                total_bids += self.models[j].model.ObjVal
+                total_bids += (2*self.models[j].model.ObjVal if _MORNING_EQUALS_EVENING else self.models[j].model.ObjVal)
         print('Total bids', total_bids)
 

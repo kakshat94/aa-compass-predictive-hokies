@@ -29,18 +29,20 @@ def run():
     exporter = SupplyGenerator(orch.coverage_vectors)
 
     # Process all shift models in orch.models simultaneously
-    regular_df, standard_training_df, special_training_df = exporter.process_all_models(
+    regular_df, standard_training_df, special_training_df, flex_df, all_supply_df = exporter.process_all_models(
         orch_models=orch.models,
         regular_out_path=os.path.join(out_dir, "Supply_Regular.csv"),
         standard_training_out_path=os.path.join(out_dir, "Supply_Standard_Training.csv"),
-        special_training_out_path=os.path.join(out_dir, "Supply_Special_Training.csv")
+        special_training_out_path=os.path.join(out_dir, "Supply_Special_Training.csv"),
+        flex_out_path = os.path.join(out_dir, "Flex_assignment.csv"),
+        all_out_path = os.path.join(out_dir, "Supply_all.csv")
     )
 
     end = datetime.now() - start
     print(f"Total Time Elapsed: {end}")
     
     # 3. Directly evaluate using common tool
-    report_df = CoverageReporter.evaluate(demand_file, os.path.join(out_dir, "Supply_Regular.csv"))
+    report_df = CoverageReporter.evaluate(demand_file, os.path.join(out_dir, "Supply_all.csv"))
     CoverageReporter.print_summary(report_df, member_name="Member 1 (FICO Xpress)")
 
 if __name__ == "__main__":

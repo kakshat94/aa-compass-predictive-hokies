@@ -74,7 +74,7 @@ The full-year fairness stage is **optional**, not prohibited. Setting `--fair-se
 A representative command is:
 
 ```bash
-python vacation_cp_sat_zero_targeted.py --fair-seconds 120
+python vacation_cp_sat.py --fair-seconds 120
 ```
 
 Use `--fair-seconds 300` to test a longer full-year fairness solve. The total runtime also includes coverage optimization, LNS, and repair; it is **not** just the fairness time limit. CP-SAT reports `FEASIBLE` when it finds a valid solution without proving optimality, `OPTIMAL` when it proves the objective optimum, and `UNKNOWN` when it cannot establish a feasible solution or a proof within the allotted search.

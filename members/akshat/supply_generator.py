@@ -1,9 +1,15 @@
 import os
+import yaml
 import pandas as pd
 import numpy as np
 from collections import Counter, defaultdict
 from datetime import datetime, timedelta
 from typing import Dict, Tuple, List, Any
+
+_PARAMS_PATH = os.path.join(os.path.dirname(__file__), "params.yaml")
+with open(_PARAMS_PATH) as _f:
+    _PARAMS = yaml.safe_load(_f)
+_MORNING_EQUALS_EVENING: bool = _PARAMS.get("shifts", {}).get("morning_equals_evening", False)
 
 
 class SupplyGenerator:
@@ -63,13 +69,17 @@ class SupplyGenerator:
         orch_models: Dict[str, Any],
         regular_out_path: str = "Supply_Regular.csv",
         standard_training_out_path: str = "Supply_Standard_Training.csv",
-        special_training_out_path: str = "Supply_Standard_Training.csv"
-    ) -> Tuple[pd.DataFrame, pd.DataFrame]:
+        special_training_out_path: str = "Supply_Special_Training.csv",
+        flex_out_path: str = "Flex_assignment.csv",
+        all_out_path: str = "Supply_all.csv"
+    ) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
         all_regular_rows: List[Dict] = []
         all_special_training_rows: List[Dict] = []
         all_standard_training_rows: List[Dict] = []
+        all_flex_rows: List[Dict] = []
 
         # Pass A: collect every selected bidline across all shift models.
+        # When morning_equals_evening, also count EVENING lines for tech_id allocation.
         selected: List[Tuple[str, str, str, str]] = []  # (shift_type, wc, num_id, off_str)
         for shift_key, model in orch_models.items():
             st = shift_key.upper()
@@ -78,6 +88,8 @@ class SupplyGenerator:
             for (wc, num_id, off_str), var in model.X.items():
                 if var.X > 0.5:
                     selected.append((st, wc, num_id, off_str))
+                    if _MORNING_EQUALS_EVENING and st == 'MORNING':
+                        selected.append(('EVENING', wc, num_id, off_str))
 
         # Assign DS section 4.2 integer tech ids once over the whole solution.
         ids = self.assign_tech_ids([(wc, st) for st, wc, *_ in selected])
@@ -131,12 +143,14 @@ class SupplyGenerator:
                             fmt_date = self._format_date(dt)
 
                             if shift_type == 'MIDNIGHT':
-                                end_dt = dt + timedelta(days=1)
-                                end_date_fmt = self._format_date(end_dt)
+                                start_dt = dt - timedelta(days=1)
+                                start_date_fmt = self._format_date(start_dt)
+                                end_date_fmt = fmt_date
                             else:
+                                start_date_fmt = fmt_date
                                 end_date_fmt = fmt_date
 
-                            start_ts = f"{fmt_date} {start_str}"
+                            start_ts = f"{start_date_fmt} {start_str}"
                             end_ts = f"{end_date_fmt} {end_str}"
 
                             row = {
@@ -185,29 +199,93 @@ class SupplyGenerator:
 
             all_regular_rows.extend(shift_regular_records.values())
 
+            # Step 2.5: Extract flex assignment rows from model.F
+            F_dict = {i: e.X for i, e in model.F.items()}
+            for (w, n, o, d), v in F_dict.items():
+                if v > 0.5:
+                    tech_id = tech_id_of.get((shift_type, w, n, o))
+                    dt = datetime.strptime(d, "%Y-%m-%d")
+                    fmt_date = self._format_date(dt)
+                    if shift_type == 'MIDNIGHT':
+                        start_dt = dt - timedelta(days=1)
+                        start_date_fmt = self._format_date(start_dt)
+                        end_date_fmt = fmt_date
+                    else:
+                        start_date_fmt = fmt_date
+                        end_date_fmt = fmt_date
+                    all_flex_rows.append({
+                        'INDEX': np.nan,
+                        'MAJOR_WORK_TYPE': 'All',
+                        'START_TIME': f"{start_date_fmt} {start_str}",
+                        'EMPLOYEE_TITLE': w,
+                        'WORK_CENTER_ID': w,
+                        'CONTRACTOR_FLAG': 'N',
+                        'CLUSTER': 1,
+                        'EMPLOYEE_WORK_CENTER_ID': w,
+                        'TECH_ID': tech_id,
+                        'END_TIME': f"{end_date_fmt} {end_str}",
+                        'SHIFT_DATE': fmt_date,
+                        'SHIFT_LENGTH': length,
+                        'SHIFT_TYPE': shift_type,
+                        'FINAL_QUALS': np.nan,
+                        'PRIMARY_QUAL': w,
+                        'DOMESTIC': np.nan,
+                        'ATC': np.nan,
+                        'ROC': np.nan,
+                        'CHF': np.nan,
+                        'OC': np.nan,
+                        'LATIN': np.nan,
+                        'EUROPE': np.nan,
+                        'PACIFIC': np.nan,
+                        'QUAL_COUNT': np.nan,
+                        'SF_LOAD_TMS': np.nan
+                    })
+
+        # Step 2.6: If morning_equals_evening, duplicate MORNING rows as EVENING
+        if _MORNING_EQUALS_EVENING and 'MORNING' in orch_models:
+            eve_info = self.SHIFT_SCHEDULES['EVENING']
+            eve_start, eve_end, eve_length = eve_info['start'], eve_info['end'], eve_info['length']
+            # Build a mapping from MORNING tech_id -> EVENING tech_id for the same (wc, num_id, off_str)
+            morning_to_evening_tid: Dict[int, int] = {}
+            for st, wc, num_id, off_str in selected:
+                if st == 'MORNING':
+                    m_tid = tech_id_of.get(('MORNING', wc, num_id, off_str))
+                    e_tid = tech_id_of.get(('EVENING', wc, num_id, off_str))
+                    if m_tid is not None and e_tid is not None:
+                        morning_to_evening_tid[m_tid] = e_tid
+            for row in [r for r in all_regular_rows if r['SHIFT_TYPE'] == 'MORNING']:
+                all_regular_rows.append({**row,
+                    'SHIFT_TYPE': 'EVENING',
+                    'START_TIME': f"{row['SHIFT_DATE']} {eve_start}",
+                    'END_TIME': f"{row['SHIFT_DATE']} {eve_end}",
+                    'SHIFT_LENGTH': eve_length,
+                    'TECH_ID': morning_to_evening_tid.get(row['TECH_ID'], row['TECH_ID']),
+                })
+            for row in [r for r in all_flex_rows if r['SHIFT_TYPE'] == 'MORNING']:
+                all_flex_rows.append({**row,
+                    'SHIFT_TYPE': 'EVENING',
+                    'START_TIME': f"{row['SHIFT_DATE']} {eve_start}",
+                    'END_TIME': f"{row['SHIFT_DATE']} {eve_end}",
+                    'SHIFT_LENGTH': eve_length,
+                    'TECH_ID': morning_to_evening_tid.get(row['TECH_ID'], row['TECH_ID']),
+                })
+
         # Step 3: Combine and export
-        master_regular_df = pd.DataFrame(all_regular_rows)
-        master_standard_training_df = pd.DataFrame(all_standard_training_rows)
-        master_special_training_df = pd.DataFrame(all_special_training_rows)
+        def _to_supply_df(rows):
+            df = pd.DataFrame(rows)
+            return pd.DataFrame(columns=self.SUPPLY_COLUMNS) if df.empty else df[self.SUPPLY_COLUMNS]
 
-        if master_regular_df.empty:
-            master_regular_df = pd.DataFrame(columns=self.SUPPLY_COLUMNS)
-        else:
-            master_regular_df = master_regular_df[self.SUPPLY_COLUMNS]
-
-        if master_standard_training_df.empty:
-            master_standard_training_df = pd.DataFrame(columns=self.SUPPLY_COLUMNS)
-        else:
-            master_standard_training_df = master_standard_training_df[self.SUPPLY_COLUMNS]
-
-        if master_special_training_df.empty:
-            master_special_training_df = pd.DataFrame(columns=self.SUPPLY_COLUMNS)
-        else:
-            master_special_training_df = master_special_training_df[self.SUPPLY_COLUMNS]
+        master_regular_df = _to_supply_df(all_regular_rows)
+        master_standard_training_df = _to_supply_df(all_standard_training_rows)
+        master_special_training_df = _to_supply_df(all_special_training_rows)
+        master_flex_df = _to_supply_df(all_flex_rows)
+        master_all_df = pd.concat([master_regular_df, master_flex_df], ignore_index=True)
 
         master_regular_df.to_csv(regular_out_path, index=False)
         master_standard_training_df.to_csv(standard_training_out_path, index=False)
         master_special_training_df.to_csv(special_training_out_path, index=False)
+        master_flex_df.to_csv(flex_out_path, index=False)
+        master_all_df.to_csv(all_out_path, index=False)
 
         """ Uncomment if want it to be applied in the pipeline
         # --- qualification + training + vacation pipeline (members/daniel) ---
@@ -236,9 +314,11 @@ class SupplyGenerator:
         """
 
         print(f"\n================ EXPORT COMPLETE ================")
-        print(f"Total Regular Shifts  : {len(master_regular_df):,} -> Saved to '{regular_out_path}'")
-        print(f"Total Standard Training Shifts : {len(master_standard_training_df):,} -> Saved to '{standard_training_out_path}'")
-        print(f"Total Special Training Shifts : {len(master_special_training_df):,} -> Saved to '{special_training_out_path}'")
+        print(f"Total Regular Shifts       : {len(master_regular_df):,} -> Saved to '{regular_out_path}'")
+        print(f"Total Standard Training    : {len(master_standard_training_df):,} -> Saved to '{standard_training_out_path}'")
+        print(f"Total Special Training     : {len(master_special_training_df):,} -> Saved to '{special_training_out_path}'")
+        print(f"Total Flex Assignments     : {len(master_flex_df):,} -> Saved to '{flex_out_path}'")
+        print(f"Total Supply (Regular+Flex): {len(master_all_df):,} -> Saved to '{all_out_path}'")
         print("=================================================\n")
 
-        return master_regular_df, master_standard_training_df, master_special_training_df
+        return master_regular_df, master_standard_training_df, master_special_training_df, master_flex_df, master_all_df

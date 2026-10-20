@@ -1,4 +1,15 @@
 
+shifts:
+  morning_equals_evening: true
+
+flex_days:
+  Latin:
+    max_flex_days: 1
+  #Pacific:
+  #  max_flex_days: 1
+  #Europe:
+  #  max_flex_days: 1
+
 work_centers:
   Domestic:
     demand_start_date: "10/02"   # October 2
