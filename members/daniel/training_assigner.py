@@ -72,6 +72,44 @@ def _format_date(dt) -> str:
     return f"{dt.month}/{dt.day}/{dt.year}"
 
 
+def load_frozen_assignments(
+    standard_path: str,
+    special_path: str,
+    training_months: Dict[str, List[int]],
+) -> Dict[Tuple[object, str], str]:
+    """Read the Phase I training files as ``(tech, date) -> skill`` assignments.
+
+    Phase I splits training by month, not by skill: every row in the standard
+    file is the Domestic qualification, while a special-file row trains the
+    dispatcher's primary (home work center) qualification. Dates are kept in the
+    non-padded ``M/D/YYYY`` form used everywhere else in the pipeline.
+    """
+    frames = [
+        (pd.read_csv(standard_path), "Domestic"),
+        (pd.read_csv(special_path), None),
+    ]
+
+    frozen: Dict[Tuple[object, str], str] = {}
+    for frame, fixed_skill in frames:
+        for _, row in frame.iterrows():
+            tech = row["TECH_ID"]
+            date = _format_date(pd.to_datetime(row["SHIFT_DATE"]))
+            skill = fixed_skill or str(row["WORK_CENTER_ID"])
+            key = (tech, date)
+            if key in frozen:
+                raise ValueError(
+                    f"Phase I training has two rows for TECH_ID {tech} on {date}"
+                )
+            month = pd.to_datetime(row["SHIFT_DATE"]).month
+            if month not in training_months.get(skill, []):
+                raise ValueError(
+                    f"Phase I training for TECH_ID {tech} uses skill {skill!r} "
+                    f"in month {month}, which is not an eligible training month"
+                )
+            frozen[key] = skill
+    return frozen
+
+
 def load_training_months(params_path: str = "members/akshat/params.yaml") -> Dict[str, List[int]]:
     """Read ``training_months`` per work center from params.yaml as month ints."""
     with open(params_path, "r") as fh:
@@ -174,14 +212,19 @@ def assign_training(
     seed: int = RANDOM_SEED,
     flex_days: Optional[Set[Tuple[object, str]]] = None,
     vacation_days: Optional[Set[Tuple[object, str]]] = None,
+    frozen: Optional[Dict[Tuple[object, str], str]] = None,
 ) -> TrainingResult:
     """Assign one random training day per (bid line, held qualification, eligible month).
 
     ``schedule`` is the full working-day roster (regular + training concatenated),
-    one row per dispatcher-day, with qualification columns populated.
+    one row per dispatcher-day, with qualification columns populated. ``frozen``
+    optionally pins ``(tech, date) -> skill`` assignments from Phase I; those
+    rows stay put, their requirements are not reassigned, and only the remaining
+    secondary-qualification requirements are placed.
     """
     flex_days = flex_days or set()
     vacation_days = vacation_days or set()
+    frozen = dict(frozen or {})
     rng = random.Random(seed)
 
     df = schedule.copy().reset_index(drop=True)
@@ -204,14 +247,6 @@ def assign_training(
         .to_dict()
     )
 
-    # Requirements: (tech, skill, month) for every held qual x eligible month.
-    requirements: List[Tuple[object, str, int]] = []
-    for tech, quals in tech_quals.items():
-        for skill in quals:
-            for month in training_months.get(skill, []):
-                requirements.append((tech, skill, month))
-    rng.shuffle(requirements)
-
     def _cap_key(date_str: str, shift: str) -> Tuple[str, str]:
         return (date_str, shift)
 
@@ -219,6 +254,42 @@ def assign_training(
     tech_used: Dict[object, Set[str]] = {}
     chosen: Dict[Tuple[object, str], str] = {}  # (tech, date) -> skill
     failures: List[Tuple[object, str, int]] = []
+
+    # Pin the Phase I schedule first so it consumes days and class seats.
+    schedule_rows = set(zip(df["TECH_ID"], df["_DATE"]))
+    date_month = dict(zip(df["_DATE"], df["_MONTH"]))
+    frozen_requirements: Set[Tuple[object, str, int]] = set()
+    for (tech, date_str), skill in frozen.items():
+        if (tech, date_str) not in schedule_rows:
+            raise ValueError(
+                f"frozen training for TECH_ID {tech} on {date_str} is not a working day"
+            )
+        if skill not in tech_quals.get(tech, []):
+            raise ValueError(
+                f"frozen training for TECH_ID {tech} uses unheld skill {skill!r}"
+            )
+        month = date_month[date_str]
+        if month not in training_months.get(skill, []):
+            raise ValueError(
+                f"frozen training for TECH_ID {tech} uses skill {skill!r} "
+                f"in month {month}, which is not an eligible training month"
+            )
+        frozen_requirements.add((tech, skill, month))
+        tech_used.setdefault(tech, set()).add(date_str)
+        cap_key = _cap_key(date_str, tech_shift[tech])
+        capacity[cap_key] = capacity.get(cap_key, 0) + 1
+        chosen[(tech, date_str)] = skill
+
+    # Requirements: (tech, skill, month) for every held qual x eligible month,
+    # minus whatever the frozen Phase I schedule already covers.
+    requirements: List[Tuple[object, str, int]] = []
+    for tech, quals in tech_quals.items():
+        for skill in quals:
+            for month in training_months.get(skill, []):
+                req = (tech, skill, month)
+                if req not in frozen_requirements:
+                    requirements.append(req)
+    rng.shuffle(requirements)
 
     for tech, skill, month in requirements:
         shift = tech_shift.get(tech)

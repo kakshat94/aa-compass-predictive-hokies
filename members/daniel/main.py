@@ -46,6 +46,7 @@ from members.daniel.qualification_mapper import (  # noqa: E402
 from members.daniel.training_assigner import (  # noqa: E402
     CLASS_SIZE_DEFAULT,
     assign_training,
+    load_frozen_assignments,
     load_training_months,
     write_training_outputs,
 )
@@ -59,12 +60,19 @@ from members.daniel.vacation_assigner import (  # noqa: E402
 from members.daniel.verify_training import verify_training  # noqa: E402
 
 
-def _write_training_log(output_dir: str, method: str, solver: str, training) -> str:
+def _write_training_log(
+    output_dir: str,
+    method: str,
+    solver: str,
+    training,
+    frozen_count: int = 0,
+) -> str:
     """Write a descriptive run log (solver status, objective, runtime)."""
     path = os.path.join(output_dir, "training_run_log.txt")
     lines = [
         f"method={method}",
         f"solver={solver if method == 'exact-mip' else 'random'}",
+        f"frozen_phase1_rows={frozen_count}",
         f"regular_rows={len(training.regular)}",
         f"standard_rows={len(training.standard_data)}",
         f"intl_rows={len(training.intl_data)}",
@@ -97,6 +105,8 @@ def run_pipeline(
     vac_seed: int = VACATION_SEED_DEFAULT,
     output_dir: str = "outputs",
     dedupe: bool = False,
+    freeze_phase1_training: bool = False,
+    run_vacation_stage: bool = True,
     write: bool = True,
 ):
     """Run qualifications (Phase 1-3), training assignment, then vacation.
@@ -104,6 +114,13 @@ def run_pipeline(
     ``method`` selects the training layer: ``"random"`` (the original
     :func:`assign_training`) or ``"exact-mip"`` (the T1 model in
     :mod:`members.daniel.training_exact`, solved with ``solver``).
+
+    ``freeze_phase1_training`` keeps the training days in the two Phase I
+    training files exactly where they are and only schedules the missing
+    secondary-qualification trainings around them.
+
+    ``run_vacation_stage=False`` stops after training (and writing the training
+    files) so an external vacation/flex pipeline can take over.
     """
     priority_list = priority_list or DEFAULT_PRIORITY_LIST
 
@@ -122,6 +139,11 @@ def run_pipeline(
 
     # --- Stage 2: training assignment (random or exact MIP) ---
     training_months = load_training_months(params_path)
+    frozen = None
+    if freeze_phase1_training:
+        frozen = load_frozen_assignments(
+            standard_training_path, special_training_path, training_months
+        )
     if method == "exact-mip":
         solver_log = os.path.join(output_dir, f"training_{solver}.log") if log else None
         if solver_log and write:
@@ -134,29 +156,39 @@ def run_pipeline(
             demand_path=demand_path,
             time_limit=time_limit,
             log_path=solver_log,
+            frozen=frozen,
         )
     elif method == "random":
-        training = assign_training(merged, training_months, class_size=class_size, seed=seed)
+        training = assign_training(
+            merged, training_months, class_size=class_size, seed=seed, frozen=frozen
+        )
     else:
         raise ValueError(f"unknown method {method!r}; choose 'random' or 'exact-mip'")
 
     if write:
         write_training_outputs(training, output_dir)
         if log:
-            _write_training_log(output_dir, method, solver, training)
+            _write_training_log(
+                output_dir, method, solver, training, frozen_count=len(frozen or {})
+            )
 
     # --- Stage 3: vacation (after training files are produced) ---
-    vacation = run_vacation(
-        training.regular,
-        volume_path=volume_path,
-        base_vacation=vac_base,
-        max_variable=vac_variable,
-        seed=vac_seed,
-        output_dir=output_dir,
-        write=write,
-    )
-
-    metrics = compute_balance_metrics(vacation["vacation_data"], training.regular, priority_list)
+    if run_vacation_stage:
+        vacation = run_vacation(
+            training.regular,
+            volume_path=volume_path,
+            base_vacation=vac_base,
+            max_variable=vac_variable,
+            seed=vac_seed,
+            output_dir=output_dir,
+            write=write,
+        )
+        metrics = compute_balance_metrics(
+            vacation["vacation_data"], training.regular, priority_list
+        )
+    else:
+        vacation = None
+        metrics = None
 
     return {
         "training": training,
@@ -211,6 +243,9 @@ def main() -> int:
                         help="Per-shift solve time limit in seconds for --exact-mip.")
     parser.add_argument("--log", action="store_true",
                         help="Write a run log (solver status/objective/runtime) into --output-data-dir.")
+    parser.add_argument("--freeze-phase1-training", action="store_true",
+                        help="Keep the training days from the Phase I training files fixed and "
+                             "schedule only the secondary-qualification trainings around them.")
     args = parser.parse_args()
 
     in_dir = args.input_data_dir
@@ -241,6 +276,7 @@ def main() -> int:
         vac_variable=args.vac_variable,
         vac_seed=args.vac_seed,
         output_dir=out_dir,
+        freeze_phase1_training=args.freeze_phase1_training,
         write=not args.no_write,
     )
 

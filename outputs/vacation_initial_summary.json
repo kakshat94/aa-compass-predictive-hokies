@@ -1,41 +1,41 @@
 {
   "coverage_stage_status": "OPTIMAL",
   "fairness_stage_status": "FEASIBLE",
-  "initial_total_shortage": 409,
+  "initial_total_shortage": 373,
   "training_validated": true,
   "assigned_vacations": 9803,
   "total_quota": 9803,
   "dispatchers": 506,
   "num_dates": 363,
   "fairness_before_lns": {
-    "min": 0,
-    "max": 58,
+    "min": 1,
+    "max": 52,
     "mean": 19.373517786561266,
-    "std": 11.81414081506989,
-    "total_absolute_deviation": 4686.640316205534,
-    "maximum_absolute_deviation": 38.626482213438734,
-    "zero_vacation_dispatchers": 1,
-    "over_40_vacation_dispatchers": 32
+    "std": 9.631593797893903,
+    "total_absolute_deviation": 3290.9802371541505,
+    "maximum_absolute_deviation": 32.626482213438734,
+    "zero_vacation_dispatchers": 0,
+    "over_40_vacation_dispatchers": 20
   },
   "fairness_after_adaptive_lns": {
     "min": 1,
-    "max": 46,
+    "max": 41,
     "mean": 19.373517786561266,
-    "std": 10.596293365121747,
-    "total_absolute_deviation": 4138.039525691701,
-    "maximum_absolute_deviation": 26.626482213438734,
+    "std": 9.105920970230677,
+    "total_absolute_deviation": 3234.4980237154155,
+    "maximum_absolute_deviation": 21.626482213438734,
     "zero_vacation_dispatchers": 0,
-    "over_40_vacation_dispatchers": 23
+    "over_40_vacation_dispatchers": 7
   },
   "fairness_after_lns": {
     "min": 1,
-    "max": 46,
+    "max": 41,
     "mean": 19.373517786561266,
-    "std": 10.5341910043105,
-    "total_absolute_deviation": 4090.498023715416,
-    "maximum_absolute_deviation": 26.626482213438734,
+    "std": 9.105920970230677,
+    "total_absolute_deviation": 3234.4980237154155,
+    "maximum_absolute_deviation": 21.626482213438734,
     "zero_vacation_dispatchers": 0,
-    "over_40_vacation_dispatchers": 23
+    "over_40_vacation_dispatchers": 7
   },
   "fairness_objective": "minimize_max_absolute_deviation_then_total_absolute_deviation",
   "lns_accepted": 5,
@@ -57,92 +57,92 @@
     {
       "iteration": 1,
       "method": "imbalance_targeted",
-      "start_date": "2025-09-08",
+      "start_date": "2025-09-11",
       "window_days": 21,
       "status": "OPTIMAL",
       "accepted": true,
-      "max_deviation_before_days": 38.626482213438734,
-      "max_deviation_after_days": 33.626482213438734,
-      "total_absolute_deviation_before": 4686.640316205534,
-      "total_absolute_deviation_after": 4517.411067193676,
-      "fairness_score_before": 193901221605,
-      "fairness_score_after": 168801924365,
-      "solver_seconds": 7.75
+      "max_deviation_before_days": 32.626482213438734,
+      "max_deviation_after_days": 30.626482213438734,
+      "total_absolute_deviation_before": 3290.98023715415,
+      "total_absolute_deviation_after": 3266.2569169960475,
+      "fairness_score_before": 163781461469,
+      "fairness_score_after": 153741764315,
+      "solver_seconds": 1.42
     },
     {
       "iteration": 2,
       "method": "imbalance_targeted",
-      "start_date": "2025-08-31",
+      "start_date": "2025-09-09",
       "window_days": 21,
       "status": "OPTIMAL",
-      "accepted": true,
-      "max_deviation_before_days": 33.626482213438734,
-      "max_deviation_after_days": 33.626482213438734,
-      "total_absolute_deviation_before": 4517.411067193676,
-      "total_absolute_deviation_after": 4452.664031620553,
-      "fairness_score_before": 168801924365,
-      "fairness_score_after": 168801891603,
-      "solver_seconds": 5.702
+      "accepted": false,
+      "max_deviation_before_days": 30.626482213438734,
+      "max_deviation_after_days": 30.626482213438734,
+      "total_absolute_deviation_before": 3266.2569169960475,
+      "total_absolute_deviation_after": 3266.2569169960475,
+      "fairness_score_before": 153741764315,
+      "fairness_score_after": 153741764315,
+      "solver_seconds": 0.321
     },
     {
       "iteration": 3,
       "method": "imbalance_targeted",
-      "start_date": "2025-09-04",
+      "start_date": "2025-09-09",
       "window_days": 21,
       "status": "OPTIMAL",
       "accepted": false,
-      "max_deviation_before_days": 33.626482213438734,
-      "max_deviation_after_days": 33.626482213438734,
-      "total_absolute_deviation_before": 4452.664031620553,
-      "total_absolute_deviation_after": 4452.664031620553,
-      "fairness_score_before": 168801891603,
-      "fairness_score_after": 168801891603,
-      "solver_seconds": 1.376
+      "max_deviation_before_days": 30.626482213438734,
+      "max_deviation_after_days": 30.626482213438734,
+      "total_absolute_deviation_before": 3266.2569169960475,
+      "total_absolute_deviation_after": 3266.2569169960475,
+      "fairness_score_before": 153741764315,
+      "fairness_score_after": 153741764315,
+      "solver_seconds": 0.33
     },
     {
       "iteration": 4,
       "method": "exploration",
-      "start_date": "2025-02-13",
-      "window_days": 21,
+      "start_date": "2025-02-12",
+      "window_days": 28,
       "status": "OPTIMAL",
       "accepted": true,
-      "max_deviation_before_days": 33.626482213438734,
-      "max_deviation_after_days": 31.626482213438734,
-      "total_absolute_deviation_before": 4452.664031620553,
-      "total_absolute_deviation_after": 4173.557312252964,
-      "fairness_score_before": 168801891603,
-      "fairness_score_after": 158762065731,
-      "solver_seconds": 8.459
+      "max_deviation_before_days": 30.626482213438734,
+      "max_deviation_after_days": 29.626482213438734,
+      "total_absolute_deviation_before": 3266.2569169960475,
+      "total_absolute_deviation_after": 3238.498023715415,
+      "fairness_score_before": 153741764315,
+      "fairness_score_after": 148721907947,
+      "solver_seconds": 4.609
     },
     {
       "iteration": 5,
       "method": "imbalance_targeted",
-      "start_date": "2025-09-04",
+      "start_date": "2025-09-08",
       "window_days": 21,
       "status": "OPTIMAL",
       "accepted": false,
-      "max_deviation_before_days": 31.626482213438734,
-      "max_deviation_after_days": 31.626482213438734,
-      "total_absolute_deviation_before": 4173.557312252964,
-      "total_absolute_deviation_after": 4173.557312252964,
-      "fairness_score_before": 158762065731,
-      "fairness_score_after": 158762065731,
-      "solver_seconds": 1.418
+      "max_deviation_before_days": 29.626482213438734,
+      "max_deviation_after_days": 29.626482213438734,
+      "total_absolute_deviation_before": 3238.498023715415,
+      "total_absolute_deviation_after": 3238.498023715415,
+      "fairness_score_before": 148721907947,
+      "fairness_score_after": 148721907947,
+      "solver_seconds": 0.479
     },
     {
       "iteration": 6,
       "method": "imbalance_targeted",
-      "start_date": "2025-09-04",
+      "start_date": "2025-09-08",
       "window_days": 21,
       "status": "OPTIMAL",
       "accepted": false,
-      "max_deviation_before_days": 31.626482213438734,
-      "max_deviation_after_days": 31.626482213438734,
-      "total_absolute_deviation_before": 4173.557312252964,
-      "total_absolute_deviation_after": 4173.557312252964,
-      "fairness_score_before": 158762065731,
-      "fairness_score_after": 158762065731,
-      "solver_seconds": 1.379
+      "max_deviation_before_days": 29.626482213438734,
+      "max_deviation_after_days": 29.626482213438734,
+      "total_absolute_deviation_before": 3238.498023715415,
+      "total_absolute_deviation_after": 3238.498023715415,
+      "fairness_score_before": 148721907947,
+      "fairness_score_after": 148721907947,
+      "solver_seconds": 0.368
     },
     {
       "iteration": 7,
@@ -151,13 +151,13 @@
       "window_days": 28,
       "status": "OPTIMAL",
       "accepted": true,
-      "max_deviation_before_days": 31.626482213438734,
-      "max_deviation_after_days": 30.626482213438734,
-      "total_absolute_deviation_before": 4173.557312252964,
-      "total_absolute_deviation_after": 4166.304347826087,
-      "fairness_score_before": 158762065731,
-      "fairness_score_after": 153742219739,
-      "solver_seconds": 6.916
+      "max_deviation_before_days": 29.626482213438734,
+      "max_deviation_after_days": 28.626482213438734,
+      "total_absolute_deviation_before": 3238.498023715415,
+      "total_absolute_deviation_after": 3234.498023715415,
+      "fairness_score_before": 148721907947,
+      "fairness_score_after": 143702063601,
+      "solver_seconds": 1.14
     },
     {
       "iteration": 8,
@@ -166,13 +166,13 @@
       "window_days": 21,
       "status": "OPTIMAL",
       "accepted": true,
-      "max_deviation_before_days": 30.626482213438734,
-      "max_deviation_after_days": 26.626482213438734,
-      "total_absolute_deviation_before": 4166.304347826087,
-      "total_absolute_deviation_after": 4138.0395256917,
-      "fairness_score_before": 153742219739,
-      "fairness_score_after": 133662836149,
-      "solver_seconds": 2.684
+      "max_deviation_before_days": 28.626482213438734,
+      "max_deviation_after_days": 24.626482213438734,
+      "total_absolute_deviation_before": 3234.498023715415,
+      "total_absolute_deviation_after": 3234.498023715415,
+      "fairness_score_before": 143702063601,
+      "fairness_score_after": 123622694313,
+      "solver_seconds": 0.301
     },
     {
       "iteration": 9,
@@ -180,14 +180,14 @@
       "start_date": "2025-09-08",
       "window_days": 21,
       "status": "OPTIMAL",
-      "accepted": false,
-      "max_deviation_before_days": 26.626482213438734,
-      "max_deviation_after_days": 26.626482213438734,
-      "total_absolute_deviation_before": 4138.0395256917,
-      "total_absolute_deviation_after": 4138.0395256917,
-      "fairness_score_before": 133662836149,
-      "fairness_score_after": 133662836149,
-      "solver_seconds": 1.423
+      "accepted": true,
+      "max_deviation_before_days": 24.626482213438734,
+      "max_deviation_after_days": 21.626482213438734,
+      "total_absolute_deviation_before": 3234.498023715415,
+      "total_absolute_deviation_after": 3234.498023715415,
+      "fairness_score_before": 123622694313,
+      "fairness_score_after": 108563167347,
+      "solver_seconds": 1.761
     },
     {
       "iteration": 10,
@@ -196,256 +196,23 @@
       "window_days": 21,
       "status": "OPTIMAL",
       "accepted": false,
-      "max_deviation_before_days": 26.626482213438734,
-      "max_deviation_after_days": 26.626482213438734,
-      "total_absolute_deviation_before": 4138.0395256917,
-      "total_absolute_deviation_after": 4138.0395256917,
-      "fairness_score_before": 133662836149,
-      "fairness_score_after": 133662836149,
-      "solver_seconds": 1.548
+      "max_deviation_before_days": 21.626482213438734,
+      "max_deviation_after_days": 21.626482213438734,
+      "total_absolute_deviation_before": 3234.498023715415,
+      "total_absolute_deviation_after": 3234.498023715415,
+      "fairness_score_before": 108563167347,
+      "fairness_score_after": 108563167347,
+      "solver_seconds": 0.441
     }
   ],
-  "zero_repair_swaps": 29,
+  "zero_repair_swaps": 0,
   "zero_repair_before_zero_count": 0,
   "zero_repair_after_zero_count": 0,
-  "zero_repair_before_max_deviation_days": 26.626482213438734,
-  "zero_repair_after_max_deviation_days": 26.626482213438734,
-  "zero_repair_before_abs_deviation": 4138.0395256917,
-  "zero_repair_after_abs_deviation": 4090.498023715415,
-  "zero_repair_history": [
-    {
-      "pass": 1,
-      "recipient": "100009",
-      "donor": "100094",
-      "shift_date": "2025-02-09",
-      "work_center": "DOMESTIC",
-      "shift_type": "MORNING"
-    },
-    {
-      "pass": 1,
-      "recipient": "100005",
-      "donor": "100090",
-      "shift_date": "2025-01-15",
-      "work_center": "DOMESTIC",
-      "shift_type": "MORNING"
-    },
-    {
-      "pass": 1,
-      "recipient": "100024",
-      "donor": "100090",
-      "shift_date": "2025-01-21",
-      "work_center": "DOMESTIC",
-      "shift_type": "MORNING"
-    },
-    {
-      "pass": 1,
-      "recipient": "100026",
-      "donor": "100094",
-      "shift_date": "2025-01-16",
-      "work_center": "DOMESTIC",
-      "shift_type": "MORNING"
-    },
-    {
-      "pass": 1,
-      "recipient": "100117",
-      "donor": "100165",
-      "shift_date": "2025-01-15",
-      "work_center": "DOMESTIC",
-      "shift_type": "EVENING"
-    },
-    {
-      "pass": 1,
-      "recipient": "100007",
-      "donor": "100094",
-      "shift_date": "2025-02-06",
-      "work_center": "DOMESTIC",
-      "shift_type": "MORNING"
-    },
-    {
-      "pass": 1,
-      "recipient": "100010",
-      "donor": "100091",
-      "shift_date": "2025-03-08",
-      "work_center": "DOMESTIC",
-      "shift_type": "MORNING"
-    },
-    {
-      "pass": 1,
-      "recipient": "100096",
-      "donor": "100165",
-      "shift_date": "2025-01-21",
-      "work_center": "DOMESTIC",
-      "shift_type": "EVENING"
-    },
-    {
-      "pass": 1,
-      "recipient": "100120",
-      "donor": "100165",
-      "shift_date": "2025-02-05",
-      "work_center": "DOMESTIC",
-      "shift_type": "EVENING"
-    },
-    {
-      "pass": 1,
-      "recipient": "100130",
-      "donor": "100172",
-      "shift_date": "2025-03-15",
-      "work_center": "DOMESTIC",
-      "shift_type": "EVENING"
-    },
-    {
-      "pass": 1,
-      "recipient": "100008",
-      "donor": "100091",
-      "shift_date": "2025-02-07",
-      "work_center": "DOMESTIC",
-      "shift_type": "MORNING"
-    },
-    {
-      "pass": 1,
-      "recipient": "100013",
-      "donor": "100094",
-      "shift_date": "2025-03-31",
-      "work_center": "DOMESTIC",
-      "shift_type": "MORNING"
-    },
-    {
-      "pass": 1,
-      "recipient": "100020",
-      "donor": "100094",
-      "shift_date": "2025-03-26",
-      "work_center": "DOMESTIC",
-      "shift_type": "MORNING"
-    },
-    {
-      "pass": 1,
-      "recipient": "100025",
-      "donor": "100094",
-      "shift_date": "2025-02-07",
-      "work_center": "DOMESTIC",
-      "shift_type": "MORNING"
-    },
-    {
-      "pass": 1,
-      "recipient": "100028",
-      "donor": "100091",
-      "shift_date": "2025-04-30",
-      "work_center": "DOMESTIC",
-      "shift_type": "MORNING"
-    },
-    {
-      "pass": 1,
-      "recipient": "100034",
-      "donor": "100077",
-      "shift_date": "2025-01-14",
-      "work_center": "DOMESTIC",
-      "shift_type": "MORNING"
-    },
-    {
-      "pass": 1,
-      "recipient": "100097",
-      "donor": "100162",
-      "shift_date": "2025-01-21",
-      "work_center": "DOMESTIC",
-      "shift_type": "EVENING"
-    },
-    {
-      "pass": 1,
-      "recipient": "100100",
-      "donor": "100170",
-      "shift_date": "2025-01-17",
-      "work_center": "DOMESTIC",
-      "shift_type": "EVENING"
-    },
-    {
-      "pass": 1,
-      "recipient": "100112",
-      "donor": "100165",
-      "shift_date": "2025-01-24",
-      "work_center": "DOMESTIC",
-      "shift_type": "EVENING"
-    },
-    {
-      "pass": 1,
-      "recipient": "100127",
-      "donor": "100172",
-      "shift_date": "2025-04-06",
-      "work_center": "DOMESTIC",
-      "shift_type": "EVENING"
-    },
-    {
-      "pass": 1,
-      "recipient": "100011",
-      "donor": "100089",
-      "shift_date": "2025-01-17",
-      "work_center": "DOMESTIC",
-      "shift_type": "MORNING"
-    },
-    {
-      "pass": 1,
-      "recipient": "100012",
-      "donor": "100058",
-      "shift_date": "2025-01-27",
-      "work_center": "DOMESTIC",
-      "shift_type": "MORNING"
-    },
-    {
-      "pass": 1,
-      "recipient": "100016",
-      "donor": "100057",
-      "shift_date": "2025-01-24",
-      "work_center": "DOMESTIC",
-      "shift_type": "MORNING"
-    },
-    {
-      "pass": 1,
-      "recipient": "100019",
-      "donor": "100074",
-      "shift_date": "2025-01-25",
-      "work_center": "DOMESTIC",
-      "shift_type": "MORNING"
-    },
-    {
-      "pass": 1,
-      "recipient": "100029",
-      "donor": "100090",
-      "shift_date": "2025-01-28",
-      "work_center": "DOMESTIC",
-      "shift_type": "MORNING"
-    },
-    {
-      "pass": 1,
-      "recipient": "100032",
-      "donor": "100094",
-      "shift_date": "2025-03-09",
-      "work_center": "DOMESTIC",
-      "shift_type": "MORNING"
-    },
-    {
-      "pass": 1,
-      "recipient": "100044",
-      "donor": "100091",
-      "shift_date": "2025-04-10",
-      "work_center": "DOMESTIC",
-      "shift_type": "MORNING"
-    },
-    {
-      "pass": 1,
-      "recipient": "100102",
-      "donor": "100187",
-      "shift_date": "2025-01-16",
-      "work_center": "DOMESTIC",
-      "shift_type": "EVENING"
-    },
-    {
-      "pass": 1,
-      "recipient": "100194",
-      "donor": "100221",
-      "shift_date": "2025-01-15",
-      "work_center": "DOMESTIC",
-      "shift_type": "MIDNIGHT"
-    }
-  ],
+  "zero_repair_before_max_deviation_days": 21.626482213438734,
+  "zero_repair_after_max_deviation_days": 21.626482213438734,
+  "zero_repair_before_abs_deviation": 3234.498023715415,
+  "zero_repair_after_abs_deviation": 3234.498023715415,
+  "zero_repair_history": [],
   "zero_repair_method": "same_day_same_work_center_shift_coverage_preserving_swaps",
   "imputed_demand_buckets": 48,
   "demand_imputation_policy": "previous_week_or_next_week_then_nearest_same_bucket",

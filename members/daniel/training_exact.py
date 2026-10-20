@@ -243,6 +243,7 @@ def assign_training_exact(
     log_path: Optional[str] = None,
     under_penalty: float = 100.0,
     over_penalty: float = 10.0,
+    frozen: Optional[Dict[Tuple[object, str], str]] = None,
 ) -> TrainingResult:
     """Drop-in exact replacement for :func:`assign_training` (see module docstring).
 
@@ -251,8 +252,14 @@ def assign_training_exact(
     cap (a per-date constraint) nor the per-line-per-day rule couples two months,
     and the union of the per-month optima is the global optimum. It also keeps
     every model well under the FICO Community licence ceiling of 5000 rows+columns.
+
+    ``frozen`` optionally pins ``(tech, date) -> skill`` assignments from Phase I.
+    Those trainings stay on their dates, consume class seats, and are subtracted
+    from the supply baseline; the MIP then places only the remaining
+    secondary-qualification requirements.
     """
     del seed  # deterministic MIP; kept for signature parity with the random path
+    frozen = dict(frozen or {})
     blocked = set(flex_days or set()) | set(vacation_days or set())
 
     df = _prepare(schedule)
@@ -273,20 +280,50 @@ def assign_training_exact(
         .to_dict()
     )
 
+    date_month = dict(zip(df["_DATE"], df["_MONTH"]))
+    base_supply = df.groupby(["_WC", "SHIFT_TYPE", "_DATE"]).size().to_dict()
+
+    # Pin the Phase I schedule first: validate it, block its days, consume its
+    # class seats, and remove it from the supply baseline the MIP sees.
+    schedule_rows = set(zip(df["TECH_ID"], df["_DATE"]))
+    frozen_requirements: Set[Tuple[object, str, int]] = set()
+    frozen_seats: Dict[Tuple[str, str], int] = {}
+    for (tech, date_str), skill in frozen.items():
+        if (tech, date_str) not in schedule_rows:
+            raise ValueError(
+                f"frozen training for TECH_ID {tech} on {date_str} is not a working day"
+            )
+        if skill not in tech_quals.get(tech, []):
+            raise ValueError(
+                f"frozen training for TECH_ID {tech} uses unheld skill {skill!r}"
+            )
+        month = date_month[date_str]
+        if month not in training_months.get(skill, []):
+            raise ValueError(
+                f"frozen training for TECH_ID {tech} uses skill {skill!r} "
+                f"in month {month}, which is not an eligible training month"
+            )
+        frozen_requirements.add((tech, skill, month))
+        blocked.add((tech, date_str))
+        shift = tech_shift[tech]
+        frozen_seats[(date_str, shift)] = frozen_seats.get((date_str, shift), 0) + 1
+        base_key = (tech_wc[tech], shift, date_str)
+        base_supply[base_key] = base_supply.get(base_key, 0) - 1
+
     requirements: List[Tuple[object, str, int]] = []
     for tech, quals in tech_quals.items():
         for skill in quals:
             for month in training_months.get(skill, []):
-                requirements.append((tech, skill, month))
+                req = (tech, skill, month)
+                if req not in frozen_requirements:
+                    requirements.append(req)
 
-    date_month = dict(zip(df["_DATE"], df["_MONTH"]))
-    base_supply = df.groupby(["_WC", "SHIFT_TYPE", "_DATE"]).size().to_dict()
     if demand is None:
         demand = _load_demand(demand_path)
 
     ctx = _Context(tech_days, tech_shift, tech_wc, blocked, base_supply, demand, date_month)
 
-    chosen: Dict[Tuple[object, str], str] = {}
+    chosen: Dict[Tuple[object, str], str] = dict(frozen)
     failures: List[Tuple[object, str, int]] = []
     report: Dict[str, dict] = {}
 
@@ -297,12 +334,20 @@ def assign_training_exact(
 
     for (shift, month), reqs in sorted(req_by_group.items(), key=lambda kv: -len(kv[1])):
         backend = make_backend(solver, log_path=log_path)
+        daily_cap = {
+            date_str: class_size - seats
+            for (date_str, seat_shift), seats in frozen_seats.items()
+            if seat_shift == shift
+        }
         res = _solve_group(backend, reqs, ctx, shift, class_size,
-                           under_penalty, over_penalty, time_limit, mip_gap)
+                           under_penalty, over_penalty, time_limit, mip_gap,
+                           daily_cap=daily_cap)
         chosen.update(res["chosen"])
         failures.extend(res["failures"])
         report[f"{shift}/M{month:02d}"] = {
-            "solver": backend.name, "mode": "shift-month", "status": res["status"],
+            "solver": backend.name,
+            "mode": "shift-month-frozen" if frozen else "shift-month",
+            "status": res["status"],
             "objective": res["objective"], "seconds": res["seconds"],
             "requirements": res["requirements"],
         }
@@ -335,6 +380,9 @@ def _main() -> int:
     parser.add_argument("--solver", choices=["gurobi", "xpress"], default="gurobi")
     parser.add_argument("--class-size", type=int, default=CLASS_SIZE_DEFAULT)
     parser.add_argument("--time-limit", type=float, default=120.0)
+    parser.add_argument("--freeze-phase1-training", action="store_true",
+                        help="Keep the Phase I training days fixed and schedule only "
+                             "the secondary-qualification trainings around them.")
     args = parser.parse_args()
 
     in_dir = args.input_data_dir
@@ -352,7 +400,10 @@ def _main() -> int:
         map_qualifications_to_supply,
         sprinkle_qualifications,
     )
-    from members.daniel.training_assigner import write_training_outputs
+    from members.daniel.training_assigner import (
+        load_frozen_assignments,
+        write_training_outputs,
+    )
 
     frames = [pd.read_csv(p) for p in (regular_path, standard_path, special_path)]
     base_columns = list(frames[0].columns)
@@ -370,14 +421,19 @@ def _main() -> int:
 
     os.makedirs(out_dir, exist_ok=True)
     log_path = os.path.join(out_dir, f"training_{args.solver}.log")
+    training_months = load_training_months(args.params)
+    frozen = None
+    if args.freeze_phase1_training:
+        frozen = load_frozen_assignments(standard_path, special_path, training_months)
     result = assign_training_exact(
         merged,
-        load_training_months(args.params),
+        training_months,
         class_size=args.class_size,
         solver=args.solver,
         demand_path=demand_path,
         time_limit=args.time_limit,
         log_path=log_path,
+        frozen=frozen,
     )
     write_training_outputs(result, out_dir)
 
