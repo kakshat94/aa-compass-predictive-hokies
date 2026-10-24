@@ -1,27 +1,13 @@
-#!/usr/bin/env python3
-"""Combined Phase II pipeline.
-
-Runs, in order:
-  1. exact training placement with the Phase I training days frozen;
-  2. ``all_training_data.csv`` (standard + international training) in the run folder;
-  3. the CP-SAT vacation module;
-  4. the max-flow flex-day module.
+"""AA COMPASS full pipeline entry point.
 
 Run from the repo root:
-
-    .venv/bin/python main.py
-
-or use the wrapper:
-
-    ./run_pipeline.sh
+    python main.py
 """
 
 from __future__ import annotations
 
-import argparse
-import os
-import subprocess
 import sys
+import time
 from pathlib import Path
 
 import pandas as pd
@@ -29,180 +15,144 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))
 
-from members.daniel.main import run_pipeline  # noqa: E402
-from members.daniel.training_assigner import (  # noqa: E402
-    CLASS_SIZE_DEFAULT,
-    load_training_months,
-)
-from members.daniel.verify_training import verify_training  # noqa: E402
+from bidline_check import BidlinePipelineValidator
+from common.coverage_report import CoverageReporter
+import pipelines.phase1.executable as phase1
+import pipelines.phase2_training.executable as phase2
+import pipelines.phase2_vacation_flex.executable as phase3
+
+PARAMS_PATH  = ROOT / "pipelines" / "phase1" / "params.yaml"
+PHASE1_DIR   = ROOT / "outputs" / "phase1"
+PHASE2_DIR   = ROOT / "outputs" / "phase2_training"
+PHASE3_DIR   = ROOT / "outputs" / "phase2_vacation_flex"
+
+# ── solver / time settings (edit here, no CLI needed) ────────────────────────
+SOLVER       = "xpress"
+FAIR_SECONDS = 120.0
 
 
-def _training_keys(frame: pd.DataFrame) -> set:
-    dates = pd.to_datetime(frame["SHIFT_DATE"]).dt.strftime("%Y-%m-%d")
-    return set(zip(frame["TECH_ID"], dates))
+def _hms(seconds: float) -> str:
+    m, s = divmod(int(seconds), 60)
+    h, m = divmod(m, 60)
+    return f"{h:02d}:{m:02d}:{s:02d}"
 
 
-def _check_frozen_preserved(
-    standard_path: str,
-    special_path: str,
-    output_dir: Path,
-) -> None:
-    """Fail if the frozen Phase I training rows moved or disappeared."""
-    phase1_standard = pd.read_csv(standard_path)
-    phase1_special = pd.read_csv(special_path)
-    out_standard = pd.read_csv(output_dir / "standard_training_data.csv")
-    out_intl = pd.read_csv(output_dir / "intl_special_training_data.csv")
-
-    missing_standard = _training_keys(phase1_standard) - _training_keys(out_standard)
-    missing_special = _training_keys(phase1_special) - _training_keys(out_intl)
-    if missing_standard or missing_special:
-        raise RuntimeError(
-            "frozen Phase I training was not preserved: "
-            f"{len(missing_standard)} standard and {len(missing_special)} special rows missing"
-        )
-    print(
-        "frozen training check  : OK "
-        f"({len(phase1_standard):,} standard + {len(phase1_special):,} special rows preserved)"
-    )
-
-
-def _write_all_training(output_dir: Path) -> Path:
-    """Concatenate standard + international training, keeping the union schema."""
-    standard = pd.read_csv(output_dir / "standard_training_data.csv")
-    intl = pd.read_csv(output_dir / "intl_special_training_data.csv")
-    standard = standard.loc[:, ~standard.columns.str.startswith("Unnamed:")]
-    intl = intl.loc[:, ~intl.columns.str.startswith("Unnamed:")]
-
-    columns = list(standard.columns) + [c for c in intl.columns if c not in standard.columns]
-    combined = pd.concat(
-        [standard.reindex(columns=columns), intl.reindex(columns=columns)],
-        ignore_index=True,
-    )
-    duplicates = int(combined.duplicated(["TECH_ID", "SHIFT_DATE"]).sum())
-    if duplicates:
-        raise RuntimeError(f"all_training_data.csv has {duplicates} duplicate (tech, date) rows")
-
-    path = output_dir / "all_training_data.csv"
-    combined.to_csv(path, index=False)
-    print(
-        f"all_training_data      : {len(combined):,} rows "
-        f"({len(standard):,} standard + {len(intl):,} international) -> {path}"
-    )
-    return path
-
-
-def _run(script: str, *args: str) -> None:
-    command = [sys.executable, str(ROOT / script), *args]
-    print(f"\n$ {' '.join(command)}")
-    subprocess.run(command, cwd=ROOT, check=True)
-
-
-def main() -> int:
-    parser = argparse.ArgumentParser(description="Combined frozen-training + vacation + flex pipeline.")
-    parser.add_argument("--regular", default="outputs/Supply_Regular.csv")
-    parser.add_argument("--standard", default="outputs/Supply_Standard_Training.csv")
-    parser.add_argument("--special", default="outputs/Supply_Special_Training.csv")
-    parser.add_argument("--qual-data", default="data/Supply_sample.csv")
-    parser.add_argument("--params", default="members/akshat/params.yaml")
-    parser.add_argument("--demand", default="data/Demand.csv")
-    parser.add_argument("--volume", default="data/demand_volume_per_day_reference.csv")
-    parser.add_argument("--output-dir", default="outputs/exact_gurobi_frozen")
-    parser.add_argument("--solver", choices=["gurobi", "xpress"], default="gurobi")
-    parser.add_argument("--time-limit", type=float, default=120.0)
-    parser.add_argument("--class-size", type=int, default=CLASS_SIZE_DEFAULT)
-    parser.add_argument("--vacation-output", default="outputs/vacation_initial.csv")
-    parser.add_argument("--fair-seconds", type=float, default=120.0)
-    parser.add_argument("--flex-output-dir", default="outputs/flex_maxflow")
-    parser.add_argument("--skip-vacation", action="store_true")
-    parser.add_argument("--skip-flex", action="store_true")
-    args = parser.parse_args()
-
-    os.chdir(ROOT)
-    output_dir = Path(args.output_dir)
-    output_dir.mkdir(parents=True, exist_ok=True)
-
-    print("\n================ 1. FROZEN TRAINING ================")
-    result = run_pipeline(
-        regular_path=args.regular,
-        standard_training_path=args.standard,
-        special_training_path=args.special,
-        qual_data_path=args.qual_data,
-        params_path=args.params,
-        volume_path=args.volume,
-        demand_path=args.demand,
-        method="exact-mip",
-        solver=args.solver,
-        time_limit=args.time_limit,
-        log=True,
-        class_size=args.class_size,
-        output_dir=str(output_dir),
-        freeze_phase1_training=True,
-        run_vacation_stage=False,
-        write=True,
-    )
-
-    training = result["training"]
-    print(f"regular rows           : {len(training.regular):,}")
-    print(f"standard training      : {len(training.standard_data):,}")
-    print(f"intl special training  : {len(training.intl_data):,}")
-    print(f"training failures      : {len(training.failures)}")
-    for key, info in (getattr(training, "report", None) or {}).items():
-        print(
-            f"  [{key}] status={info['status']} obj={info['objective']} "
-            f"t={info['seconds']}s reqs={info['requirements']}"
-        )
-
-    _check_frozen_preserved(args.standard, args.special, output_dir)
-    problems = verify_training(
-        str(output_dir / "Supply_Regular_qualified.csv"),
-        str(output_dir / "standard_training_data.csv"),
-        str(output_dir / "intl_special_training_data.csv"),
-        str(output_dir / "standard_training_scheduled_df.csv"),
-        str(output_dir / "intl_special_training_scheduled_df.csv"),
-        load_training_months(args.params),
-        args.class_size,
-    )
-    if problems:
-        raise RuntimeError("training verification failed: " + "; ".join(problems))
-    print("training check         : OK")
-
-    print("\n================ 2. ALL TRAINING ===================")
-    all_training = _write_all_training(output_dir)
-
-    if args.skip_vacation:
-        print("\nvacation pipeline      : skipped")
-        return 0
-
-    print("\n================ 3. VACATION =======================")
-    _run(
-        "vacation_cp_sat.py",
-        "--supply", str(output_dir / "Supply_Regular_qualified.csv"),
-        "--training", str(all_training),
-        "--demand", args.demand,
-        "--volume", args.volume,
-        "--output", args.vacation_output,
-        "--fair-seconds", str(args.fair_seconds),
-    )
-
-    if args.skip_flex:
-        print("\nflex pipeline          : skipped")
-        return 0
-
-    print("\n================ 4. FLEX DAYS ======================")
-    vacation_path = Path(args.vacation_output)
-    _run(
-        "flex_day_maxflow.py",
-        "--supply", str(output_dir / "Supply_Regular_qualified.csv"),
-        "--training", str(all_training),
-        "--vacation", str(vacation_path),
-        "--demand", args.demand,
-        "--demand-audit", str(vacation_path.parent / "demand_imputation_audit.csv"),
-        "--output-dir", args.flex_output_dir,
-    )
-
-    print("\nCombined pipeline complete.")
-    return 0
+def _section(title: str) -> None:
+    bar = "=" * 56
+    print(f"\n{bar}\n  {title}\n{bar}")
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    timings: dict[str, float] = {}
+    pipeline_start = time.time()
+
+    # ── Phase 1 — Bidline Creation ────────────────────────────────────────────
+    _section("PHASE 1 — Bidline Creation")
+    t0 = time.time()
+    phase1.main(PHASE1_DIR, ROOT)
+    timings["phase1"] = time.time() - t0
+    print(f"  elapsed: {_hms(timings['phase1'])}")
+
+    # ── Check 1 — Phase 1 integrity ───────────────────────────────────────────
+    _section("CHECK 1 — Phase 1 bidline integrity")
+    t0 = time.time()
+
+    reg = pd.read_csv(PHASE1_DIR / "Supply_Regular.csv")
+    std = pd.read_csv(PHASE1_DIR / "Supply_Standard_Training.csv")
+    spc = pd.read_csv(PHASE1_DIR / "Supply_Special_Training.csv")
+    flx = pd.read_csv(PHASE1_DIR / "Flex_assignment.csv")
+
+    validator = BidlinePipelineValidator(reg, std, spc)
+    all_initial_tech_ids = set(reg['TECH_ID']).union(std['TECH_ID'], spc['TECH_ID'])
+    unmapped_tech_ids = all_initial_tech_ids - set(validator.tech_id_patterns.keys())
+
+    if unmapped_tech_ids:
+        print(f"Stage 1 Structural Error: The following TECH_IDs violate the 4-3-4-4 structure: {list(unmapped_tech_ids)}")
+    
+    stage1_flex_results = validator.stage4_flex_checks(flx)
+    if stage1_flex_results['invalid_flex_days'] or stage1_flex_results['max_count_violations']:
+        print("Stage 1 (Baseline) Errors Found:")
+        print(f" - Initial Flex days assigned on original WORKING days: {stage1_flex_results['invalid_flex_days']}")
+        print(f" - Initial TECH_IDs exceeding 4 flex days: {stage1_flex_results['max_count_violations']}")
+
+
+    report = CoverageReporter.evaluate(
+        str(ROOT / "data" / "Demand.csv"),
+        str(PHASE1_DIR / "Supply_all.csv"),
+    )
+    CoverageReporter.print_summary(report, stage="Phase 1 — Bidline Creation")
+    timings["check1"] = time.time() - t0
+    print(f"  elapsed: {_hms(timings['check1'])}")
+
+    # ── Phase 2 — Qualification + Training ───────────────────────────────────
+    _section("PHASE 2 — Qualification + Training")
+    t0 = time.time()
+    phase2.main(PHASE1_DIR, PHASE2_DIR, ROOT, PARAMS_PATH, SOLVER)
+    timings["phase2"] = time.time() - t0
+    print(f"  elapsed: {_hms(timings['phase2'])}")
+
+    # ── Check 2 — Phase 2 integrity ───────────────────────────────────────────
+    _section("CHECK 2 — Phase 2 training integrity")
+    t0 = time.time()
+
+    std2 = pd.read_csv(PHASE2_DIR / "standard_training_data.csv")
+    spc2 = pd.read_csv(PHASE2_DIR / "intl_special_training_data.csv")
+
+    stage2_results = validator.stage2_training_checks(std2, spc2, flx)
+
+    if stage2_results['invalid_training_days'] or stage2_results['duplicate_trainings']:
+        print("Stage 2 Errors Found:")
+        print(f" - Invalid training days (assigned on OFF day): {stage2_results['invalid_training_days']}")
+        print(f" - Duplicate trainings on same day: {stage2_results['duplicate_trainings']}")
+
+    report2 = CoverageReporter.evaluate(
+        str(ROOT / "data" / "Demand.csv"),
+        str(PHASE2_DIR / "Supply_Regular_qualified.csv"),
+    )
+    CoverageReporter.print_summary(report2, stage="Phase 2 — Qualified Regular Supply")
+    timings["check2"] = time.time() - t0
+    print(f"  elapsed: {_hms(timings['check2'])}")
+
+    # ── Phase 3a — Vacation Scheduling ───────────────────────────────────────
+    _section("PHASE 3a — Vacation Scheduling")
+    phase3.run_vacation(PHASE2_DIR, PHASE3_DIR, ROOT, FAIR_SECONDS)
+    timings["phase3_vacation"] = time.time() - t0
+    print(f"  elapsed: {_hms(timings['phase3_vacation'])}")
+
+    # ── Check 3a — Phase 3a integrity ───────────────────────────────────────────
+
+    # vacation_df = pd.read_csv('Vacation_assignment.csv')
+    # supply_regular_qualified = pd.read_csv('Supply_Regular_postvacations.csv')
+
+    # # Run Stage 3 checks
+    # stage3_results = validator.stage3_vacation_checks(vacation_df, supply_regular_qualified)
+
+    # if stage3_results['invalid_vacation_source'] or stage3_results['daily_count_violations']:
+    #     print("Stage 3 Errors Found:")
+    #     print(f" - Vacations not mapped to a qualified working day: {stage3_results['invalid_vacation_source']}")
+    #     print(f" - Dates failing 25-29 vacation count rule: {stage3_results['daily_count_violations']}")
+
+    # ── Phase 3b — Flex Day Scheduling ───────────────────────────────────────
+    _section("PHASE 3b — Flex Day Scheduling")
+    phase3.run_flex(PHASE2_DIR, PHASE3_DIR, ROOT)
+    timings["phase3_flex"] = time.time() - t0
+    print(f"  elapsed: {_hms(timings['phase3_flex'])}")
+
+    # ── Check 3b — Phase 3b integrity ───────────────────────────────────────────
+
+    # final_flex = pd.read_csv('Flex_assignment_final.csv')
+
+    # # Run Stage 4 checks
+    # stage4_results = validator.stage4_flex_checks(final_flex)
+
+    # if stage4_results['invalid_flex_days'] or stage4_results['max_count_violations']:
+    #     print("Stage 4 Errors Found:")
+    #     print(f" - Flex days assigned on original WORKING days: {stage4_results['invalid_flex_days']}")
+    #     print(f" - TECH_IDs exceeding 4 flex days: {stage4_results['max_count_violations']}")
+
+
+    # ── Timing summary ────────────────────────────────────────────────────────
+    _section("TIMING SUMMARY")
+    for step, secs in timings.items():
+        print(f"  {step:<20} {_hms(secs)}")
+    print(f"  {'TOTAL':<20} {_hms(time.time() - pipeline_start)}")

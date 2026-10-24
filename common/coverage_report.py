@@ -49,13 +49,13 @@ class CoverageReporter:
         return report
 
     @staticmethod
-    def print_summary(report_df: pd.DataFrame, member_name: str = "Solution"):
+    def print_summary(report_df: pd.DataFrame, stage: str = "Solution"):
         total_demand = report_df['DEMAND'].sum()
         total_supply = report_df['SUPPLY'].sum()
         total_under = report_df['UNDER_COVERAGE'].sum()
         total_over = report_df['OVER_COVERAGE'].sum()
 
-        print(f"\n================ COVERAGE SUMMARY: {member_name} ================")
+        print(f"\n================ COVERAGE SUMMARY: {stage} ================")
         print(f"Total Demand Required : {total_demand:,}")
         print(f"Total Supply Provided : {total_supply:,}")
         print(f"Unmet Demand (Under)  : {total_under:,}")

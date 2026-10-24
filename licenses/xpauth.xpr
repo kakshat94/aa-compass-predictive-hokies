@@ -1,0 +1,9 @@
+license comment="American Airlines Optimization Competition for \
+	College Students." expiry="30-nov-2026" features="Hyper OptLib \
+	OptConsole OptJava Barrier Network Quadratic IVE Integer \
+	Threads=1024 ParaMIP=1024 ParaBar=1024" \
+	fico_xpress_release="9.9" hostid="any" platform="any" \
+	release="2026" static="uncounted" terminal-services sig="98db \
+	fb4c 2675 9ae4 3ef8 e598 9c19 90ef 022e 17a1 fd49 723f 42f4 \
+	88d8 3fea d884 3584 4d92 cf80 91e5 115f 3834 4aa3 c41c 0254 \
+	fff7 9105 41e4 f93b 2884 763f dfa3"

@@ -1,0 +1,1210 @@
+{
+  "coverage_stage_status": "OPTIMAL",
+  "fairness_stage_status": "FEASIBLE",
+  "initial_total_shortage": 1175,
+  "training_validated": true,
+  "assigned_vacations": 9803,
+  "total_quota": 9803,
+  "dispatchers": 493,
+  "num_dates": 363,
+  "fairness_before_lns": {
+    "min": 0,
+    "max": 70,
+    "mean": 19.884381338742394,
+    "std": 12.996676883449698,
+    "total_absolute_deviation": 5123.578093306288,
+    "maximum_absolute_deviation": 50.11561866125761,
+    "zero_vacation_dispatchers": 4,
+    "over_40_vacation_dispatchers": 31
+  },
+  "fairness_after_adaptive_lns": {
+    "min": 0,
+    "max": 50,
+    "mean": 19.884381338742394,
+    "std": 9.942676444547008,
+    "total_absolute_deviation": 3847.0101419878297,
+    "maximum_absolute_deviation": 30.115618661257606,
+    "zero_vacation_dispatchers": 2,
+    "over_40_vacation_dispatchers": 23
+  },
+  "fairness_after_lns": {
+    "min": 1,
+    "max": 50,
+    "mean": 19.884381338742394,
+    "std": 9.70188598970415,
+    "total_absolute_deviation": 3657.841784989858,
+    "maximum_absolute_deviation": 30.115618661257606,
+    "zero_vacation_dispatchers": 0,
+    "over_40_vacation_dispatchers": 23
+  },
+  "fairness_objective": "minimize_max_absolute_deviation_then_total_absolute_deviation",
+  "lns_accepted": 7,
+  "lns_iterations_run": 10,
+  "lns_statuses": [
+    "OPTIMAL",
+    "OPTIMAL",
+    "OPTIMAL",
+    "OPTIMAL",
+    "OPTIMAL",
+    "OPTIMAL",
+    "OPTIMAL",
+    "OPTIMAL",
+    "OPTIMAL",
+    "OPTIMAL"
+  ],
+  "lns_mode": "adaptive_minimax_then_absolute_deviation",
+  "lns_history": [
+    {
+      "iteration": 1,
+      "method": "imbalance_targeted",
+      "start_date": "2025-09-07",
+      "window_days": 21,
+      "status": "OPTIMAL",
+      "accepted": true,
+      "max_deviation_before_days": 50.11561866125761,
+      "max_deviation_after_days": 48.11561866125761,
+      "total_absolute_deviation_before": 5123.578093306288,
+      "total_absolute_deviation_after": 4889.578093306288,
+      "fairness_score_before": 238814433537,
+      "fairness_score_after": 229283879801,
+      "solver_seconds": 4.941
+    },
+    {
+      "iteration": 2,
+      "method": "imbalance_targeted",
+      "start_date": "2025-09-26",
+      "window_days": 21,
+      "status": "OPTIMAL",
+      "accepted": true,
+      "max_deviation_before_days": 48.11561866125761,
+      "max_deviation_after_days": 41.11561866125761,
+      "total_absolute_deviation_before": 4889.578093306288,
+      "total_absolute_deviation_after": 4706.8032454361055,
+      "fairness_score_before": 229283879801,
+      "fairness_score_after": 195927255384,
+      "solver_seconds": 5.889
+    },
+    {
+      "iteration": 3,
+      "method": "imbalance_targeted",
+      "start_date": "2025-10-14",
+      "window_days": 21,
+      "status": "OPTIMAL",
+      "accepted": true,
+      "max_deviation_before_days": 41.11561866125761,
+      "max_deviation_after_days": 39.11561866125761,
+      "total_absolute_deviation_before": 4706.8032454361055,
+      "total_absolute_deviation_after": 4589.103448275862,
+      "fairness_score_before": 195927255384,
+      "fairness_score_after": 186396758984,
+      "solver_seconds": 8.043
+    },
+    {
+      "iteration": 4,
+      "method": "exploration",
+      "start_date": "2025-02-13",
+      "window_days": 21,
+      "status": "OPTIMAL",
+      "accepted": true,
+      "max_deviation_before_days": 39.11561866125761,
+      "max_deviation_after_days": 37.11561866125761,
+      "total_absolute_deviation_before": 4589.103448275862,
+      "total_absolute_deviation_after": 4246.166328600406,
+      "fairness_score_before": 186396758984,
+      "fairness_score_after": 176866151542,
+      "solver_seconds": 8.078
+    },
+    {
+      "iteration": 5,
+      "method": "imbalance_targeted",
+      "start_date": "2025-04-25",
+      "window_days": 21,
+      "status": "OPTIMAL",
+      "accepted": true,
+      "max_deviation_before_days": 37.11561866125761,
+      "max_deviation_after_days": 32.11561866125761,
+      "total_absolute_deviation_before": 4246.166328600406,
+      "total_absolute_deviation_after": 3933.0101419878297,
+      "fairness_score_before": 176866151542,
+      "fairness_score_after": 153039901221,
+      "solver_seconds": 8.202
+    },
+    {
+      "iteration": 6,
+      "method": "imbalance_targeted",
+      "start_date": "2025-08-31",
+      "window_days": 21,
+      "status": "OPTIMAL",
+      "accepted": true,
+      "max_deviation_before_days": 32.11561866125761,
+      "max_deviation_after_days": 31.115618661257606,
+      "total_absolute_deviation_before": 3933.0101419878297,
+      "total_absolute_deviation_after": 3849.0101419878297,
+      "fairness_score_before": 153039901221,
+      "fairness_score_after": 148274640622,
+      "solver_seconds": 5.207
+    },
+    {
+      "iteration": 7,
+      "method": "imbalance_targeted",
+      "start_date": "2025-09-11",
+      "window_days": 21,
+      "status": "OPTIMAL",
+      "accepted": true,
+      "max_deviation_before_days": 31.115618661257606,
+      "max_deviation_after_days": 30.115618661257606,
+      "total_absolute_deviation_before": 3849.0101419878297,
+      "total_absolute_deviation_after": 3847.0101419878297,
+      "fairness_score_before": 148274640622,
+      "fairness_score_after": 143509420449,
+      "solver_seconds": 3.909
+    },
+    {
+      "iteration": 8,
+      "method": "exploration",
+      "start_date": "2025-10-06",
+      "window_days": 21,
+      "status": "OPTIMAL",
+      "accepted": false,
+      "max_deviation_before_days": 30.115618661257606,
+      "max_deviation_after_days": 30.115618661257606,
+      "total_absolute_deviation_before": 3847.0101419878297,
+      "total_absolute_deviation_after": 3847.0101419878297,
+      "fairness_score_before": 143509420449,
+      "fairness_score_after": 143509420449,
+      "solver_seconds": 1.499
+    },
+    {
+      "iteration": 9,
+      "method": "imbalance_targeted",
+      "start_date": "2025-09-11",
+      "window_days": 21,
+      "status": "OPTIMAL",
+      "accepted": false,
+      "max_deviation_before_days": 30.115618661257606,
+      "max_deviation_after_days": 30.115618661257606,
+      "total_absolute_deviation_before": 3847.0101419878297,
+      "total_absolute_deviation_after": 3847.0101419878297,
+      "fairness_score_before": 143509420449,
+      "fairness_score_after": 143509420449,
+      "solver_seconds": 1.224
+    },
+    {
+      "iteration": 10,
+      "method": "imbalance_targeted",
+      "start_date": "2025-09-07",
+      "window_days": 28,
+      "status": "OPTIMAL",
+      "accepted": false,
+      "max_deviation_before_days": 30.115618661257606,
+      "max_deviation_after_days": 30.115618661257606,
+      "total_absolute_deviation_before": 3847.0101419878297,
+      "total_absolute_deviation_after": 3847.0101419878297,
+      "fairness_score_before": 143509420449,
+      "fairness_score_after": 143509420449,
+      "solver_seconds": 2.016
+    }
+  ],
+  "zero_repair_swaps": 124,
+  "zero_repair_before_zero_count": 2,
+  "zero_repair_after_zero_count": 0,
+  "zero_repair_before_max_deviation_days": 30.115618661257606,
+  "zero_repair_after_max_deviation_days": 30.115618661257606,
+  "zero_repair_before_abs_deviation": 3847.0101419878297,
+  "zero_repair_after_abs_deviation": 3657.841784989858,
+  "zero_repair_history": [
+    {
+      "pass": 1,
+      "recipient": "9100042",
+      "donor": "9100062",
+      "shift_date": "2025-01-22",
+      "work_center": "OC",
+      "shift_type": "MORNING"
+    },
+    {
+      "pass": 1,
+      "recipient": "9100064",
+      "donor": "9100074",
+      "shift_date": "2025-01-22",
+      "work_center": "OC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100096",
+      "donor": "100147",
+      "shift_date": "2025-01-14",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100002",
+      "donor": "100075",
+      "shift_date": "2025-01-19",
+      "work_center": "DOMESTIC",
+      "shift_type": "MORNING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100003",
+      "donor": "100089",
+      "shift_date": "2025-01-14",
+      "work_center": "DOMESTIC",
+      "shift_type": "MORNING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100005",
+      "donor": "100073",
+      "shift_date": "2025-01-16",
+      "work_center": "DOMESTIC",
+      "shift_type": "MORNING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100006",
+      "donor": "100091",
+      "shift_date": "2025-01-14",
+      "work_center": "DOMESTIC",
+      "shift_type": "MORNING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100014",
+      "donor": "100079",
+      "shift_date": "2025-01-20",
+      "work_center": "DOMESTIC",
+      "shift_type": "MORNING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100023",
+      "donor": "100089",
+      "shift_date": "2025-01-22",
+      "work_center": "DOMESTIC",
+      "shift_type": "MORNING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100025",
+      "donor": "100094",
+      "shift_date": "2025-01-21",
+      "work_center": "DOMESTIC",
+      "shift_type": "MORNING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100038",
+      "donor": "100084",
+      "shift_date": "2025-01-20",
+      "work_center": "DOMESTIC",
+      "shift_type": "MORNING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100115",
+      "donor": "100176",
+      "shift_date": "2025-01-14",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100012",
+      "donor": "100077",
+      "shift_date": "2025-01-24",
+      "work_center": "DOMESTIC",
+      "shift_type": "MORNING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100013",
+      "donor": "100094",
+      "shift_date": "2025-01-22",
+      "work_center": "DOMESTIC",
+      "shift_type": "MORNING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100017",
+      "donor": "100088",
+      "shift_date": "2025-01-23",
+      "work_center": "DOMESTIC",
+      "shift_type": "MORNING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100019",
+      "donor": "100089",
+      "shift_date": "2025-01-23",
+      "work_center": "DOMESTIC",
+      "shift_type": "MORNING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100031",
+      "donor": "100091",
+      "shift_date": "2025-01-27",
+      "work_center": "DOMESTIC",
+      "shift_type": "MORNING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100034",
+      "donor": "100091",
+      "shift_date": "2025-01-23",
+      "work_center": "DOMESTIC",
+      "shift_type": "MORNING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100097",
+      "donor": "100154",
+      "shift_date": "2025-01-15",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100109",
+      "donor": "100176",
+      "shift_date": "2025-01-15",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100111",
+      "donor": "100185",
+      "shift_date": "2025-01-15",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100121",
+      "donor": "100190",
+      "shift_date": "2025-01-15",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100131",
+      "donor": "100179",
+      "shift_date": "2025-01-16",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100139",
+      "donor": "100180",
+      "shift_date": "2025-01-16",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100007",
+      "donor": "100094",
+      "shift_date": "2025-01-24",
+      "work_center": "DOMESTIC",
+      "shift_type": "MORNING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100008",
+      "donor": "100095",
+      "shift_date": "2025-01-25",
+      "work_center": "DOMESTIC",
+      "shift_type": "MORNING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100009",
+      "donor": "100079",
+      "shift_date": "2025-01-29",
+      "work_center": "DOMESTIC",
+      "shift_type": "MORNING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100010",
+      "donor": "100088",
+      "shift_date": "2025-02-01",
+      "work_center": "DOMESTIC",
+      "shift_type": "MORNING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100018",
+      "donor": "100095",
+      "shift_date": "2025-02-02",
+      "work_center": "DOMESTIC",
+      "shift_type": "MORNING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100022",
+      "donor": "100089",
+      "shift_date": "2025-02-04",
+      "work_center": "DOMESTIC",
+      "shift_type": "MORNING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100024",
+      "donor": "100077",
+      "shift_date": "2025-02-06",
+      "work_center": "DOMESTIC",
+      "shift_type": "MORNING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100027",
+      "donor": "100094",
+      "shift_date": "2025-03-17",
+      "work_center": "DOMESTIC",
+      "shift_type": "MORNING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100028",
+      "donor": "100089",
+      "shift_date": "2025-02-12",
+      "work_center": "DOMESTIC",
+      "shift_type": "MORNING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100029",
+      "donor": "100094",
+      "shift_date": "2025-02-06",
+      "work_center": "DOMESTIC",
+      "shift_type": "MORNING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100030",
+      "donor": "100088",
+      "shift_date": "2025-02-07",
+      "work_center": "DOMESTIC",
+      "shift_type": "MORNING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100032",
+      "donor": "100088",
+      "shift_date": "2025-04-02",
+      "work_center": "DOMESTIC",
+      "shift_type": "MORNING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100033",
+      "donor": "100089",
+      "shift_date": "2025-03-06",
+      "work_center": "DOMESTIC",
+      "shift_type": "MORNING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100036",
+      "donor": "100088",
+      "shift_date": "2025-03-09",
+      "work_center": "DOMESTIC",
+      "shift_type": "MORNING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100037",
+      "donor": "100089",
+      "shift_date": "2025-03-21",
+      "work_center": "DOMESTIC",
+      "shift_type": "MORNING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100040",
+      "donor": "100089",
+      "shift_date": "2025-04-06",
+      "work_center": "DOMESTIC",
+      "shift_type": "MORNING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100103",
+      "donor": "100182",
+      "shift_date": "2025-01-16",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100104",
+      "donor": "100177",
+      "shift_date": "2025-01-18",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100106",
+      "donor": "100191",
+      "shift_date": "2025-01-17",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100112",
+      "donor": "100190",
+      "shift_date": "2025-01-16",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100113",
+      "donor": "100179",
+      "shift_date": "2025-01-18",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100114",
+      "donor": "100182",
+      "shift_date": "2025-01-19",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100128",
+      "donor": "100181",
+      "shift_date": "2025-01-24",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100192",
+      "donor": "100209",
+      "shift_date": "2025-01-16",
+      "work_center": "DOMESTIC",
+      "shift_type": "MIDNIGHT"
+    },
+    {
+      "pass": 1,
+      "recipient": "100004",
+      "donor": "100094",
+      "shift_date": "2025-03-24",
+      "work_center": "DOMESTIC",
+      "shift_type": "MORNING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100016",
+      "donor": "100088",
+      "shift_date": "2025-03-23",
+      "work_center": "DOMESTIC",
+      "shift_type": "MORNING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100021",
+      "donor": "100088",
+      "shift_date": "2025-07-31",
+      "work_center": "DOMESTIC",
+      "shift_type": "MORNING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100044",
+      "donor": "100088",
+      "shift_date": "2025-04-21",
+      "work_center": "DOMESTIC",
+      "shift_type": "MORNING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100098",
+      "donor": "100149",
+      "shift_date": "2025-01-20",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100100",
+      "donor": "100165",
+      "shift_date": "2025-01-23",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100101",
+      "donor": "100191",
+      "shift_date": "2025-01-24",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100102",
+      "donor": "100181",
+      "shift_date": "2025-01-21",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100107",
+      "donor": "100184",
+      "shift_date": "2025-01-23",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100116",
+      "donor": "100185",
+      "shift_date": "2025-01-23",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100119",
+      "donor": "100181",
+      "shift_date": "2025-01-22",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100126",
+      "donor": "100187",
+      "shift_date": "2025-01-22",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100127",
+      "donor": "100185",
+      "shift_date": "2025-01-21",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100133",
+      "donor": "100179",
+      "shift_date": "2025-01-25",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100137",
+      "donor": "100149",
+      "shift_date": "2025-01-28",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100011",
+      "donor": "100066",
+      "shift_date": "2025-01-23",
+      "work_center": "DOMESTIC",
+      "shift_type": "MORNING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100042",
+      "donor": "100075",
+      "shift_date": "2025-01-25",
+      "work_center": "DOMESTIC",
+      "shift_type": "MORNING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100099",
+      "donor": "100149",
+      "shift_date": "2025-01-29",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100110",
+      "donor": "100165",
+      "shift_date": "2025-01-29",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100122",
+      "donor": "100179",
+      "shift_date": "2025-01-26",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100123",
+      "donor": "100176",
+      "shift_date": "2025-01-31",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100129",
+      "donor": "100190",
+      "shift_date": "2025-01-30",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100136",
+      "donor": "100180",
+      "shift_date": "2025-02-04",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100020",
+      "donor": "100079",
+      "shift_date": "2025-01-26",
+      "work_center": "DOMESTIC",
+      "shift_type": "MORNING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100035",
+      "donor": "100073",
+      "shift_date": "2025-01-15",
+      "work_center": "DOMESTIC",
+      "shift_type": "MORNING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100043",
+      "donor": "100085",
+      "shift_date": "2025-01-21",
+      "work_center": "DOMESTIC",
+      "shift_type": "MORNING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100045",
+      "donor": "100090",
+      "shift_date": "2025-01-28",
+      "work_center": "DOMESTIC",
+      "shift_type": "MORNING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100047",
+      "donor": "100084",
+      "shift_date": "2025-02-04",
+      "work_center": "DOMESTIC",
+      "shift_type": "MORNING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100117",
+      "donor": "100149",
+      "shift_date": "2025-02-12",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100125",
+      "donor": "100176",
+      "shift_date": "2025-02-05",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100132",
+      "donor": "100190",
+      "shift_date": "2025-01-31",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100140",
+      "donor": "100176",
+      "shift_date": "2025-04-05",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100001",
+      "donor": "100091",
+      "shift_date": "2025-01-30",
+      "work_center": "DOMESTIC",
+      "shift_type": "MORNING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100039",
+      "donor": "100077",
+      "shift_date": "2025-02-08",
+      "work_center": "DOMESTIC",
+      "shift_type": "MORNING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100041",
+      "donor": "100089",
+      "shift_date": "2025-03-09",
+      "work_center": "DOMESTIC",
+      "shift_type": "MORNING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100049",
+      "donor": "100094",
+      "shift_date": "2025-04-07",
+      "work_center": "DOMESTIC",
+      "shift_type": "MORNING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100081",
+      "donor": "100095",
+      "shift_date": "2025-02-09",
+      "work_center": "DOMESTIC",
+      "shift_type": "MORNING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100105",
+      "donor": "100190",
+      "shift_date": "2025-02-07",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100118",
+      "donor": "100176",
+      "shift_date": "2025-02-12",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100120",
+      "donor": "100165",
+      "shift_date": "2025-02-08",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100124",
+      "donor": "100176",
+      "shift_date": "2025-03-08",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100130",
+      "donor": "100190",
+      "shift_date": "2025-03-09",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100152",
+      "donor": "100190",
+      "shift_date": "2025-03-25",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100015",
+      "donor": "100088",
+      "shift_date": "2025-04-22",
+      "work_center": "DOMESTIC",
+      "shift_type": "MORNING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100138",
+      "donor": "100190",
+      "shift_date": "2025-03-17",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100108",
+      "donor": "100190",
+      "shift_date": "2025-04-02",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100134",
+      "donor": "100190",
+      "shift_date": "2025-03-15",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100135",
+      "donor": "100165",
+      "shift_date": "2025-03-16",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100142",
+      "donor": "100190",
+      "shift_date": "2025-03-16",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100143",
+      "donor": "100165",
+      "shift_date": "2025-06-01",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100148",
+      "donor": "100165",
+      "shift_date": "2025-03-24",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100157",
+      "donor": "100190",
+      "shift_date": "2025-03-24",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100160",
+      "donor": "100176",
+      "shift_date": "2025-04-21",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100168",
+      "donor": "100190",
+      "shift_date": "2025-04-06",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100171",
+      "donor": "100176",
+      "shift_date": "2025-08-26",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100173",
+      "donor": "100165",
+      "shift_date": "2025-03-30",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100174",
+      "donor": "100176",
+      "shift_date": "2025-06-15",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100183",
+      "donor": "100176",
+      "shift_date": "2025-11-09",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100141",
+      "donor": "100176",
+      "shift_date": "2025-03-30",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100155",
+      "donor": "100161",
+      "shift_date": "2025-01-15",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 1,
+      "recipient": "100159",
+      "donor": "100166",
+      "shift_date": "2025-01-20",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 2,
+      "recipient": "100096",
+      "donor": "100191",
+      "shift_date": "2025-01-26",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 2,
+      "recipient": "100115",
+      "donor": "100182",
+      "shift_date": "2025-01-23",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 2,
+      "recipient": "100097",
+      "donor": "100154",
+      "shift_date": "2025-01-24",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 2,
+      "recipient": "100109",
+      "donor": "100147",
+      "shift_date": "2025-01-29",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 2,
+      "recipient": "100111",
+      "donor": "100181",
+      "shift_date": "2025-01-31",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 2,
+      "recipient": "100121",
+      "donor": "100184",
+      "shift_date": "2025-02-05",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 2,
+      "recipient": "100131",
+      "donor": "100187",
+      "shift_date": "2025-02-04",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 2,
+      "recipient": "100139",
+      "donor": "100149",
+      "shift_date": "2025-02-06",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 2,
+      "recipient": "100103",
+      "donor": "100179",
+      "shift_date": "2025-02-07",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 2,
+      "recipient": "100104",
+      "donor": "100177",
+      "shift_date": "2025-02-10",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 2,
+      "recipient": "100106",
+      "donor": "100180",
+      "shift_date": "2025-03-06",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 2,
+      "recipient": "100112",
+      "donor": "100185",
+      "shift_date": "2025-03-16",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 2,
+      "recipient": "100113",
+      "donor": "100176",
+      "shift_date": "2025-03-31",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 2,
+      "recipient": "100114",
+      "donor": "100190",
+      "shift_date": "2025-07-20",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    },
+    {
+      "pass": 2,
+      "recipient": "100128",
+      "donor": "100165",
+      "shift_date": "2025-06-30",
+      "work_center": "DOMESTIC",
+      "shift_type": "EVENING"
+    }
+  ],
+  "zero_repair_method": "same_day_same_work_center_shift_coverage_preserving_swaps"
+}

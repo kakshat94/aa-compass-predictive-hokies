@@ -1,0 +1,73 @@
+
+shifts:
+  morning_equals_evening: true
+
+flex_days:
+  Latin:
+    max_flex_days: 1
+  Pacific:
+    max_flex_days: 1
+  Europe:
+    max_flex_days: 1
+
+work_centers:
+  Domestic:
+    demand_start_date: "10/02"   # October 2
+    training_month_optimizer:
+      - "September"
+    training_months:
+      - "September"
+      - "February"
+      - "May"
+
+  Pacific:
+    demand_start_date: "12/11"   # December 11
+    training_month_optimizer:
+      - "April"
+    training_months:
+      - "April"
+
+  Latin:
+    demand_start_date: 
+      - "02/17"   # February 17  
+      - "11/18"   # February 17
+    training_month_optimizer:
+      - "October"
+    training_months:
+      - "October"
+
+  Europe:
+    demand_start_date: "06/18"   # June 14
+    training_month_optimizer:
+      - "March"
+    training_months:
+      - "March"
+
+  ATC:
+    demand_start_date: null
+    training_month_optimizer:
+      - "March"
+      - "November"
+    training_months:
+      - "March"
+      - "November"
+  ROC:
+    demand_start_date: null
+    training_month_optimizer:
+      - "October"
+    training_months:
+      - "October"
+
+  CHF:
+    demand_start_date: null
+    training_month_optimizer:
+      - "October"
+    training_months:
+      - "October"
+
+  OC:
+    demand_start_date: null
+    training_month_optimizer:
+      - "March"
+    training_months:
+      - "March"
