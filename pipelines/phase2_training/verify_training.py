@@ -26,6 +26,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"
 
 import pandas as pd  # noqa: E402
 
+from pipelines.phase2_training.flex_assignment import load_flex_assignments  # noqa: E402
 from pipelines.phase2_training.qualification_mapper import parse_final_quals  # noqa: E402
 from pipelines.phase2_training.training_assigner import (  # noqa: E402
     CLASS_SIZE_DEFAULT,
@@ -47,6 +48,7 @@ def verify_training(
     intl_scheduled_path: str,
     training_months: dict,
     class_size: int = CLASS_SIZE_DEFAULT,
+    flex_assignment_path: str | None = None,
 ) -> list:
     problems = []
 
@@ -129,6 +131,20 @@ def verify_training(
     if overlap:
         problems.append(f"{len(overlap)} training rows also appear in the regular roster")
 
+    # --- training must not use a pre-assigned flex day ---------------------- #
+    if flex_assignment_path:
+        _, flex_keys = load_flex_assignments(flex_assignment_path, optional=True)
+        training_keys = {
+            (str(tech), date)
+            for tech, date in (std_pairs | intl_pairs)
+        }
+        overlap = training_keys & flex_keys
+        if overlap:
+            examples = sorted(overlap)[:5]
+            problems.append(
+                f"{len(overlap)} training rows fall on pre-assigned flex days; examples: {examples}"
+            )
+
     # --- class size per (date, shift) ---------------------------------------- #
     caps = training.groupby(["SHIFT_DATE", "SHIFT_TYPE"]).size()
     if (caps > class_size).any():
@@ -147,12 +163,15 @@ def main() -> int:
     parser.add_argument("--intl-scheduled", default="outputs/intl_special_training_scheduled_df.csv")
     parser.add_argument("--params", default="pipelines/phase1/params.yaml")
     parser.add_argument("--class-size", type=int, default=CLASS_SIZE_DEFAULT)
+    parser.add_argument("--flex-assignment", default="outputs/phase1/Flex_assignment.csv",
+                        help="Pre-assigned flex days to check against (pass none to skip).")
     args = parser.parse_args()
 
     training_months = load_training_months(args.params)
     problems = verify_training(
         args.regular, args.standard_data, args.intl_data,
         args.standard_scheduled, args.intl_scheduled, training_months, args.class_size,
+        flex_assignment_path=args.flex_assignment,
     )
 
     print("\n================ TRAINING VERIFICATION ================")

@@ -110,7 +110,7 @@ class _Context:
     def eligible_days(self, tech: object, month: int) -> List[str]:
         return [
             d for d, m in self.tech_days.get(tech, [])
-            if m == month and (tech, d) not in self.blocked
+            if m == month and (str(tech), d) not in self.blocked
         ]
 
 
@@ -260,7 +260,10 @@ def assign_training_exact(
     """
     del seed  # deterministic MIP; kept for signature parity with the random path
     frozen = dict(frozen or {})
-    blocked = set(flex_days or set()) | set(vacation_days or set())
+    blocked = {
+        (str(tech), date)
+        for tech, date in set(flex_days or set()) | set(vacation_days or set())
+    }
 
     df = _prepare(schedule)
     df["_WC"] = df["WORK_CENTER_ID"].astype(str)
@@ -293,6 +296,10 @@ def assign_training_exact(
             raise ValueError(
                 f"frozen training for TECH_ID {tech} on {date_str} is not a working day"
             )
+        if (str(tech), date_str) in blocked:
+            raise ValueError(
+                f"frozen training for TECH_ID {tech} on {date_str} overlaps a flex or vacation day"
+            )
         if skill not in tech_quals.get(tech, []):
             raise ValueError(
                 f"frozen training for TECH_ID {tech} uses unheld skill {skill!r}"
@@ -304,7 +311,7 @@ def assign_training_exact(
                 f"in month {month}, which is not an eligible training month"
             )
         frozen_requirements.add((tech, skill, month))
-        blocked.add((tech, date_str))
+        blocked.add((str(tech), date_str))
         shift = tech_shift[tech]
         frozen_seats[(date_str, shift)] = frozen_seats.get((date_str, shift), 0) + 1
         base_key = (tech_wc[tech], shift, date_str)

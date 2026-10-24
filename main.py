@@ -63,7 +63,7 @@ if __name__ == "__main__":
     flx = pd.read_csv(PHASE1_DIR / "Flex_assignment.csv")
 
     validator = BidlinePipelineValidator(reg, std, spc)
-    all_initial_tech_ids = set(reg['TECH_ID']).union(std['TECH_ID'], spc['TECH_ID'])
+    all_initial_tech_ids = {str(value) for value in set(reg['TECH_ID']).union(std['TECH_ID'], spc['TECH_ID'])}
     unmapped_tech_ids = all_initial_tech_ids - set(validator.tech_id_patterns.keys())
 
     if unmapped_tech_ids:
@@ -100,10 +100,19 @@ if __name__ == "__main__":
 
     stage2_results = validator.stage2_training_checks(std2, spc2, flx)
 
-    if stage2_results['invalid_training_days'] or stage2_results['duplicate_trainings']:
+    stage2_errors = (
+        stage2_results['invalid_training_days']
+        or stage2_results['duplicate_trainings']
+        or stage2_results['invalid_flex_days']
+        or stage2_results['training_flex_overlap']
+    )
+    if stage2_errors:
         print("Stage 2 Errors Found:")
         print(f" - Invalid training days (assigned on OFF day): {stage2_results['invalid_training_days']}")
         print(f" - Duplicate trainings on same day: {stage2_results['duplicate_trainings']}")
+        print(f" - Flex days on original working days: {stage2_results['invalid_flex_days']}")
+        print(f" - Training on pre-assigned flex days: {stage2_results['training_flex_overlap'][:10]}")
+        raise RuntimeError("Stage 2 integrity checks failed")
 
     report2 = CoverageReporter.evaluate(
         str(ROOT / "data" / "Demand.csv"),
@@ -134,21 +143,23 @@ if __name__ == "__main__":
 
     # ── Phase 3b — Flex Day Scheduling ───────────────────────────────────────
     _section("PHASE 3b — Flex Day Scheduling")
-    phase3.run_flex(PHASE2_DIR, PHASE3_DIR, ROOT)
+    qualified_flex = PHASE2_DIR / "Flex_assignment_qualified.csv"
+    if not qualified_flex.is_file():
+        qualified_flex = PHASE1_DIR / "Flex_assignment.csv"
+    phase3.run_flex(PHASE2_DIR, PHASE3_DIR, ROOT, qualified_flex)
     timings["phase3_flex"] = time.time() - t0
     print(f"  elapsed: {_hms(timings['phase3_flex'])}")
 
     # ── Check 3b — Phase 3b integrity ───────────────────────────────────────────
-
-    # final_flex = pd.read_csv('Flex_assignment_final.csv')
-
-    # # Run Stage 4 checks
-    # stage4_results = validator.stage4_flex_checks(final_flex)
-
-    # if stage4_results['invalid_flex_days'] or stage4_results['max_count_violations']:
-    #     print("Stage 4 Errors Found:")
-    #     print(f" - Flex days assigned on original WORKING days: {stage4_results['invalid_flex_days']}")
-    #     print(f" - TECH_IDs exceeding 4 flex days: {stage4_results['max_count_violations']}")
+    _section("CHECK 3b — Phase 3b flex integrity")
+    final_flex = pd.read_csv(PHASE3_DIR / "Flex_assignment_final.csv")
+    stage4_results = validator.stage4_flex_checks(final_flex)
+    if stage4_results['invalid_flex_days'] or stage4_results['max_count_violations']:
+        print("Stage 4 Errors Found:")
+        print(f" - Flex days assigned on original WORKING days: {stage4_results['invalid_flex_days']}")
+        print(f" - TECH_IDs exceeding 4 flex days: {stage4_results['max_count_violations']}")
+        raise RuntimeError("Stage 3b integrity checks failed")
+    print(f"  flex assignments checked: {len(final_flex):,}")
 
 
     # ── Timing summary ────────────────────────────────────────────────────────

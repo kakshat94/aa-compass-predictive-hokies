@@ -22,15 +22,16 @@ class BidlinePipelineValidator:
             mod_days = set(days % 15)
             for p in valid_patterns:
                 if mod_days.issubset(p):
-                    self.tech_id_patterns[tech_id] = p
+                    self.tech_id_patterns[str(tech_id)] = p
                     break
                     
     def is_original_working_day(self, tech_id, date):
         """Helper for O(1) checks against the original 4-3-4-4 pattern."""
-        if tech_id not in self.tech_id_patterns:
+        tech_key = str(tech_id)
+        if tech_key not in self.tech_id_patterns:
             return False
         day_offset = (date - self.min_date).days % 15
-        return day_offset in self.tech_id_patterns[tech_id]
+        return day_offset in self.tech_id_patterns[tech_key]
 
     def stage2_training_checks(self, std_training_df, spc_training_df, flex_df):
         """
@@ -38,8 +39,14 @@ class BidlinePipelineValidator:
         1. Checks if all trainings are on original working days.
         2. Checks if each TECH_ID has at most 1 training per day.
         3. Verifies Flex days still do not fall on original working days.
+        4. Checks that no training shares a dispatcher-day with a flex day.
         """
-        results = {'invalid_training_days': [], 'duplicate_trainings': [], 'invalid_flex_days': []}
+        results = {
+            'invalid_training_days': [],
+            'duplicate_trainings': [],
+            'invalid_flex_days': [],
+            'training_flex_overlap': [],
+        }
         
         # 1 & 2: Training Checks
         df_train = pd.concat([std_training_df, spc_training_df], ignore_index=True)
@@ -66,7 +73,19 @@ class BidlinePipelineValidator:
                     if self.is_original_working_day(tech_id, date):
                         results['invalid_flex_days'].append(tech_id)
                         break
-                        
+
+            if not df_train.empty:
+                training_keys = set(zip(
+                    df_train['TECH_ID'].astype(str), df_train['SHIFT_DATE']
+                ))
+                flex_keys = set(zip(
+                    flex_df['TECH_ID'].astype(str), flex_df['SHIFT_DATE']
+                ))
+                results['training_flex_overlap'] = sorted({
+                    f"{tech}@{date.date()}"
+                    for tech, date in training_keys & flex_keys
+                })
+
         results['invalid_training_days'] = list(set(results['invalid_training_days']))
         results['invalid_flex_days'] = list(set(results['invalid_flex_days']))
         return results

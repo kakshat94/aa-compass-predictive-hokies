@@ -48,7 +48,7 @@ def run_vacation(PHASE2_DIR: Path, PHASE3_DIR: Path, ROOT: Path, FAIR_SECONDS: f
     print(f"vacation assigned      : {stats['assigned_vacations']:,} rows -> {vac_output}")
 
 
-def run_flex(PHASE2_DIR: Path, PHASE3_DIR: Path, ROOT: Path):
+def run_flex(PHASE2_DIR: Path, PHASE3_DIR: Path, ROOT: Path, flex_assignment_path: Path | None = None):
     from pipelines.phase2_vacation_flex.flex_day_maxflow import (
         load_csv, normalize_dates, schedule_flex,
     )
@@ -57,6 +57,15 @@ def run_flex(PHASE2_DIR: Path, PHASE3_DIR: Path, ROOT: Path):
     training = load_csv(str(PHASE2_DIR / "all_training_data.csv"))
     vacation = load_csv(str(PHASE3_DIR / "vacation_initial.csv"))
     demand   = normalize_dates(load_csv(str(ROOT / "data" / "Demand.csv")), "SHIFT_DATE", "demand")
+
+    if flex_assignment_path is None:
+        qualified = PHASE2_DIR / "Flex_assignment_qualified.csv"
+        flex_assignment_path = qualified if qualified.is_file() else ROOT / "outputs" / "phase1" / "Flex_assignment.csv"
+    if Path(flex_assignment_path).is_file():
+        preassigned = load_csv(str(flex_assignment_path))
+    else:
+        print(f"WARNING: Pre-assigned flex file not found at {flex_assignment_path}; continuing without it.")
+        preassigned = pd.DataFrame(columns=["TECH_ID", "SHIFT_DATE"])
 
     audit_path = PHASE3_DIR / "demand_imputation_audit.csv"
     if audit_path.is_file():
@@ -75,9 +84,12 @@ def run_flex(PHASE2_DIR: Path, PHASE3_DIR: Path, ROOT: Path):
         if len(supplement):
             demand = pd.concat([demand, supplement], ignore_index=True)
 
-    a, c, e, s = schedule_flex(supply, demand, vacation, training)
-    a.to_csv(PHASE3_DIR / "flex_days.csv",                           index=False, date_format="%Y-%m-%d")
+    a, c, e, s = schedule_flex(supply, demand, vacation, training, preassigned)
+    a.loc[~a["IS_PREASSIGNED"]].to_csv(PHASE3_DIR / "flex_days.csv", index=False, date_format="%Y-%m-%d")
+    a.to_csv(PHASE3_DIR / "Flex_assignment_final.csv", index=False, date_format="%Y-%m-%d")
     c.to_csv(PHASE3_DIR / "staffing_coverage_before_after_flex.csv", index=False, date_format="%Y-%m-%d")
     e.to_csv(PHASE3_DIR / "flex_by_dispatcher.csv",                  index=False)
     (PHASE3_DIR / "flex_summary.json").write_text(json.dumps(s, indent=2))
-    print(f"flex days added        : {s['flex_days_added']:,} -> {PHASE3_DIR}")
+    print(f"flex days added        : {s['flex_days_added']:,} new, "
+          f"{s['preassigned_flex_days']:,} pre-assigned, "
+          f"{s['total_flex_days']:,} total -> {PHASE3_DIR}")
