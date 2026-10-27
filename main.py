@@ -94,7 +94,7 @@ def export_outputs(file_in, file_out):
 
         # Save out the formatted file
         df.to_csv(export_path, index=False)
-        logging.info(f"Exported {file_in} to {file_out}")
+        logging.info(f"Exported {file_in} to {export_path}\{file_out}")
     else:
         logging.warning("Final supply file not found, skipping export.")
 
@@ -338,7 +338,7 @@ if __name__ == "__main__":
         ),
         ("outputs/phase2_vacation_flex/vacation_initial.csv", "vacation_data.csv"),
         (
-            "outputs/phase2_vacation_flex/flex_maxflow/supply_after_vacation.csv",
+            "outputs/phase2_vacation_flex/flex_maxflow/supply_after_vacation_and_flex.csv",
             "supply_data_after_vacation_shrinkage.csv",
         ),
         (
@@ -362,12 +362,22 @@ if __name__ == "__main__":
     for file_in, file_out in output_files:
         export_outputs(Path(file_in), file_out)
 
+    surplus_actuals = report_final["OVER_COVERAGE"].sum()
+    supply_actuals = report_final["SUPPLY"].sum()
+    supply_allpresent = len(
+        pd.read_csv("outputs/solutions/supply_data_after_vacation_shrinkage.csv")
+    )
+
     metrics = {
         "Runtime": str(time.time() - t0),
         "Number of bidlines": str(bidlines),
-        "Total supply": str(report_final["SUPPLY"].sum()),
+        "Total supply (not including workcenter-shift combination with no demand)": str(
+            supply_actuals
+        ),
         "Total Shortages": str(report_final["UNDER_COVERAGE"].sum()),
-        "Total Surplus": str(report_final["OVER_COVERAGE"].sum()),
+        "Total Surplus (not including workcenter-shift combination with no demand)": str(
+            surplus_actuals
+        ),
         "Total Vacation days assigned": str(
             len(pd.read_csv("outputs/solutions/vacation_data.csv"))
         ),
@@ -375,13 +385,11 @@ if __name__ == "__main__":
             len(pd.read_csv("outputs/solutions/flex_days_data.csv"))
         ),
         "Total supply (including workcenter-shift combination with no demand)": str(
-            len(
-                pd.read_csv(
-                    "outputs/solutions/supply_data_after_vacation_shrinkage.csv"
-                )
-            )
+            supply_allpresent
         ),
-        "Total surplus (including workcenter-shift combination with no demand)": "",
+        "Total surplus (including workcenter-shift combination with no demand)": str(
+            surplus_actuals + supply_allpresent - supply_actuals
+        ),
     }
 
     with open(ROOT / "outputs" / "metrics.json", "w", encoding="utf-8") as file:

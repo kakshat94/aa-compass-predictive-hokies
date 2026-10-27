@@ -53,6 +53,12 @@ class WorkforceOptimizer:
 
     def build_model(self):
 
+        license_path = os.path.abspath("licenses/xpauth.xpr")
+        os.environ["XPAUTH_PATH"] = license_path
+
+        # Initialize the license explicitly
+        xp.init(license_path)
+
         logging.info("Defining model for %s shift", self.shift)
 
         self.model = xp.problem(name=f"Bidline_Model{self.shift}")

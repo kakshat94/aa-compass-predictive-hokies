@@ -5,3 +5,4 @@
 *.sol
 __pycache__/
 .venv/
+latest*/

@@ -19,6 +19,9 @@ with open(_PARAMS_PATH) as _f:
 _MORNING_EQUALS_EVENING: bool = _PARAMS.get("shifts", {}).get(
     "morning_equals_evening", False
 )
+_FLEX_PARAMS: Dict[str, int] = {
+    wc: cfg["max_flex_days"] for wc, cfg in _PARAMS.get("flex_days", {}).items()
+}
 
 
 class Orchestrator:
@@ -60,6 +63,10 @@ class Orchestrator:
         """
         Constructs the workforce optimization model using Gurobi.
         """
+        logging.info("Optimizer flex days in consderation")
+        for i, e in _FLEX_PARAMS.items():
+            logging.info("Max flex days for %s is %s", i, e)
+
         w_ctrs = self.wc_day_sets.keys()
         # Create Gurobi environment and model
         coverage_days = {}
