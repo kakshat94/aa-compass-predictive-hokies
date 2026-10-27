@@ -4,11 +4,13 @@ shifts:
 
 flex_days:
   Latin:
-    max_flex_days: 1
-  Pacific:
-    max_flex_days: 1
-  Europe:
-    max_flex_days: 1
+    max_flex_days: 2
+  ROC:
+    max_flex_days: 2
+  # Europe:
+  #   max_flex_days: 1
+  # Domestic:
+  #   max_flex_days: 2
 
 work_centers:
   Domestic:

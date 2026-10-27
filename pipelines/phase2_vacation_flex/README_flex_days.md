@@ -83,7 +83,7 @@ For the earlier greedy baseline:
 python flex_day_maxflow.py --solver greedy --output-dir outputs/flex_greedy
 ```
 
-The default inputs are `data/initial_supply_data_reference.csv`, `data/annual_desk_needs_reference.csv`, and `outputs/vacation_initial.csv`. The script also incorporates the existing `outputs/demand_imputation_audit.csv` when needed. To include a training calendar, supply a compatible file with dispatcher IDs and dates using `--training path/to/training.csv`.
+The default inputs are `inputs/initial_supply_data_reference.csv`, `inputs/annual_desk_needs_reference.csv`, and `outputs/vacation_initial.csv`. The script also incorporates the existing `outputs/demand_imputation_audit.csv` when needed. To include a training calendar, supply a compatible file with dispatcher IDs and dates using `--training path/to/training.csv`.
 
 ### Output files
 

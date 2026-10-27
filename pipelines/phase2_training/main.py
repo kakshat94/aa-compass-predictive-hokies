@@ -26,6 +26,7 @@ Outputs (in ``--output-data-dir``, default ``outputs``):
 import argparse
 import os
 import sys
+import logging
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
 
@@ -89,10 +90,10 @@ def run_pipeline(
     regular_path: str,
     standard_training_path: str,
     special_training_path: str,
-    qual_data_path: str = "data/Supply_sample.csv",
-    params_path: str = "members/akshat/params.yaml",
-    volume_path: str = "data/demand_volume_per_day_reference.csv",
-    demand_path: str = "data/Demand.csv",
+    qual_data_path: str = "inputs/Supply_sample.csv",
+    params_path: str = "params.yaml",
+    volume_path: str = "inputs/demand_volume_per_day_reference.csv",
+    demand_path: str = "inputs/annual_desk_needs_reference.csv",
     method: str = "random",
     solver: str = "gurobi",
     time_limit: float = 120.0,
@@ -132,7 +133,9 @@ def run_pipeline(
     qual_data = pd.read_csv(qual_data_path)
 
     # --- Stage 1: qualifications (Phase 1-3) ---
-    merged = map_qualifications_to_supply(cohort, qual_data, priority_list, dedupe=dedupe)
+    merged = map_qualifications_to_supply(
+        cohort, qual_data, priority_list, dedupe=dedupe
+    )
     prop_table = build_prop_table(qual_data, priority_list)
     merged = sprinkle_qualifications(merged, prop_table, priority_list, seed=seed)
     merged = merged[base_columns]  # drop MAPPED_QUAL_ID / _HIST_* helper columns
@@ -199,53 +202,107 @@ def run_pipeline(
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Qualification + training + vacation pipeline (members/daniel).")
-    parser.add_argument("--input-data-dir", default="data",
-                        help="Directory with the competition inputs (Demand.csv, "
-                             "Supply_sample.csv, demand_volume_per_day_reference.csv).")
-    parser.add_argument("--output-data-dir", default="outputs",
-                        help="Directory for the files this pipeline generates "
-                             "(default outputs; use e.g. outputs/exact_gurobi for a run).")
-    parser.add_argument("--regular", default=None,
-                        help="Phase I regular roster (default outputs/Supply_Regular.csv).")
-    parser.add_argument("--standard", default=None,
-                        help="Phase I standard-training roster (default outputs/Supply_Standard_Training.csv).")
-    parser.add_argument("--special", default=None,
-                        help="Phase I special-training roster (default outputs/Supply_Special_Training.csv).")
-    parser.add_argument("--qual-data", default=None,
-                        help="Qualification reference (default <input-data-dir>/Supply_sample.csv).")
-    parser.add_argument("--params", default="pipelines/phase1/params.yaml")
-    parser.add_argument("--volume", default=None,
-                        help="Operational-volume reference (default <input-data-dir>/demand_volume_per_day_reference.csv).")
-    parser.add_argument("--demand", default=None,
-                        help="Desk demand (default <input-data-dir>/Demand.csv).")
+    parser = argparse.ArgumentParser(
+        description="Qualification + training + vacation pipeline (members/daniel)."
+    )
+    parser.add_argument(
+        "--input-data-dir",
+        default="data",
+        help="Directory with the competition inputs (annual_desk_needs_reference.csv, "
+        "Supply_sample.csv, demand_volume_per_day_reference.csv).",
+    )
+    parser.add_argument(
+        "--output-data-dir",
+        default="outputs",
+        help="Directory for the files this pipeline generates "
+        "(default outputs; use e.g. outputs/exact_gurobi for a run).",
+    )
+    parser.add_argument(
+        "--regular",
+        default=None,
+        help="Phase I regular roster (default outputs/Supply_Regular.csv).",
+    )
+    parser.add_argument(
+        "--standard",
+        default=None,
+        help="Phase I standard-training roster (default outputs/Supply_Standard_Training.csv).",
+    )
+    parser.add_argument(
+        "--special",
+        default=None,
+        help="Phase I special-training roster (default outputs/Supply_Special_Training.csv).",
+    )
+    parser.add_argument(
+        "--qual-data",
+        default=None,
+        help="Qualification reference (default <input-data-dir>/Supply_sample.csv).",
+    )
+    parser.add_argument("--params", default="params.yaml")
+    parser.add_argument(
+        "--volume",
+        default=None,
+        help="Operational-volume reference (default <input-data-dir>/demand_volume_per_day_reference.csv).",
+    )
+    parser.add_argument(
+        "--demand",
+        default=None,
+        help="Desk demand (default <input-data-dir>/annual_desk_needs_reference.csv).",
+    )
     parser.add_argument("--seed", type=int, default=RANDOM_SEED)
     parser.add_argument("--class-size", type=int, default=CLASS_SIZE_DEFAULT)
     parser.add_argument("--vac-base", type=int, default=BASE_VACATION_DEFAULT)
     parser.add_argument("--vac-variable", type=int, default=MAX_VARIABLE_DEFAULT)
     parser.add_argument("--vac-seed", type=int, default=VACATION_SEED_DEFAULT)
-    parser.add_argument("--score", action="store_true", help="Score the effective supply against demand.")
-    parser.add_argument("--reconcile", action="store_true", help="Reconcile the shrinkage files.")
-    parser.add_argument("--no-write", action="store_true", help="Compute only; do not write files.")
+    parser.add_argument(
+        "--score",
+        action="store_true",
+        help="Score the effective supply against demand.",
+    )
+    parser.add_argument(
+        "--reconcile", action="store_true", help="Reconcile the shrinkage files."
+    )
+    parser.add_argument(
+        "--no-write", action="store_true", help="Compute only; do not write files."
+    )
     method_group = parser.add_mutually_exclusive_group()
     method_group.add_argument(
-        "--random", dest="method", action="store_const", const="random",
+        "--random",
+        dest="method",
+        action="store_const",
+        const="random",
         help="Training layer: random placement (default, original behaviour).",
     )
     method_group.add_argument(
-        "--exact-mip", dest="method", action="store_const", const="exact-mip",
+        "--exact-mip",
+        dest="method",
+        action="store_const",
+        const="exact-mip",
         help="Training layer: exact T1 MIP solved with --solver.",
     )
     parser.set_defaults(method="random")
-    parser.add_argument("--solver", choices=["gurobi", "xpress"], default="gurobi",
-                        help="Solver for --exact-mip (default gurobi).")
-    parser.add_argument("--time-limit", type=float, default=120.0,
-                        help="Per-shift solve time limit in seconds for --exact-mip.")
-    parser.add_argument("--log", action="store_true",
-                        help="Write a run log (solver status/objective/runtime) into --output-data-dir.")
-    parser.add_argument("--freeze-phase1-training", action="store_true",
-                        help="Keep the training days from the Phase I training files fixed and "
-                             "schedule only the secondary-qualification trainings around them.")
+    parser.add_argument(
+        "--solver",
+        choices=["gurobi", "xpress"],
+        default="gurobi",
+        help="Solver for --exact-mip (default gurobi).",
+    )
+    parser.add_argument(
+        "--time-limit",
+        type=float,
+        default=120.0,
+        help="Per-shift solve time limit in seconds for --exact-mip.",
+    )
+    parser.add_argument(
+        "--log",
+        action="store_true",
+        help="Write a run log (solver status/objective/runtime) into --output-data-dir.",
+    )
+    parser.add_argument(
+        "--freeze-phase1-training",
+        action="store_true",
+        help="Keep the training days from the Phase I training files fixed and "
+        "schedule only the secondary-qualification trainings around them.",
+    )
     args = parser.parse_args()
 
     in_dir = args.input_data_dir
@@ -255,8 +312,10 @@ def main() -> int:
     standard_path = args.standard or "outputs/Supply_Standard_Training.csv"
     special_path = args.special or "outputs/Supply_Special_Training.csv"
     qual_data_path = args.qual_data or os.path.join(in_dir, "Supply_sample.csv")
-    volume_path = args.volume or os.path.join(in_dir, "demand_volume_per_day_reference.csv")
-    demand_path = args.demand or os.path.join(in_dir, "Demand.csv")
+    volume_path = args.volume or os.path.join(
+        in_dir, "demand_volume_per_day_reference.csv"
+    )
+    demand_path = args.demand or os.path.join(in_dir, "annual_desk_needs_reference.csv")
 
     out = run_pipeline(
         regular_path=regular_path,
@@ -285,19 +344,23 @@ def main() -> int:
     vac = out["vacation"]["vacation_data"]
 
     failures = 0
-    print("\n================ DANIEL PIPELINE ================")
+    logging.info("\n================ DANIEL PIPELINE ================")
     solver_label = args.solver if args.method == "exact-mip" else "random"
-    print(f"training method      : {args.method} (solver={solver_label})")
-    print(f"regular rows         : {len(training.regular):,}")
-    print(f"standard training    : {len(training.standard_data):,}")
-    print(f"intl special training: {len(training.intl_data):,}")
-    print(f"training failures    : {len(training.failures)}")
+    logging.info(f"training method      : {args.method} (solver={solver_label})")
+    logging.info(f"regular rows         : {len(training.regular):,}")
+    logging.info(f"standard training    : {len(training.standard_data):,}")
+    logging.info(f"intl special training: {len(training.intl_data):,}")
+    logging.info(f"training failures    : {len(training.failures)}")
     for shift, info in (getattr(training, "report", None) or {}).items():
-        print(f"  [{shift}] status={info['status']} obj={info['objective']} "
-              f"t={info['seconds']}s reqs={info['requirements']}")
+        logging.info(
+            f"  [{shift}] status={info['status']} obj={info['objective']} "
+            f"t={info['seconds']}s reqs={info['requirements']}"
+        )
 
     qual_problems = validate_quals(training.regular)
-    print(f"qualification check  : {'OK' if not qual_problems else qual_problems}")
+    logging.info(
+        f"qualification check  : {'OK' if not qual_problems else qual_problems}"
+    )
     if qual_problems:
         failures += 1
 
@@ -311,24 +374,36 @@ def main() -> int:
             out["training_months"],
             args.class_size,
         )
-        print(f"training check       : {'OK' if not train_problems else train_problems}")
+        logging.info(
+            f"training check       : {'OK' if not train_problems else train_problems}"
+        )
         if train_problems:
             failures += 1
 
     # --- volume scaling report ---
-    print("\n---- vacation volume scaling (demand_volume_per_day_reference.csv) ----")
-    print(volume.to_string(index=False, max_rows=8))
-    print("...")
-    print("VARIABLE_VACATION distribution:",
-          volume["VARIABLE_VACATION"].value_counts().sort_index().to_dict())
-    print("TOTAL_VACATION/day distribution:",
-          volume["TOTAL_VACATION"].value_counts().sort_index().to_dict())
+    logging.info(
+        "\n---- vacation volume scaling (demand_volume_per_day_reference.csv) ----"
+    )
+    logging.info(volume.to_string(index=False, max_rows=8))
+    logging.info("...")
+    logging.info(
+        "VARIABLE_VACATION distribution:",
+        volume["VARIABLE_VACATION"].value_counts().sort_index().to_dict(),
+    )
+    logging.info(
+        "TOTAL_VACATION/day distribution:",
+        volume["TOTAL_VACATION"].value_counts().sort_index().to_dict(),
+    )
     corr = volume["DEMAND"].corr(volume["TOTAL_VACATION"])
-    print(f"corr(volume, total_vacation) = {corr:.3f}  (negative = quieter days carry more)")
+    logging.info(
+        f"corr(volume, total_vacation) = {corr:.3f}  (negative = quieter days carry more)"
+    )
 
     daily = vac.groupby(pd.to_datetime(vac["SHIFT_DATE"]).dt.date).size()
-    print(f"assigned vacation rows: {len(vac):,} on {daily.size} days; "
-          f"per-day min/max/mean = {daily.min()}/{daily.max()}/{daily.mean():.1f}")
+    logging.info(
+        f"assigned vacation rows: {len(vac):,} on {daily.size} days; "
+        f"per-day min/max/mean = {daily.min()}/{daily.max()}/{daily.mean():.1f}"
+    )
 
     # --- balance metrics ---
     print_balance_report(out["metrics"])
@@ -336,16 +411,25 @@ def main() -> int:
     # --- optional: effective coverage + shrinkage reconciliation ---
     if args.score or args.reconcile:
         if args.no_write:
-            print("coverage/reconciliation requested but --no-write was set; skipped.\n")
+            logging.info(
+                "coverage/reconciliation requested but --no-write was set; skipped.\n"
+            )
         else:
             from pipelines.phase2_training.coverage_report import run as run_coverage
+
             _, coverage_problems = run_coverage(
                 demand_path=demand_path,
                 regular_path=os.path.join(out_dir, "Supply_Regular_qualified.csv"),
-                standard_training_path=os.path.join(out_dir, "standard_training_data.csv"),
-                intl_training_path=os.path.join(out_dir, "intl_special_training_data.csv"),
+                standard_training_path=os.path.join(
+                    out_dir, "standard_training_data.csv"
+                ),
+                intl_training_path=os.path.join(
+                    out_dir, "intl_special_training_data.csv"
+                ),
                 vacation_path=os.path.join(out_dir, "vacation_data.csv"),
-                effective_path=os.path.join(out_dir, "supply_data_after_vacation_shrinkage.csv"),
+                effective_path=os.path.join(
+                    out_dir, "supply_data_after_vacation_shrinkage.csv"
+                ),
                 name="Effective supply (members/daniel)",
                 do_score=args.score,
                 do_reconcile=args.reconcile,

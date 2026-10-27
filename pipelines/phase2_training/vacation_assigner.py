@@ -3,7 +3,7 @@
 Implements the rules in COMPASS_Phase_II_Problem_Statement.md and the helpers in
 "Vacation information summary.docx":
 
-  * Scale ``data/demand_volume_per_day_reference.csv`` to [-1, 1]
+  * Scale ``inputs/demand_volume_per_day_reference.csv`` to [-1, 1]
     (``_scale_to_range_neg_1_to_1``) and derive the daily vacation quota:
     base 27 dispatchers +/- up to 2 -> 25..29 per calendar day. The adjustment is
     inversely related to the day's operational volume (quieter days carry more
@@ -35,7 +35,7 @@ VACATION_SEED_DEFAULT = 1
 
 
 def scale_demand_volume(
-    volume_path: str = "data/demand_volume_per_day_reference.csv",
+    volume_path: str = "inputs/demand_volume_per_day_reference.csv",
     base_vacation: int = BASE_VACATION_DEFAULT,
     max_variable: int = MAX_VARIABLE_DEFAULT,
 ) -> pd.DataFrame:
@@ -67,15 +67,23 @@ def scale_demand_volume(
 
     ranked = ranked.sort_values("DATE").reset_index(drop=True)
     return ranked[
-        ["DATE", "DEMAND", "SCALED_DEMAND", "INVERSE_DEMAND", "VARIABLE_VACATION", "TOTAL_VACATION"]
+        [
+            "DATE",
+            "DEMAND",
+            "SCALED_DEMAND",
+            "INVERSE_DEMAND",
+            "VARIABLE_VACATION",
+            "TOTAL_VACATION",
+        ]
     ]
 
 
-def quota_by_date(scaled_volume: pd.DataFrame, base_vacation: int = BASE_VACATION_DEFAULT) -> Dict:
+def quota_by_date(
+    scaled_volume: pd.DataFrame, base_vacation: int = BASE_VACATION_DEFAULT
+) -> Dict:
     """Map ``datetime.date -> total_vacation`` from a scaled-volume frame."""
     return {
-        row.DATE.date(): int(row.TOTAL_VACATION)
-        for row in scaled_volume.itertuples()
+        row.DATE.date(): int(row.TOTAL_VACATION) for row in scaled_volume.itertuples()
     }
 
 
@@ -114,7 +122,9 @@ def assign_vacation(
                 used = f > 0
                 weights[used] = 1.0 / np.power(f[used], 10.0)
             probs = weights / weights.sum()
-            picked = rng.choice(grp.index.to_numpy(), size=slots, replace=False, p=probs)
+            picked = rng.choice(
+                grp.index.to_numpy(), size=slots, replace=False, p=probs
+            )
 
         for idx in picked:
             chosen_idx.append(idx)
@@ -135,7 +145,9 @@ def write_vacation_outputs(
     os.makedirs(output_dir, exist_ok=True)
     paths = {
         "vacation": os.path.join(output_dir, "vacation_data.csv"),
-        "effective_supply": os.path.join(output_dir, "supply_data_after_vacation_shrinkage.csv"),
+        "effective_supply": os.path.join(
+            output_dir, "supply_data_after_vacation_shrinkage.csv"
+        ),
     }
     vacation_data.to_csv(paths["vacation"], index=False)
     effective_supply.to_csv(paths["effective_supply"], index=False)
@@ -144,7 +156,7 @@ def write_vacation_outputs(
 
 def run_vacation(
     regular_df: pd.DataFrame,
-    volume_path: str = "data/demand_volume_per_day_reference.csv",
+    volume_path: str = "inputs/demand_volume_per_day_reference.csv",
     base_vacation: int = BASE_VACATION_DEFAULT,
     max_variable: int = MAX_VARIABLE_DEFAULT,
     seed: int = VACATION_SEED_DEFAULT,
@@ -154,7 +166,9 @@ def run_vacation(
     """Scale the volume, assign vacation, optionally write CSVs. Returns a bundle dict."""
     scaled_volume = scale_demand_volume(volume_path, base_vacation, max_variable)
     totals = quota_by_date(scaled_volume, base_vacation)
-    effective, vacation = assign_vacation(regular_df, totals, base_vacation=base_vacation, seed=seed)
+    effective, vacation = assign_vacation(
+        regular_df, totals, base_vacation=base_vacation, seed=seed
+    )
     paths = write_vacation_outputs(effective, vacation, output_dir) if write else {}
     return {
         "scaled_volume": scaled_volume,

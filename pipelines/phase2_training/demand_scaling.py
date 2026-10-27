@@ -1,4 +1,4 @@
-"""Scaled demand features from ``data/Demand.csv`` (COMPASS Phase II).
+"""Scaled demand features from ``inputs/annual_desk_needs_reference.csv`` (COMPASS Phase II).
 
 Reproduces the ``_scale_to_range_neg_1_to_1`` helper from the "Vacation
 information summary.docx" and applies it to two accumulations of desk demand:
@@ -17,6 +17,7 @@ Run from the repo root:
 import argparse
 import os
 import sys
+import logging
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
 
@@ -33,7 +34,10 @@ def _scale_to_range_neg_1_to_1(series: pd.Series) -> pd.Series:
     return scaled * 2 - 1
 
 
-def build_scaled_demand(demand_path: str = "data/Demand.csv", out_dir: str = "members/daniel/outputs"):
+def build_scaled_demand(
+    demand_path: str = "inputs/annual_desk_needs_reference.csv",
+    out_dir: str = "pipelines/phase2_training/outputs",
+):
     df = pd.read_csv(demand_path)
     df["_DT"] = pd.to_datetime(df["SHIFT_DATE"])
     df["SHIFT_DATE"] = df["_DT"].map(lambda d: f"{d.month}/{d.day}/{d.year}")
@@ -61,17 +65,23 @@ def build_scaled_demand(demand_path: str = "data/Demand.csv", out_dir: str = "me
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Build scaled demand features.")
-    parser.add_argument("--demand", default="data/Demand.csv")
-    parser.add_argument("--out-dir", default="members/daniel/outputs")
+    parser.add_argument("--demand", default="inputs/annual_desk_needs_reference.csv")
+    parser.add_argument("--out-dir", default="pipelines/daniel/outputs")
     args = parser.parse_args()
 
     per_sd, per_sd_wc, p1, p2 = build_scaled_demand(args.demand, args.out_dir)
-    print("\n================ DEMAND SCALING ================")
-    print(f"(SHIFT_TYPE, SHIFT_DATE)           rows={len(per_sd):,}  -> {p1}")
-    print(f"   SCALED_DEMAND range [{per_sd['SCALED_DEMAND'].min():.3f}, {per_sd['SCALED_DEMAND'].max():.3f}]")
-    print(f"(SHIFT_TYPE, SHIFT_DATE, WORK_CENTER) rows={len(per_sd_wc):,}  -> {p2}")
-    print(f"   SCALED_DEMAND range [{per_sd_wc['SCALED_DEMAND'].min():.3f}, {per_sd_wc['SCALED_DEMAND'].max():.3f}]")
-    print("================================================\n")
+    logging.info("\n================ DEMAND SCALING ================")
+    logging.info(f"(SHIFT_TYPE, SHIFT_DATE)           rows={len(per_sd):,}  -> {p1}")
+    logging.info(
+        f"   SCALED_DEMAND range [{per_sd['SCALED_DEMAND'].min():.3f}, {per_sd['SCALED_DEMAND'].max():.3f}]"
+    )
+    logging.info(
+        f"(SHIFT_TYPE, SHIFT_DATE, WORK_CENTER) rows={len(per_sd_wc):,}  -> {p2}"
+    )
+    logging.info(
+        f"   SCALED_DEMAND range [{per_sd_wc['SCALED_DEMAND'].min():.3f}, {per_sd_wc['SCALED_DEMAND'].max():.3f}]"
+    )
+    logging.info("================================================\n")
     return 0
 
 

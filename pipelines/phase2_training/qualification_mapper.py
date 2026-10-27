@@ -47,12 +47,33 @@ RANDOM_SEED = 42
 
 # Column names of a standard 23/25-column bid line record.
 _SCHEMA_COLUMNS = [
-    "INDEX", "MAJOR_WORK_TYPE", "START_TIME", "EMPLOYEE_TITLE", "WORK_CENTER_ID",
-    "CONTRACTOR_FLAG", "CLUSTER", "EMPLOYEE_WORK_CENTER_ID", "TECH_ID", "END_TIME",
-    "SHIFT_DATE", "SHIFT_LENGTH", "SHIFT_TYPE", "FINAL_QUALS", "PRIMARY_QUAL",
-    "DOMESTIC", "ATC", "ROC", "CHF", "OC", "LATIN", "EUROPE", "PACIFIC",
-    "QUAL_COUNT", "SF_LOAD_TMS",
+    "INDEX",
+    "MAJOR_WORK_TYPE",
+    "START_TIME",
+    "EMPLOYEE_TITLE",
+    "WORK_CENTER_ID",
+    "CONTRACTOR_FLAG",
+    "CLUSTER",
+    "EMPLOYEE_WORK_CENTER_ID",
+    "TECH_ID",
+    "END_TIME",
+    "SHIFT_DATE",
+    "SHIFT_LENGTH",
+    "SHIFT_TYPE",
+    "FINAL_QUALS",
+    "PRIMARY_QUAL",
+    "DOMESTIC",
+    "ATC",
+    "ROC",
+    "CHF",
+    "OC",
+    "LATIN",
+    "EUROPE",
+    "PACIFIC",
+    "QUAL_COUNT",
+    "SF_LOAD_TMS",
 ]
+
 
 # --------------------------------------------------------------------------- #
 # Small helpers
@@ -102,7 +123,9 @@ def build_qual_data(qual_data_df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def _order_final_quals(primary: str, flag_row: Dict[str, int], priority_list: List[str]) -> List[str]:
+def _order_final_quals(
+    primary: str, flag_row: Dict[str, int], priority_list: List[str]
+) -> List[str]:
     """Primary qualification first, then the remaining held quals in priority order."""
     quals = [primary]
     for name in priority_list:
@@ -141,9 +164,8 @@ def map_qualifications_to_supply(
 
     emp_qual_map: Dict[object, object] = {}
     for qual_name, requirement in requirements.items():
-        cands = (
-            cand_source[cand_source["PRIMARY_QUAL"] == qual_name]
-            .sort_values("QUAL_COUNT", ascending=False)
+        cands = cand_source[cand_source["PRIMARY_QUAL"] == qual_name].sort_values(
+            "QUAL_COUNT", ascending=False
         )
         used_qual_emps = cands["TECH_ID"].head(int(requirement)).tolist()
         supply_emps = supply_tech.loc[
@@ -155,9 +177,11 @@ def map_qualifications_to_supply(
     supply["_MAPPED_QUAL_ID"] = supply["TECH_ID"].map(emp_qual_map)
 
     hist_cols = ["TECH_ID", "FINAL_QUALS", "PRIMARY_QUAL", "QUAL_COUNT"] + FLAG_COLUMNS
-    hist = qual[hist_cols].rename(
-        columns={c: f"_HIST_{c}" for c in hist_cols if c != "TECH_ID"}
-    ).rename(columns={"TECH_ID": "_MAPPED_QUAL_ID"})
+    hist = (
+        qual[hist_cols]
+        .rename(columns={c: f"_HIST_{c}" for c in hist_cols if c != "TECH_ID"})
+        .rename(columns={"TECH_ID": "_MAPPED_QUAL_ID"})
+    )
     hist = hist.drop_duplicates(subset=["_MAPPED_QUAL_ID"])
 
     merged = supply.merge(hist, on="_MAPPED_QUAL_ID", how="left")
@@ -191,7 +215,8 @@ def build_prop_table(
     for x in priority_list:
         primary_df = qual[qual["PRIMARY_QUAL"] == x]
         row: Dict[str, float] = {
-            name: float(primary_df[_display_to_column(name)].sum()) for name in priority_list
+            name: float(primary_df[_display_to_column(name)].sum())
+            for name in priority_list
         }
         row["_Primary_Qual"] = x
         row["_total"] = row[x]
@@ -253,9 +278,11 @@ def sprinkle_qualifications(
     df["QUAL_COUNT"] = df[FLAG_COLUMNS].sum(axis=1).astype(int)
     df["PRIMARY_QUAL"] = df["EMPLOYEE_WORK_CENTER_ID"]
 
-    flag_records = df[FLAG_COLUMNS].rename(
-        columns={v: k for k, v in DISPLAY_TO_COLUMN.items()}
-    ).to_dict(orient="records")
+    flag_records = (
+        df[FLAG_COLUMNS]
+        .rename(columns={v: k for k, v in DISPLAY_TO_COLUMN.items()})
+        .to_dict(orient="records")
+    )
     df["FINAL_QUALS"] = [
         format_final_quals(_order_final_quals(primary, flags, priority_list))
         for primary, flags in zip(df["PRIMARY_QUAL"], flag_records)
@@ -270,7 +297,7 @@ def apply_qualification_pipeline(
     regular_path: str,
     standard_training_path: str,
     special_training_path: str,
-    qual_data_path: str = "data/Supply_sample.csv",
+    qual_data_path: str = "inputs/Supply_sample.csv",
     priority_list: Optional[List[str]] = None,
     seed: int = RANDOM_SEED,
     dedupe: bool = False,
@@ -303,12 +330,16 @@ def apply_qualification_pipeline(
     cohort = pd.concat(frames, ignore_index=True)
     qual_data = pd.read_csv(qual_data_path)
 
-    merged = map_qualifications_to_supply(cohort, qual_data, priority_list, dedupe=dedupe)
+    merged = map_qualifications_to_supply(
+        cohort, qual_data, priority_list, dedupe=dedupe
+    )
     prop_table = build_prop_table(qual_data, priority_list)
     merged = sprinkle_qualifications(merged, prop_table, priority_list, seed=seed)
 
     if output_paths is None:
-        output_paths = {source: _default_out_path(path) for source, path in inputs.items()}
+        output_paths = {
+            source: _default_out_path(path) for source, path in inputs.items()
+        }
 
     results: Dict[str, pd.DataFrame] = {}
     for source in inputs:
@@ -323,7 +354,9 @@ def apply_qualification_pipeline(
     return results
 
 
-def validate_quals(df: pd.DataFrame, priority_list: Optional[List[str]] = None) -> List[str]:
+def validate_quals(
+    df: pd.DataFrame, priority_list: Optional[List[str]] = None
+) -> List[str]:
     """Return a list of consistency problems (empty == valid)."""
     priority_list = priority_list or DEFAULT_PRIORITY_LIST
     problems: List[str] = []

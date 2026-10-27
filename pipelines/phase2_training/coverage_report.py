@@ -23,6 +23,7 @@ Run from the repo root:
 import argparse
 import os
 import sys
+import logging
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
 
@@ -30,7 +31,7 @@ import pandas as pd  # noqa: E402
 
 from common.coverage_report import CoverageReporter  # noqa: E402
 
-DEMAND_PATH = "data/Demand.csv"
+DEMAND_PATH = "inputs/annual_desk_needs_reference.csv"
 REGULAR_PATH = "outputs/Supply_Regular_qualified.csv"
 STANDARD_TRAINING_PATH = "outputs/standard_training_data.csv"
 INTL_TRAINING_PATH = "outputs/intl_special_training_data.csv"
@@ -44,18 +45,24 @@ def _key_set(df: pd.DataFrame) -> set:
     return set(zip(df["TECH_ID"].astype(str), dates))
 
 
-def evaluate_effective(demand_path: str = DEMAND_PATH, effective_path: str = EFFECTIVE_PATH) -> pd.DataFrame:
+def evaluate_effective(
+    demand_path: str = DEMAND_PATH, effective_path: str = EFFECTIVE_PATH
+) -> pd.DataFrame:
     """Score the effective supply against demand using the shared scorer."""
     return CoverageReporter.evaluate(demand_path, effective_path)
 
 
-def score(demand_path: str = DEMAND_PATH, effective_path: str = EFFECTIVE_PATH,
-          name: str = "Effective supply", output: str = None) -> pd.DataFrame:
-    report = evaluate_effective(demand_path, effective_path)
+def score(
+    demand_path: str = DEMAND_PATH,
+    effective_path: str = EFFECTIVE_PATH,
+    name: str = "Effective supply",
+    output: str = None,
+) -> pd.DataFrame:
+    report, supply = evaluate_effective(demand_path, effective_path)
     CoverageReporter.print_summary(report, stage=name)
     if output:
         report.to_csv(output, index=False)
-        print(f"Detailed coverage report saved to {output}")
+        logging.info(f"Detailed coverage report saved to {output}")
     return report
 
 
@@ -84,9 +91,11 @@ def reconciliation_checks(
 
     # 1. regular == effective + vacation (disjoint partition).
     if eff_k & vac_k:
-        problems.append(f"effective ∩ vacation != empty ({len(eff_k & vac_k)} shared bid line-days)")
+        problems.append(
+            f"effective ∩ vacation != empty ({len(eff_k & vac_k)} shared bid line-days)"
+        )
     if (eff_k | vac_k) != reg_k:
-        missing = (reg_k - eff_k - vac_k)
+        missing = reg_k - eff_k - vac_k
         extra = (eff_k | vac_k) - reg_k
         problems.append(
             f"effective ∪ vacation != regular ({len(missing)} regular day(s) unaccounted, "
@@ -99,25 +108,39 @@ def reconciliation_checks(
 
     # 2. vacation is a subset of the roster.
     if not vac_k <= reg_k:
-        problems.append(f"vacation not a subset of regular ({len(vac_k - reg_k)} days outside the roster)")
+        problems.append(
+            f"vacation not a subset of regular ({len(vac_k - reg_k)} days outside the roster)"
+        )
 
     # 3. training disjoint from the roster and from vacation.
     if reg_k & train_k:
-        problems.append(f"training overlaps the regular roster ({len(reg_k & train_k)} shared days)")
+        problems.append(
+            f"training overlaps the regular roster ({len(reg_k & train_k)} shared days)"
+        )
     if vac_k & train_k:
-        problems.append(f"vacation overlaps training ({len(vac_k & train_k)} shared days)")
+        problems.append(
+            f"vacation overlaps training ({len(vac_k & train_k)} shared days)"
+        )
 
     # 4. the two training files do not overlap.
     if std_k & intl_k:
-        problems.append(f"standard and intl training overlap ({len(std_k & intl_k)} shared days)")
+        problems.append(
+            f"standard and intl training overlap ({len(std_k & intl_k)} shared days)"
+        )
 
     # 5. no duplicate (tech, date) within vacation or a training file.
     if len(vac_k) != len(vacation):
-        problems.append(f"vacation has {len(vacation) - len(vac_k)} duplicate (tech, date) row(s)")
+        problems.append(
+            f"vacation has {len(vacation) - len(vac_k)} duplicate (tech, date) row(s)"
+        )
     if len(std_k) != len(standard):
-        problems.append(f"standard training has {len(standard) - len(std_k)} duplicate (tech, date) row(s)")
+        problems.append(
+            f"standard training has {len(standard) - len(std_k)} duplicate (tech, date) row(s)"
+        )
     if len(intl_k) != len(intl):
-        problems.append(f"intl training has {len(intl) - len(intl_k)} duplicate (tech, date) row(s)")
+        problems.append(
+            f"intl training has {len(intl) - len(intl_k)} duplicate (tech, date) row(s)"
+        )
 
     return problems
 
@@ -141,28 +164,40 @@ def run(
         report = score(demand_path, effective_path, name=name, output=output)
     if do_reconcile:
         problems = reconciliation_checks(
-            regular_path, standard_training_path, intl_training_path, vacation_path, effective_path
+            regular_path,
+            standard_training_path,
+            intl_training_path,
+            vacation_path,
+            effective_path,
         )
         if problems:
-            print(f"RECONCILIATION FAIL ({len(problems)} problem(s)):")
+            logging.info(f"RECONCILIATION FAIL ({len(problems)} problem(s)):")
             for p in problems:
-                print("  -", p)
+                logging.info("  -", p)
         else:
-            print("RECONCILIATION OK: regular == effective + vacation; vacation ⊆ roster; "
-                  "training disjoint from roster and vacation\n")
+            logging.info(
+                "RECONCILIATION OK: regular == effective + vacation; vacation ⊆ roster; "
+                "training disjoint from roster and vacation\n"
+            )
     return report, problems
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Score effective supply and reconcile shrinkage files.")
+    parser = argparse.ArgumentParser(
+        description="Score effective supply and reconcile shrinkage files."
+    )
     parser.add_argument("--demand", default=DEMAND_PATH)
-    parser.add_argument("--effective", "--supply", dest="effective", default=EFFECTIVE_PATH)
+    parser.add_argument(
+        "--effective", "--supply", dest="effective", default=EFFECTIVE_PATH
+    )
     parser.add_argument("--regular", default=REGULAR_PATH)
     parser.add_argument("--standard", default=STANDARD_TRAINING_PATH)
     parser.add_argument("--intl", default=INTL_TRAINING_PATH)
     parser.add_argument("--vacation", default=VACATION_PATH)
     parser.add_argument("--name", default="Effective supply")
-    parser.add_argument("--output", default=None, help="Optional path to save the detail report CSV")
+    parser.add_argument(
+        "--output", default=None, help="Optional path to save the detail report CSV"
+    )
     parser.add_argument("--score-only", action="store_true")
     parser.add_argument("--reconcile-only", action="store_true")
     args = parser.parse_args()

@@ -45,7 +45,7 @@ Inputs / outputs
   concatenated, qualification columns populated) -- one row per bid-line worker-day.
 * ``training_months``: ``{skill: [month ints]}`` (see ``params.yaml``).
 * ``demand`` / ``demand_path``: desk demand keyed by
-  ``(work center, shift, M/D/YYYY)``; defaults to ``data/Demand.csv``.
+  ``(work center, shift, M/D/YYYY)``; defaults to ``inputs/annual_desk_needs_reference.csv``.
 * Returns a :class:`~members.daniel.training_assigner.TrainingResult` whose
   ``report`` attribute holds per-model solver status, objective, runtime and mode.
 
@@ -68,6 +68,7 @@ from __future__ import annotations
 import argparse
 import os
 import sys
+import logging
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
 
@@ -76,7 +77,9 @@ from typing import Dict, List, Optional, Set, Tuple  # noqa: E402
 
 import pandas as pd  # noqa: E402
 
-from pipelines.phase2_training.qualification_mapper import parse_final_quals  # noqa: E402
+from pipelines.phase2_training.qualification_mapper import (
+    parse_final_quals,
+)  # noqa: E402
 from pipelines.phase2_training.solvers import (  # noqa: E402
     FEASIBLE,
     OPTIMAL,
@@ -109,7 +112,8 @@ class _Context:
 
     def eligible_days(self, tech: object, month: int) -> List[str]:
         return [
-            d for d, m in self.tech_days.get(tech, [])
+            d
+            for d, m in self.tech_days.get(tech, [])
             if m == month and (tech, d) not in self.blocked
         ]
 
@@ -160,7 +164,9 @@ def _solve_group(
         if not days:
             failures.append(req)
         for d in days:
-            y[(tech, skill, month, d)] = backend.add_binary(f"y_{tech}_{skill}_{month}_{d}")
+            y[(tech, skill, month, d)] = backend.add_binary(
+                f"y_{tech}_{skill}_{month}_{d}"
+            )
 
     # C1: exactly one training per requirement.
     for req in reqs:
@@ -188,7 +194,9 @@ def _solve_group(
         by_date.setdefault(d, []).append(var)
     for d, vars_ in by_date.items():
         cap = class_size if daily_cap is None else daily_cap.get(d, class_size)
-        backend.add_constraint([(1.0, v) for v in vars_], "<=", float(cap), name="class_cap")
+        backend.add_constraint(
+            [(1.0, v) for v in vars_], "<=", float(cap), name="class_cap"
+        )
 
     # Coverage: link training counts to per-slot under/over-coverage.
     slot_vars: Dict[Tuple[str, str], List[object]] = {}
@@ -198,13 +206,19 @@ def _solve_group(
     obj_terms: List[Tuple[float, object]] = []
     for (wc, d), vars_ in slot_vars.items():
         z = backend.add_continuous(f"z_{wc}_{d}", lb=0.0)
-        backend.add_constraint([(1.0, v) for v in vars_] + [(-1.0, z)], "==", 0.0, name="z_def")
+        backend.add_constraint(
+            [(1.0, v) for v in vars_] + [(-1.0, z)], "==", 0.0, name="z_def"
+        )
         dem = float(ctx.demand.get((wc, shift, d), 0.0))
         base = float(ctx.base_supply.get((wc, shift, d), 0))
         under = backend.add_continuous(f"u_{wc}_{d}", lb=0.0)
         over = backend.add_continuous(f"o_{wc}_{d}", lb=0.0)
-        backend.add_constraint([(1.0, under), (-1.0, z)], ">=", dem - base, name="under_def")
-        backend.add_constraint([(1.0, over), (1.0, z)], ">=", base - dem, name="over_def")
+        backend.add_constraint(
+            [(1.0, under), (-1.0, z)], ">=", dem - base, name="under_def"
+        )
+        backend.add_constraint(
+            [(1.0, over), (1.0, z)], ">=", base - dem, name="over_def"
+        )
         obj_terms.append((under_penalty, under))
         obj_terms.append((over_penalty, over))
 
@@ -234,7 +248,7 @@ def assign_training_exact(
     class_size: int = CLASS_SIZE_DEFAULT,
     solver: str = "gurobi",
     demand: Optional[Dict[Tuple[str, str, str], float]] = None,
-    demand_path: str = "data/Demand.csv",
+    demand_path: str = "inputs/annual_desk_needs_reference.csv",
     flex_days: Optional[Set[Tuple[object, str]]] = None,
     vacation_days: Optional[Set[Tuple[object, str]]] = None,
     seed: int = RANDOM_SEED,
@@ -321,7 +335,9 @@ def assign_training_exact(
     if demand is None:
         demand = _load_demand(demand_path)
 
-    ctx = _Context(tech_days, tech_shift, tech_wc, blocked, base_supply, demand, date_month)
+    ctx = _Context(
+        tech_days, tech_shift, tech_wc, blocked, base_supply, demand, date_month
+    )
 
     chosen: Dict[Tuple[object, str], str] = dict(frozen)
     failures: List[Tuple[object, str, int]] = []
@@ -330,29 +346,45 @@ def assign_training_exact(
     # Group requirements by (shift, month): the exact, licence-fitting decomposition.
     req_by_group: Dict[Tuple[str, int], List[Tuple[object, str, int]]] = {}
     for req in requirements:
-        req_by_group.setdefault((tech_shift.get(req[0], "UNKNOWN"), req[2]), []).append(req)
+        req_by_group.setdefault((tech_shift.get(req[0], "UNKNOWN"), req[2]), []).append(
+            req
+        )
 
-    for (shift, month), reqs in sorted(req_by_group.items(), key=lambda kv: -len(kv[1])):
+    for (shift, month), reqs in sorted(
+        req_by_group.items(), key=lambda kv: -len(kv[1])
+    ):
         backend = make_backend(solver, log_path=log_path)
         daily_cap = {
             date_str: class_size - seats
             for (date_str, seat_shift), seats in frozen_seats.items()
             if seat_shift == shift
         }
-        res = _solve_group(backend, reqs, ctx, shift, class_size,
-                           under_penalty, over_penalty, time_limit, mip_gap,
-                           daily_cap=daily_cap)
+        res = _solve_group(
+            backend,
+            reqs,
+            ctx,
+            shift,
+            class_size,
+            under_penalty,
+            over_penalty,
+            time_limit,
+            mip_gap,
+            daily_cap=daily_cap,
+        )
         chosen.update(res["chosen"])
         failures.extend(res["failures"])
         report[f"{shift}/M{month:02d}"] = {
             "solver": backend.name,
             "mode": "shift-month-frozen" if frozen else "shift-month",
             "status": res["status"],
-            "objective": res["objective"], "seconds": res["seconds"],
+            "objective": res["objective"],
+            "seconds": res["seconds"],
             "requirements": res["requirements"],
         }
 
-    df["_TRAIN_SKILL"] = [chosen.get((t, d)) for t, d in zip(df["TECH_ID"], df["_DATE"])]
+    df["_TRAIN_SKILL"] = [
+        chosen.get((t, d)) for t, d in zip(df["TECH_ID"], df["_DATE"])
+    ]
     result = build_result_from_marks(df, training_months, failures)
     result.report = report
     return result
@@ -362,27 +394,51 @@ def _main() -> int:
     parser = argparse.ArgumentParser(
         description="Exact (MIP) training assignment -- standalone runner (members/daniel)."
     )
-    parser.add_argument("--input-data-dir", default="data",
-                        help="Directory with the competition inputs (Demand.csv, Supply_sample.csv).")
-    parser.add_argument("--output-data-dir", default="outputs/exact_gurobi",
-                        help="Directory for the generated training files (default outputs/exact_gurobi).")
-    parser.add_argument("--regular", default=None,
-                        help="Phase I regular roster (default outputs/Supply_Regular.csv).")
-    parser.add_argument("--standard", default=None,
-                        help="Phase I standard-training roster (default outputs/Supply_Standard_Training.csv).")
-    parser.add_argument("--special", default=None,
-                        help="Phase I special-training roster (default outputs/Supply_Special_Training.csv).")
-    parser.add_argument("--qual-data", default=None,
-                        help="Qualification reference (default <input-data-dir>/Supply_sample.csv).")
-    parser.add_argument("--params", default="pipelines/phase1/params.yaml")
-    parser.add_argument("--demand", default=None,
-                        help="Desk demand (default <input-data-dir>/Demand.csv).")
+    parser.add_argument(
+        "--input-data-dir",
+        default="data",
+        help="Directory with the competition inputs (annual_desk_needs_reference.csv, Supply_sample.csv).",
+    )
+    parser.add_argument(
+        "--output-data-dir",
+        default="outputs/exact_gurobi",
+        help="Directory for the generated training files (default outputs/exact_gurobi).",
+    )
+    parser.add_argument(
+        "--regular",
+        default=None,
+        help="Phase I regular roster (default outputs/Supply_Regular.csv).",
+    )
+    parser.add_argument(
+        "--standard",
+        default=None,
+        help="Phase I standard-training roster (default outputs/Supply_Standard_Training.csv).",
+    )
+    parser.add_argument(
+        "--special",
+        default=None,
+        help="Phase I special-training roster (default outputs/Supply_Special_Training.csv).",
+    )
+    parser.add_argument(
+        "--qual-data",
+        default=None,
+        help="Qualification reference (default <input-data-dir>/Supply_sample.csv).",
+    )
+    parser.add_argument("--params", default="params.yaml")
+    parser.add_argument(
+        "--demand",
+        default=None,
+        help="Desk demand (default <input-data-dir>/annual_desk_needs_reference.csv).",
+    )
     parser.add_argument("--solver", choices=["gurobi", "xpress"], default="gurobi")
     parser.add_argument("--class-size", type=int, default=CLASS_SIZE_DEFAULT)
     parser.add_argument("--time-limit", type=float, default=120.0)
-    parser.add_argument("--freeze-phase1-training", action="store_true",
-                        help="Keep the Phase I training days fixed and schedule only "
-                             "the secondary-qualification trainings around them.")
+    parser.add_argument(
+        "--freeze-phase1-training",
+        action="store_true",
+        help="Keep the Phase I training days fixed and schedule only "
+        "the secondary-qualification trainings around them.",
+    )
     args = parser.parse_args()
 
     in_dir = args.input_data_dir
@@ -391,7 +447,7 @@ def _main() -> int:
     standard_path = args.standard or "outputs/Supply_Standard_Training.csv"
     special_path = args.special or "outputs/Supply_Special_Training.csv"
     qual_data_path = args.qual_data or os.path.join(in_dir, "Supply_sample.csv")
-    demand_path = args.demand or os.path.join(in_dir, "Demand.csv")
+    demand_path = args.demand or os.path.join(in_dir, "annual_desk_needs_reference.csv")
 
     from pipelines.phase2_training.qualification_mapper import (  # local import keeps CLI light
         DEFAULT_PRIORITY_LIST,
@@ -437,15 +493,15 @@ def _main() -> int:
     )
     write_training_outputs(result, out_dir)
 
-    print("\n============== EXACT TRAINING (T1) ==============")
-    print(f"solver       : {args.solver}")
-    print(f"failures     : {len(result.failures)}")
-    print(f"regular rows : {len(result.regular):,}")
-    print(f"standard     : {len(result.standard_data):,}")
-    print(f"intl         : {len(result.intl_data):,}")
+    logging.info("\n============== EXACT TRAINING (T1) ==============")
+    logging.info(f"solver       : {args.solver}")
+    logging.info(f"failures     : {len(result.failures)}")
+    logging.info(f"regular rows : {len(result.regular):,}")
+    logging.info(f"standard     : {len(result.standard_data):,}")
+    logging.info(f"intl         : {len(result.intl_data):,}")
     for key, info in result.report.items():
-        print(f"  [{key}] {info}")
-    print("================================================")
+        logging.info(f"  [{key}] {info}")
+    logging.info("================================================")
     return 0
 
 

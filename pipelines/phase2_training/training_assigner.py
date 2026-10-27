@@ -2,7 +2,7 @@
 
 Builds a random training solution over the full working-day schedule, honouring
 the rules from "Training assignments information.docx" and the eligible month
-windows in ``members/akshat/params.yaml`` (``training_months``):
+windows in ``pipelines/phase1/params.yaml`` (``training_months``):
 
   * one training day per held qualification per month in that qualification's
     ``training_months`` (holds for primary AND secondary qualifications);
@@ -37,21 +37,41 @@ RANDOM_SEED = 42
 
 # 23-column bid line schema (Data Specification section 4.1, without INDEX/SF_LOAD_TMS).
 SCHEMA_23 = [
-    "MAJOR_WORK_TYPE", "START_TIME", "EMPLOYEE_TITLE", "WORK_CENTER_ID",
-    "CONTRACTOR_FLAG", "CLUSTER", "EMPLOYEE_WORK_CENTER_ID", "TECH_ID", "END_TIME",
-    "SHIFT_DATE", "SHIFT_LENGTH", "SHIFT_TYPE", "FINAL_QUALS", "PRIMARY_QUAL",
-    "DOMESTIC", "ATC", "ROC", "CHF", "OC", "LATIN", "EUROPE", "PACIFIC",
+    "MAJOR_WORK_TYPE",
+    "START_TIME",
+    "EMPLOYEE_TITLE",
+    "WORK_CENTER_ID",
+    "CONTRACTOR_FLAG",
+    "CLUSTER",
+    "EMPLOYEE_WORK_CENTER_ID",
+    "TECH_ID",
+    "END_TIME",
+    "SHIFT_DATE",
+    "SHIFT_LENGTH",
+    "SHIFT_TYPE",
+    "FINAL_QUALS",
+    "PRIMARY_QUAL",
+    "DOMESTIC",
+    "ATC",
+    "ROC",
+    "CHF",
+    "OC",
+    "LATIN",
+    "EUROPE",
+    "PACIFIC",
     "QUAL_COUNT",
 ]
 
 SCHEDULED_COLUMNS = [
-    "EMP_ID", "SKILL", "TRAINING_SCHEDULE_DATE", "PERIOD",
-    "FROM_SHIFT_TYPE", "FROM_WORK_CENTER_ID",
+    "EMP_ID",
+    "SKILL",
+    "TRAINING_SCHEDULE_DATE",
+    "PERIOD",
+    "FROM_SHIFT_TYPE",
+    "FROM_WORK_CENTER_ID",
 ]
 
-_MONTH_NAME_TO_INT = {
-    calendar.month_name[m].lower(): m for m in range(1, 13)
-} | {
+_MONTH_NAME_TO_INT = {calendar.month_name[m].lower(): m for m in range(1, 13)} | {
     calendar.month_abbr[m].lower(): m for m in range(1, 13)
 }
 
@@ -110,7 +130,7 @@ def load_frozen_assignments(
     return frozen
 
 
-def load_training_months(params_path: str = "members/akshat/params.yaml") -> Dict[str, List[int]]:
+def load_training_months(params_path: str = "params.yaml") -> Dict[str, List[int]]:
     """Read ``training_months`` per work center from params.yaml as month ints."""
     with open(params_path, "r") as fh:
         params = yaml.safe_load(fh)
@@ -123,7 +143,9 @@ def load_training_months(params_path: str = "members/akshat/params.yaml") -> Dic
             if key in _MONTH_NAME_TO_INT:
                 months.append(_MONTH_NAME_TO_INT[key])
             else:
-                raise ValueError(f"Unknown training month {name!r} for work center {wc!r}")
+                raise ValueError(
+                    f"Unknown training month {name!r} for work center {wc!r}"
+                )
         result[wc] = sorted(set(months))
     return result
 
@@ -138,7 +160,9 @@ def _period_intl(months: List[int]) -> str:
     return "[" + ", ".join(str(m) for m in sorted(months)) + "]"
 
 
-def scheduled_view(sub: pd.DataFrame, training_months: Dict[str, List[int]]) -> pd.DataFrame:
+def scheduled_view(
+    sub: pd.DataFrame, training_months: Dict[str, List[int]]
+) -> pd.DataFrame:
     """Build the ``EMP_ID,SKILL,...,PERIOD`` scheduling view for training rows.
 
     Expects the helper columns ``_TRAIN_SKILL``, ``_MONTH``, ``_DATE`` produced
@@ -151,14 +175,16 @@ def scheduled_view(sub: pd.DataFrame, training_months: Dict[str, List[int]]) -> 
             period = _period_standard(int(r["_MONTH"]))
         else:
             period = _period_intl(training_months.get(skill, []))
-        rows.append({
-            "EMP_ID": r["TECH_ID"],
-            "SKILL": skill,
-            "TRAINING_SCHEDULE_DATE": r["_DATE"],
-            "PERIOD": period,
-            "FROM_SHIFT_TYPE": r["SHIFT_TYPE"],
-            "FROM_WORK_CENTER_ID": r["EMPLOYEE_WORK_CENTER_ID"],
-        })
+        rows.append(
+            {
+                "EMP_ID": r["TECH_ID"],
+                "SKILL": skill,
+                "TRAINING_SCHEDULE_DATE": r["_DATE"],
+                "PERIOD": period,
+                "FROM_SHIFT_TYPE": r["SHIFT_TYPE"],
+                "FROM_WORK_CENTER_ID": r["EMPLOYEE_WORK_CENTER_ID"],
+            }
+        )
     return pd.DataFrame(rows, columns=SCHEDULED_COLUMNS)
 
 
@@ -314,20 +340,27 @@ def assign_training(
 
     # Mark training rows and assemble the shared output bundle.
     df["_TRAIN_SKILL"] = [
-        chosen.get((tech, date_str)) for tech, date_str in zip(df["TECH_ID"], df["_DATE"])
+        chosen.get((tech, date_str))
+        for tech, date_str in zip(df["TECH_ID"], df["_DATE"])
     ]
     return build_result_from_marks(df, training_months, failures)
 
 
-def write_training_outputs(result: TrainingResult, output_dir: str = "outputs") -> Dict[str, str]:
+def write_training_outputs(
+    result: TrainingResult, output_dir: str = "outputs"
+) -> Dict[str, str]:
     """Write the regular roster plus the four reference-style training files."""
     os.makedirs(output_dir, exist_ok=True)
     paths = {
         "regular": os.path.join(output_dir, "Supply_Regular_qualified.csv"),
         "standard_data": os.path.join(output_dir, "standard_training_data.csv"),
         "intl_data": os.path.join(output_dir, "intl_special_training_data.csv"),
-        "standard_scheduled": os.path.join(output_dir, "standard_training_scheduled_df.csv"),
-        "intl_scheduled": os.path.join(output_dir, "intl_special_training_scheduled_df.csv"),
+        "standard_scheduled": os.path.join(
+            output_dir, "standard_training_scheduled_df.csv"
+        ),
+        "intl_scheduled": os.path.join(
+            output_dir, "intl_special_training_scheduled_df.csv"
+        ),
     }
     result.regular.to_csv(paths["regular"], index=False)
     result.standard_data.to_csv(paths["standard_data"], index=False)

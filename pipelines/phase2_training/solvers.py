@@ -68,7 +68,9 @@ class BaseBackend:
     def add_continuous(self, name: str, lb: float = 0.0) -> object:
         raise NotImplementedError
 
-    def add_constraint(self, terms: Sequence[Term], sense: str, rhs: float, name: str = "") -> None:
+    def add_constraint(
+        self, terms: Sequence[Term], sense: str, rhs: float, name: str = ""
+    ) -> None:
         """Add ``sum(coef * var) (sense) rhs`` where ``sense`` is ``<=``/``>=``/``==``."""
         raise NotImplementedError
 
@@ -76,7 +78,9 @@ class BaseBackend:
         raise NotImplementedError
 
     # -- solving / querying ------------------------------------------------- #
-    def optimize(self, time_limit: Optional[float] = None, mip_gap: Optional[float] = None) -> str:
+    def optimize(
+        self, time_limit: Optional[float] = None, mip_gap: Optional[float] = None
+    ) -> str:
         raise NotImplementedError
 
     def status(self) -> str:
@@ -131,16 +135,24 @@ class GurobiBackend(BaseBackend):
         gp = self._gp
         return gp.quicksum(coef * var for coef, var in terms)
 
-    def add_constraint(self, terms: Sequence[Term], sense: str, rhs: float, name: str = "") -> None:
+    def add_constraint(
+        self, terms: Sequence[Term], sense: str, rhs: float, name: str = ""
+    ) -> None:
         _pick_python_sense(sense)
         gp = self._gp
-        sense_map = {"<=": gp.GRB.LESS_EQUAL, ">=": gp.GRB.GREATER_EQUAL, "==": gp.GRB.EQUAL}
+        sense_map = {
+            "<=": gp.GRB.LESS_EQUAL,
+            ">=": gp.GRB.GREATER_EQUAL,
+            "==": gp.GRB.EQUAL,
+        }
         self.model.addLConstr(self._expr(terms), sense_map[sense], rhs, name=name)
 
     def set_min_objective(self, terms: Sequence[Term]) -> None:
         self.model.setObjective(self._expr(terms), self._gp.GRB.MINIMIZE)
 
-    def optimize(self, time_limit: Optional[float] = None, mip_gap: Optional[float] = None) -> str:
+    def optimize(
+        self, time_limit: Optional[float] = None, mip_gap: Optional[float] = None
+    ) -> str:
         if time_limit is not None:
             self.model.Params.TimeLimit = float(time_limit)
         if mip_gap is not None:
@@ -206,7 +218,9 @@ class XpressBackend(BaseBackend):
         xp = self._xp
         return xp.Sum([coef * var for coef, var in terms]) if terms else 0.0
 
-    def add_constraint(self, terms: Sequence[Term], sense: str, rhs: float, name: str = "") -> None:
+    def add_constraint(
+        self, terms: Sequence[Term], sense: str, rhs: float, name: str = ""
+    ) -> None:
         _pick_python_sense(sense)
         expr = self._expr(terms)
         if sense == "<=":
@@ -220,7 +234,9 @@ class XpressBackend(BaseBackend):
     def set_min_objective(self, terms: Sequence[Term]) -> None:
         self.model.setObjective(self._expr(terms), sense=self._xp.minimize)
 
-    def optimize(self, time_limit: Optional[float] = None, mip_gap: Optional[float] = None) -> str:
+    def optimize(
+        self, time_limit: Optional[float] = None, mip_gap: Optional[float] = None
+    ) -> str:
         if time_limit is not None:
             self.model.controls.maxtime = int(round(float(time_limit)))
         if mip_gap is not None:
@@ -262,7 +278,9 @@ class XpressBackend(BaseBackend):
 _BACKENDS = {"gurobi": GurobiBackend, "xpress": XpressBackend}
 
 
-def make_backend(solver: str, log_path: Optional[str] = None, mip_focus: bool = False) -> BaseBackend:
+def make_backend(
+    solver: str, log_path: Optional[str] = None, mip_focus: bool = False
+) -> BaseBackend:
     """Factory returning a backend for ``solver`` in ``{"gurobi", "xpress"}``."""
     key = (solver or "").strip().lower()
     if key not in _BACKENDS:

@@ -22,6 +22,7 @@ Exit code is 0 when every check passes, 1 otherwise.
 import argparse
 import os
 import sys
+import logging
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
 
@@ -88,9 +89,7 @@ def verify_outputs(paths):
     """Validate each output file and check cross-file profile consistency."""
     frames = {name: pd.read_csv(path) for name, path in paths.items()}
 
-    per_file_problems = {
-        name: validate_quals(df) for name, df in frames.items()
-    }
+    per_file_problems = {name: validate_quals(df) for name, df in frames.items()}
 
     combined = pd.concat(frames.values(), ignore_index=True)
     profiles = combined.drop_duplicates(subset=["TECH_ID", "FINAL_QUALS", "QUAL_COUNT"])
@@ -115,43 +114,56 @@ def main():
     args = parser.parse_args()
 
     failures = 0
-    print("\n================ VERIFICATION: members/daniel ================")
+    logging.info("\n================ VERIFICATION: members/daniel ================")
 
     emp_report = verify_emp_id_tech_id(args.reference_dir)
-    print("\n[1] EMP_ID <-> TECH_ID (reference data)")
+    logging.info("\n[1] EMP_ID <-> TECH_ID (reference data)")
     if emp_report is None:
-        print(f"    SKIPPED: reference files not found under {args.reference_dir!r}")
+        logging.info(
+            f"    SKIPPED: reference files not found under {args.reference_dir!r}"
+        )
     else:
         status = "PASS" if emp_report["ok"] else "FAIL"
-        print(f"    {status}: EMP_ID set == TECH_ID set")
-        print(f"      supply source    : {os.path.basename(emp_report['supply_path'])}")
-        print(f"      |TECH_ID| = {emp_report['n_tech_id']}   |EMP_ID| = {emp_report['n_emp_id']}")
+        logging.info(f"    {status}: EMP_ID set == TECH_ID set")
+        logging.info(
+            f"      supply source    : {os.path.basename(emp_report['supply_path'])}"
+        )
+        logging.info(
+            f"      |TECH_ID| = {emp_report['n_tech_id']}   |EMP_ID| = {emp_report['n_emp_id']}"
+        )
         for name, ids in emp_report["per_file"].items():
-            print(f"      {name}: {len(ids)} ids")
+            logging.info(f"      {name}: {len(ids)} ids")
         if not emp_report["ok"]:
-            print(f"      EMP_ID-only : {emp_report['emp_only'][:10]}")
-            print(f"      TECH_ID-only: {emp_report['tech_only'][:10]}")
+            logging.info(f"      EMP_ID-only : {emp_report['emp_only'][:10]}")
+            logging.info(f"      TECH_ID-only: {emp_report['tech_only'][:10]}")
             failures += 1
 
     out_report = verify_outputs(
         {"regular": args.regular, "standard": args.standard, "special": args.special}
     )
-    print("\n[2] Generated *_qualified.csv files")
+    logging.info("\n[2] Generated *_qualified.csv files")
     for name, problems in out_report["per_file_problems"].items():
-        print(f"    {name:9s}: {'PASS' if not problems else problems}")
+        logging.info(f"    {name:9s}: {'PASS' if not problems else problems}")
         if problems:
             failures += 1
 
-    print("\n[3] Cross-file profile consistency")
+    logging.info("\n[3] Cross-file profile consistency")
     if out_report["inconsistent_tech_ids"]:
-        print(f"    FAIL: {len(out_report['inconsistent_tech_ids'])} TECH_IDs have >1 profile")
+        logging.info(
+            f"    FAIL: {len(out_report['inconsistent_tech_ids'])} TECH_IDs have >1 profile"
+        )
         failures += 1
     else:
-        print(f"    PASS: all {out_report['n_tech']} TECH_IDs have one profile across the 3 files")
+        logging.info(
+            f"    PASS: all {out_report['n_tech']} TECH_IDs have one profile across the 3 files"
+        )
 
-    print("\n=============================================================")
-    print("RESULT:", "ALL CHECKS PASSED" if failures == 0 else f"{failures} CHECK(S) FAILED")
-    print("=============================================================\n")
+    logging.info("\n=============================================================")
+    logging.info(
+        "RESULT:",
+        "ALL CHECKS PASSED" if failures == 0 else f"{failures} CHECK(S) FAILED",
+    )
+    logging.info("=============================================================\n")
     return 1 if failures else 0
 
 

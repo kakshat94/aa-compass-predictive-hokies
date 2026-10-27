@@ -46,8 +46,8 @@ common/
   coverage_report.py                <- CoverageReporter utility
 bidline_check.py                    <- BidlineChecker integrity checks
 
-data/
-  Demand.csv
+inputs/
+  annual_desk_needs_reference.csv
   demand_volume_per_day_reference.csv
   Supply_sample.csv
 
@@ -73,7 +73,7 @@ FAIR_SECONDS = 120.0      # vacation fairness stage time budget
 
 ### Phase 1 — Bidline Creation
 
-1. Loads `data/Demand.csv` and builds workcenter day-sets via `ProjectConfig`.
+1. Loads `inputs/annual_desk_needs_reference.csv` and builds workcenter day-sets via `ProjectConfig`.
 2. Runs `Orchestrator.initiate_models()` — solves a Gurobi MIP for MORNING
    and MIDNIGHT shifts (EVENING is derived from MORNING when
    `shifts.morning_equals_evening: true` in `params.yaml`).
@@ -87,7 +87,7 @@ Outputs written to `outputs/phase1/`:
 - `Flex_assignment.csv` — flex day assignments from the MIP
 - `Supply_all.csv` — concatenation of regular + flex supply
 
-Parameterization (`pipelines/phase1/params.yaml`):
+Parameterization (`params.yaml`):
 - `shifts.morning_equals_evening: true` — mirror MORNING solution as EVENING
   supply with distinct TECH_IDs and shift times
 - `flex_days.<WorkCenter>.max_flex_days` — which work centers get flex days
@@ -101,13 +101,13 @@ all_initial_tech_ids = set(reg['TECH_ID']).union(std['TECH_ID'], spc['TECH_ID'])
 unmapped_tech_ids = all_initial_tech_ids - set(validator.tech_id_patterns.keys())
 
 if unmapped_tech_ids:
-    print(f"Stage 1 Structural Error: The following TECH_IDs violate the 4-3-4-4 structure: {list(unmapped_tech_ids)}")
+    logging.info(f"Stage 1 Structural Error: The following TECH_IDs violate the 4-3-4-4 structure: {list(unmapped_tech_ids)}")
 
 stage1_flex_results = validator.stage4_flex_checks(flx)
 if stage1_flex_results['invalid_flex_days'] or stage1_flex_results['max_count_violations']:
-    print("Stage 1 (Baseline) Errors Found:")
-    print(f" - Initial Flex days assigned on original WORKING days: {stage1_flex_results['invalid_flex_days']}")
-    print(f" - Initial TECH_IDs exceeding 4 flex days: {stage1_flex_results['max_count_violations']}")        # 
+    logging.info("Stage 1 (Baseline) Errors Found:")
+    logging.info(f" - Initial Flex days assigned on original WORKING days: {stage1_flex_results['invalid_flex_days']}")
+    logging.info(f" - Initial TECH_IDs exceeding 4 flex days: {stage1_flex_results['max_count_violations']}")        # 
 CoverageReporter.print_summary(...)   # supply vs demand summary
 ```
 
@@ -139,9 +139,9 @@ reusing the `BidlinePipelineValidator` from Check 1:
 stage2_results = validator.stage2_training_checks(std2, spc2, flx)
 
 if stage2_results['invalid_training_days'] or stage2_results['duplicate_trainings']:
-    print("Stage 2 Errors Found:")
-    print(f" - Invalid training days (assigned on OFF day): {stage2_results['invalid_training_days']}")
-    print(f" - Duplicate trainings on same day: {stage2_results['duplicate_trainings']}")
+    logging.info("Stage 2 Errors Found:")
+    logging.info(f" - Invalid training days (assigned on OFF day): {stage2_results['invalid_training_days']}")
+    logging.info(f" - Duplicate trainings on same day: {stage2_results['duplicate_trainings']}")
 
 CoverageReporter.print_summary(...)
 ```
@@ -156,8 +156,8 @@ CoverageReporter.print_summary(...)
 Inputs:
 - `outputs/phase2_training/Supply_Regular_qualified.csv`
 - `outputs/phase2_training/all_training_data.csv`
-- `data/demand_volume_per_day_reference.csv`
-- `data/Demand.csv`
+- `inputs/demand_volume_per_day_reference.csv`
+- `inputs/annual_desk_needs_reference.csv`
 
 Outputs written to `outputs/phase2_vacation_flex/`:
 - `vacation_initial.csv`, `vacation_daily_targets.csv`
@@ -180,7 +180,7 @@ Inputs:
 - `outputs/phase2_training/all_training_data.csv`
 - `outputs/phase2_vacation_flex/vacation_initial.csv`
 - `outputs/phase2_vacation_flex/demand_imputation_audit.csv`
-- `data/Demand.csv`
+- `inputs/annual_desk_needs_reference.csv`
 
 Outputs written to `outputs/phase2_vacation_flex/`:
 - `flex_days.csv`, `flex_by_dispatcher.csv`
@@ -195,9 +195,9 @@ Placeholder — final pipeline check to be implemented.
 ## Evaluate Sample Solution
 
 ```bash
-python common/coverage_report.py --supply data/Supply_sample.csv --name "Sample"
+python common/coverage_report.py --supply inputs/Supply_sample.csv --name "Sample"
 
 # Save detailed report
-python common/coverage_report.py --supply data/Supply_sample.csv \
+python common/coverage_report.py --supply inputs/Supply_sample.csv \
     --output outputs/coverage_report.csv --name "Sample"
 ```

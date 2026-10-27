@@ -16,7 +16,7 @@ All metrics are dispersion measures where 0 is best (perfectly even).
 from __future__ import annotations
 
 from typing import Dict, List, Optional
-
+import logging
 import numpy as np
 import pandas as pd
 
@@ -54,8 +54,15 @@ def _max_to_mean(values) -> float:
 def _metrics(values) -> Dict[str, float]:
     x = np.asarray(values, dtype=float)
     if len(x) == 0:
-        return {"n": 0, "mean": 0.0, "min": 0.0, "max": 0.0,
-                "gini": 0.0, "cv": 0.0, "max_to_mean": 0.0}
+        return {
+            "n": 0,
+            "mean": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "gini": 0.0,
+            "cv": 0.0,
+            "max_to_mean": 0.0,
+        }
     return {
         "n": int(len(x)),
         "mean": float(x.mean()),
@@ -79,14 +86,14 @@ def _tech_qualification_lookup(roster: pd.DataFrame):
     return primary, held
 
 
-def bidline_balance(vacation_data: pd.DataFrame, roster: pd.DataFrame,
-                    priority_list: Optional[List[str]] = None) -> Dict:
+def bidline_balance(
+    vacation_data: pd.DataFrame,
+    roster: pd.DataFrame,
+    priority_list: Optional[List[str]] = None,
+) -> Dict:
     priority_list = priority_list or DEFAULT_PRIORITY_LIST
     all_techs = roster["TECH_ID"].unique()
-    counts = (
-        vacation_data.groupby("TECH_ID").size()
-        .reindex(all_techs, fill_value=0)
-    )
+    counts = vacation_data.groupby("TECH_ID").size().reindex(all_techs, fill_value=0)
 
     primary_lookup, held_sets = _tech_qualification_lookup(roster)
 
@@ -139,15 +146,20 @@ def temporal_balance(vacation_data: pd.DataFrame, roster: pd.DataFrame) -> Dict:
     monthly = _bucket_counts(dates, "M")
 
     wd_week = _working_days_per_bucket(roster, "W").reindex(weekly.index, fill_value=1)
-    wd_month = _working_days_per_bucket(roster, "M").reindex(monthly.index, fill_value=1)
+    wd_month = _working_days_per_bucket(roster, "M").reindex(
+        monthly.index, fill_value=1
+    )
     weekly_norm = weekly / wd_week
     monthly_norm = monthly / wd_month
 
     # Per-bid-line month concentration (Herfindahl across the months it takes vacation).
     months = dates.dt.month
-    frame = pd.DataFrame({"TECH_ID": vacation_data["TECH_ID"].values, "M": months.values})
+    frame = pd.DataFrame(
+        {"TECH_ID": vacation_data["TECH_ID"].values, "M": months.values}
+    )
     herf = (
-        frame.groupby(["TECH_ID", "M"]).size()
+        frame.groupby(["TECH_ID", "M"])
+        .size()
         .groupby(level=0)
         .apply(lambda s: float(np.sum((s / s.sum()) ** 2)))
     )
@@ -162,8 +174,11 @@ def temporal_balance(vacation_data: pd.DataFrame, roster: pd.DataFrame) -> Dict:
     }
 
 
-def compute_balance_metrics(vacation_data: pd.DataFrame, roster: pd.DataFrame,
-                            priority_list: Optional[List[str]] = None) -> Dict:
+def compute_balance_metrics(
+    vacation_data: pd.DataFrame,
+    roster: pd.DataFrame,
+    priority_list: Optional[List[str]] = None,
+) -> Dict:
     return {
         "bidlines": bidline_balance(vacation_data, roster, priority_list),
         "temporal": temporal_balance(vacation_data, roster),
@@ -171,30 +186,34 @@ def compute_balance_metrics(vacation_data: pd.DataFrame, roster: pd.DataFrame,
 
 
 def _fmt(m: Dict) -> str:
-    return (f"mean={m['mean']:.3f} range=[{m['min']:.3f},{m['max']:.3f}] "
-            f"gini={m['gini']:.3f} cv={m['cv']:.3f} max/mean={m['max_to_mean']:.3f}")
+    return (
+        f"mean={m['mean']:.3f} range=[{m['min']:.3f},{m['max']:.3f}] "
+        f"gini={m['gini']:.3f} cv={m['cv']:.3f} max/mean={m['max_to_mean']:.3f}"
+    )
 
 
 def print_balance_report(metrics: Dict) -> None:
     b = metrics["bidlines"]
     t = metrics["temporal"]
-    print("\n================ BALANCE METRICS ================")
-    print("ACROSS BID LINES (0 = perfectly proportional)")
-    print(f"  overall                      : {_fmt(b['overall'])}")
-    print("  by primary qualification:")
+    logging.info("\n================ BALANCE METRICS ================")
+    logging.info("ACROSS BID LINES (0 = perfectly proportional)")
+    logging.info(f"  overall                      : {_fmt(b['overall'])}")
+    logging.info("  by primary qualification:")
     for qual, m in b["by_primary"].items():
-        print(f"    {qual:8s} : {_fmt(m)}")
-    print(f"  between primary groups       : {_fmt(b['primary_between'])}")
-    print("  by held qualification (overlapping):")
+        logging.info(f"    {qual:8s} : {_fmt(m)}")
+    logging.info(f"  between primary groups       : {_fmt(b['primary_between'])}")
+    logging.info("  by held qualification (overlapping):")
     for qual, m in b["by_held"].items():
-        print(f"    {qual:8s} : {_fmt(m)}")
-    print(f"  between held groups          : {_fmt(b['held_between'])}")
+        logging.info(f"    {qual:8s} : {_fmt(m)}")
+    logging.info(f"  between held groups          : {_fmt(b['held_between'])}")
 
-    print("ACROSS THE YEAR (0 = perfectly spread)")
-    print(f"  daily                        : {_fmt(t['daily'])}")
-    print(f"  weekly                       : {_fmt(t['weekly'])}")
-    print(f"  monthly                      : {_fmt(t['monthly'])}")
-    print(f"  weekly per working day       : {_fmt(t['weekly_norm'])}")
-    print(f"  monthly per working day      : {_fmt(t['monthly_norm'])}")
-    print(f"  bid-line month Herfindahl    : {_fmt(t['bidline_month_herfindahl'])}")
-    print("=================================================\n")
+    logging.info("ACROSS THE YEAR (0 = perfectly spread)")
+    logging.info(f"  daily                        : {_fmt(t['daily'])}")
+    logging.info(f"  weekly                       : {_fmt(t['weekly'])}")
+    logging.info(f"  monthly                      : {_fmt(t['monthly'])}")
+    logging.info(f"  weekly per working day       : {_fmt(t['weekly_norm'])}")
+    logging.info(f"  monthly per working day      : {_fmt(t['monthly_norm'])}")
+    logging.info(
+        f"  bid-line month Herfindahl    : {_fmt(t['bidline_month_herfindahl'])}"
+    )
+    logging.info("=================================================\n")

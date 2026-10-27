@@ -21,12 +21,15 @@ It reads the regular roster and the four training files produced by
 import argparse
 import os
 import sys
+import logging
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
 
 import pandas as pd  # noqa: E402
 
-from pipelines.phase2_training.qualification_mapper import parse_final_quals  # noqa: E402
+from pipelines.phase2_training.qualification_mapper import (
+    parse_final_quals,
+)  # noqa: E402
 from pipelines.phase2_training.training_assigner import (  # noqa: E402
     CLASS_SIZE_DEFAULT,
     _period_intl,
@@ -60,8 +63,12 @@ def verify_training(
     std_pairs = set(zip(std["TECH_ID"], std["SHIFT_DATE"]))
     intl_pairs = set(zip(intl["TECH_ID"], intl["SHIFT_DATE"]))
     if std_pairs != set(zip(sched_std["EMP_ID"], sched_std["TRAINING_SCHEDULE_DATE"])):
-        problems.append("standard data and scheduled view are not 1:1 on (TECH_ID, date)")
-    if intl_pairs != set(zip(sched_intl["EMP_ID"], sched_intl["TRAINING_SCHEDULE_DATE"])):
+        problems.append(
+            "standard data and scheduled view are not 1:1 on (TECH_ID, date)"
+        )
+    if intl_pairs != set(
+        zip(sched_intl["EMP_ID"], sched_intl["TRAINING_SCHEDULE_DATE"])
+    ):
         problems.append("intl data and scheduled view are not 1:1 on (TECH_ID, date)")
 
     # --- skill placement ----------------------------------------------------- #
@@ -72,10 +79,15 @@ def verify_training(
         problems.append("intl scheduled view contains Domestic rows")
     unknown = (intl_skills | {"Domestic"}) - set(training_months)
     if unknown:
-        problems.append(f"scheduled views use skills absent from params.yaml: {sorted(unknown)}")
+        problems.append(
+            f"scheduled views use skills absent from params.yaml: {sorted(unknown)}"
+        )
 
     # --- schedule PERIOD / eligible-month correctness ------------------------ #
-    for name, sched, is_std in [("standard", sched_std, True), ("intl", sched_intl, False)]:
+    for name, sched, is_std in [
+        ("standard", sched_std, True),
+        ("intl", sched_intl, False),
+    ]:
         if sched.empty:
             continue
         months = _month(sched["TRAINING_SCHEDULE_DATE"])
@@ -85,10 +97,14 @@ def verify_training(
         ]
         for m, s in zip(months, sched["SKILL"]):
             if m not in training_months.get(s, []):
-                problems.append(f"{name}: {s} trained in month {m}, not in training_months")
+                problems.append(
+                    f"{name}: {s} trained in month {m}, not in training_months"
+                )
                 break
         if list(sched["PERIOD"]) != exp_period:
-            problems.append(f"{name}: PERIOD encoding does not match the reference format")
+            problems.append(
+                f"{name}: PERIOD encoding does not match the reference format"
+            )
 
     # --- intl MONTH column --------------------------------------------------- #
     intl_months = _month(intl["SHIFT_DATE"])
@@ -127,13 +143,17 @@ def verify_training(
     reg_pairs = set(zip(regular["TECH_ID"], regular["SHIFT_DATE"]))
     overlap = (std_pairs | intl_pairs) & reg_pairs
     if overlap:
-        problems.append(f"{len(overlap)} training rows also appear in the regular roster")
+        problems.append(
+            f"{len(overlap)} training rows also appear in the regular roster"
+        )
 
     # --- class size per (date, shift) ---------------------------------------- #
     caps = training.groupby(["SHIFT_DATE", "SHIFT_TYPE"]).size()
     if (caps > class_size).any():
         worst = int(caps.max())
-        problems.append(f"class size exceeded: max {worst} > {class_size} on some (date, shift)")
+        problems.append(
+            f"class size exceeded: max {worst} > {class_size} on some (date, shift)"
+        )
 
     return problems
 
@@ -143,27 +163,38 @@ def main() -> int:
     parser.add_argument("--regular", default="outputs/Supply_Regular_qualified.csv")
     parser.add_argument("--standard-data", default="outputs/standard_training_data.csv")
     parser.add_argument("--intl-data", default="outputs/intl_special_training_data.csv")
-    parser.add_argument("--standard-scheduled", default="outputs/standard_training_scheduled_df.csv")
-    parser.add_argument("--intl-scheduled", default="outputs/intl_special_training_scheduled_df.csv")
-    parser.add_argument("--params", default="pipelines/phase1/params.yaml")
+    parser.add_argument(
+        "--standard-scheduled", default="outputs/standard_training_scheduled_df.csv"
+    )
+    parser.add_argument(
+        "--intl-scheduled", default="outputs/intl_special_training_scheduled_df.csv"
+    )
+    parser.add_argument("--params", default="params.yaml")
     parser.add_argument("--class-size", type=int, default=CLASS_SIZE_DEFAULT)
     args = parser.parse_args()
 
     training_months = load_training_months(args.params)
     problems = verify_training(
-        args.regular, args.standard_data, args.intl_data,
-        args.standard_scheduled, args.intl_scheduled, training_months, args.class_size,
+        args.regular,
+        args.standard_data,
+        args.intl_data,
+        args.standard_scheduled,
+        args.intl_scheduled,
+        training_months,
+        args.class_size,
     )
 
-    print("\n================ TRAINING VERIFICATION ================")
-    print(f"eligible months per skill: {training_months}")
+    logging.info("\n================ TRAINING VERIFICATION ================")
+    logging.info(f"eligible months per skill: {training_months}")
     if problems:
-        print(f"FAIL ({len(problems)} problems):")
+        logging.error(f"FAIL ({len(problems)} problems):")
         for p in problems:
-            print("  -", p)
+            logging.info("  -", p)
     else:
-        print("PASS: training respects params.yaml training_months and all rules")
-    print("=======================================================\n")
+        logging.info(
+            "PASS: training respects params.yaml training_months and all rules"
+        )
+    logging.info("=======================================================\n")
     return 1 if problems else 0
 
 

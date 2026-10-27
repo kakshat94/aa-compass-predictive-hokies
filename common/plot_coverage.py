@@ -1,10 +1,12 @@
 """
 Plot coverage data.
 """
+
 import argparse
 import json
 import os
 import sys
+import logging
 
 import pandas as pd
 
@@ -40,17 +42,17 @@ def load_daily(report_path: str) -> tuple[pd.DataFrame, list[str], list[str]]:
     for col in ("DEMAND", "SUPPLY"):
         df[col] = pd.to_numeric(df[col], errors="coerce").fillna(0)
 
-    daily = (
-        df.groupby(["SHIFT_DATE", "WORK_CENTER", "SHIFT_TYPE"], as_index=False)[
-            ["DEMAND", "SUPPLY"]
-        ]
-        .sum()
-    )
+    daily = df.groupby(["SHIFT_DATE", "WORK_CENTER", "SHIFT_TYPE"], as_index=False)[
+        ["DEMAND", "SUPPLY"]
+    ].sum()
 
     work_centers = sorted(daily["WORK_CENTER"].unique().tolist())
     shift_types = sorted(
         daily["SHIFT_TYPE"].unique().tolist(),
-        key=lambda s: (SHIFT_ORDER.index(s) if s in SHIFT_ORDER else len(SHIFT_ORDER), s),
+        key=lambda s: (
+            SHIFT_ORDER.index(s) if s in SHIFT_ORDER else len(SHIFT_ORDER),
+            s,
+        ),
     )
     return daily, work_centers, shift_types
 
@@ -284,15 +286,23 @@ def main():
         description="Build an interactive HTML plot of accumulated demand vs. supply from a coverage report CSV."
     )
     parser.add_argument(
-        "--report", type=str, default="outputs/coverage_report.csv",
+        "--report",
+        type=str,
+        default="outputs/coverage_report.csv",
         help="Path to the coverage report CSV produced by common/coverage_report.py",
     )
     parser.add_argument(
-        "--output", type=str, default="outputs/coverage_plot.html",
+        "--output",
+        type=str,
+        default="outputs/coverage_plot.html",
         help="Path to write the interactive HTML file",
     )
-    parser.add_argument("--title", type=str, default="Demand vs Supply Coverage", help="Chart title")
-    parser.add_argument("--open", action="store_true", help="Open the HTML file in the default browser")
+    parser.add_argument(
+        "--title", type=str, default="Demand vs Supply Coverage", help="Chart title"
+    )
+    parser.add_argument(
+        "--open", action="store_true", help="Open the HTML file in the default browser"
+    )
     args = parser.parse_args()
 
     daily, work_centers, shift_types = load_daily(args.report)
@@ -303,13 +313,14 @@ def main():
     with open(args.output, "w", encoding="utf-8") as f:
         f.write(html)
 
-    print(f"Wrote interactive plot to {args.output}")
-    print(f"  work centers: {', '.join(work_centers)}")
-    print(f"  shift types : {', '.join(shift_types)}")
-    print(f"  days        : {daily['SHIFT_DATE'].nunique()}")
+    logging.info(f"Wrote interactive plot to {args.output}")
+    logging.info(f"  work centers: {', '.join(work_centers)}")
+    logging.info(f"  shift types : {', '.join(shift_types)}")
+    logging.info(f"  days        : {daily['SHIFT_DATE'].nunique()}")
 
     if args.open:
         import webbrowser
+
         webbrowser.open(f"file://{os.path.abspath(args.output)}")
 
 

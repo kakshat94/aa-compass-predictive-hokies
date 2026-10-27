@@ -6,6 +6,7 @@ import argparse
 import json
 import os
 import sys
+import logging
 
 import pandas as pd
 
@@ -188,15 +189,23 @@ def main():
         description="Build an interactive HTML plot of (accumulated) demand per day from a demand CSV."
     )
     parser.add_argument(
-        "--demand", type=str, default="data/Demand.csv",
-        help="Path to a demand CSV (date + demand columns; Demand.csv is summed per day)",
+        "--demand",
+        type=str,
+        default="inputs/annual_desk_needs_reference.csv",
+        help="Path to a demand CSV (date + demand columns; annual_desk_needs_reference.csv is summed per day)",
     )
     parser.add_argument(
-        "--output", type=str, default="outputs/demand_plot.html",
+        "--output",
+        type=str,
+        default="outputs/demand_plot.html",
         help="Path to write the interactive HTML file",
     )
-    parser.add_argument("--title", type=str, default="Demand per Day", help="Chart title")
-    parser.add_argument("--open", action="store_true", help="Open the HTML file in the default browser")
+    parser.add_argument(
+        "--title", type=str, default="Demand per Day", help="Chart title"
+    )
+    parser.add_argument(
+        "--open", action="store_true", help="Open the HTML file in the default browser"
+    )
     args = parser.parse_args()
 
     daily = load_daily(args.demand)
@@ -207,12 +216,13 @@ def main():
     with open(args.output, "w", encoding="utf-8") as f:
         f.write(html)
 
-    print(f"Wrote interactive plot to {args.output}")
-    print(f"  days        : {daily['DEMAND'].count()}")
-    print(f"  total demand: {int(daily['DEMAND'].sum()):,}")
+    logging.info(f"Wrote interactive plot to {args.output}")
+    logging.info(f"  days        : {daily['DEMAND'].count()}")
+    logging.info(f"  total demand: {int(daily['DEMAND'].sum()):,}")
 
     if args.open:
         import webbrowser
+
         webbrowser.open(f"file://{os.path.abspath(args.output)}")
 
 
