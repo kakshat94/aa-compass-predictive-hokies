@@ -10,8 +10,7 @@ windows in ``pipelines/phase1/params.yaml`` (``training_months``):
   * no more than one training per bid line per day;
   * across all work centers/skills, at most ``CLASS_SIZE`` trainees per
     ``(SHIFT_DATE, SHIFT_TYPE)`` (the docx's shared per-shift class limit);
-  * flex-day and vacation rules are accepted as optional sets but are not yet
-    populated by the pipeline (ignored for now).
+  * pre-assigned flex days and vacation days are excluded from training.
 
 Outputs match the competition reference files:
   * ``standard_training_data`` / ``intl_special_training_data``  (shift-like rows)
@@ -290,6 +289,14 @@ def assign_training(
             raise ValueError(
                 f"frozen training for TECH_ID {tech} on {date_str} is not a working day"
             )
+        if (str(tech), date_str) in flex_days:
+            raise ValueError(
+                f"frozen training for TECH_ID {tech} on {date_str} is a pre-assigned flex day"
+            )
+        if (str(tech), date_str) in vacation_days:
+            raise ValueError(
+                f"frozen training for TECH_ID {tech} on {date_str} is a vacation day"
+            )
         if skill not in tech_quals.get(tech, []):
             raise ValueError(
                 f"frozen training for TECH_ID {tech} uses unheld skill {skill!r}"
@@ -325,8 +332,8 @@ def assign_training(
             for date_str, m in tech_days.get(tech, [])
             if m == month
             and date_str not in used
-            and (tech, date_str) not in flex_days
-            and (tech, date_str) not in vacation_days
+            and (str(tech), date_str) not in flex_days
+            and (str(tech), date_str) not in vacation_days
             and capacity.get(_cap_key(date_str, shift), 0) < class_size
         ]
         if not candidates:

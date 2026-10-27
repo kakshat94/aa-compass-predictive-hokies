@@ -1,0 +1,23 @@
+{
+  "dispatchers": 493,
+  "max_flex_per_dispatcher": 4,
+  "max_consecutive_workdays_assumption": 0,
+  "min_spacing_between_flex_days": 0,
+  "preassigned_flex_days": 155,
+  "flex_days_added": 766,
+  "total_flex_days": 921,
+  "dispatchers_receiving_flex": 382,
+  "total_shortage_before_flex": 1178,
+  "total_shortage_after_preassigned": 1058,
+  "total_shortage_after_flex": 292,
+  "shortage_reduction": 886,
+  "shortage_reduction_from_preassigned": 120,
+  "shortage_reduction_from_new_flex": 766,
+  "total_overcoverage_after_flex": 1948,
+  "training_file_supplied": true,
+  "solver": "exact_bipartite_max_flow",
+  "greedy_baseline_flex_days": 765,
+  "improvement_over_greedy": 1,
+  "proven_optimal_under_current_flex_constraints": true,
+  "caveat": "Preliminary: not certified for FAA/CBA, qualifications or mandatory four-day entitlements"
+}

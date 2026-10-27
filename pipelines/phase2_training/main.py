@@ -1,11 +1,11 @@
-"""members/daniel pipeline: secondary qualifications -> training -> vacation.
+"""Phase 2 pipeline: secondary qualifications -> training -> vacation.
 
 Run from the repo root:
 
-    python3 members/daniel/main.py
+    python -m pipelines.phase2_training.main
 
 Stage 1 (Phase 1-3): sprinkle primary/secondary qualifications onto the three
-supply files produced by ``members/akshat/main.py`` (see ``qualification_mapper``).
+supply files produced by Phase 1 (see ``qualification_mapper``).
 
 Stage 2: build a random training solution honouring ``params.yaml``
 ``training_months`` (see ``training_assigner``).
@@ -35,6 +35,11 @@ import pandas as pd  # noqa: E402
 from pipelines.phase2_training.balance_metrics import (  # noqa: E402
     compute_balance_metrics,
     print_balance_report,
+)
+from pipelines.phase2_training.flex_assignment import (  # noqa: E402
+    enrich_flex_assignments,
+    load_flex_assignments,
+    write_flex_assignments,
 )
 from pipelines.phase2_training.qualification_mapper import (  # noqa: E402
     DEFAULT_PRIORITY_LIST,
@@ -109,6 +114,8 @@ def run_pipeline(
     freeze_phase1_training: bool = False,
     run_vacation_stage: bool = True,
     write: bool = True,
+    flex_assignment_path: str | None = None,
+    flex_assignment_output_path: str | None = None,
 ):
     """Run qualifications (Phase 1-3), training assignment, then vacation.
 
@@ -122,6 +129,10 @@ def run_pipeline(
 
     ``run_vacation_stage=False`` stops after training (and writing the training
     files) so an external vacation/flex pipeline can take over.
+
+    ``flex_assignment_path`` points at Phase 1 ``Flex_assignment.csv``. Those
+    days are excluded from every training assignment and the enriched copy is
+    written to ``flex_assignment_output_path`` (or the output directory).
     """
     priority_list = priority_list or DEFAULT_PRIORITY_LIST
 
@@ -140,6 +151,17 @@ def run_pipeline(
     merged = sprinkle_qualifications(merged, prop_table, priority_list, seed=seed)
     merged = merged[base_columns]  # drop MAPPED_QUAL_ID / _HIST_* helper columns
 
+    # --- Pre-assigned flex: block training days and qualify the flex rows ---
+    flex_df, flex_days = load_flex_assignments(flex_assignment_path)
+    if not flex_df.empty:
+        flex_df = enrich_flex_assignments(flex_df, merged)
+        if write:
+            flex_output = flex_assignment_output_path or os.path.join(
+                output_dir, "Flex_assignment_qualified.csv"
+            )
+            written = write_flex_assignments(flex_df, flex_output)
+            print(f"pre-assigned flex     : {len(flex_df):,} rows -> {written}")
+
     # --- Stage 2: training assignment (random or exact MIP) ---
     training_months = load_training_months(params_path)
     frozen = None
@@ -147,6 +169,14 @@ def run_pipeline(
         frozen = load_frozen_assignments(
             standard_training_path, special_training_path, training_months
         )
+        frozen_keys = {(str(tech), date) for tech, date in frozen}
+        conflicts = frozen_keys & flex_days
+        if conflicts:
+            examples = sorted(conflicts)[:5]
+            raise ValueError(
+                f"{len(conflicts)} frozen Phase 1 training days are also pre-assigned flex days; "
+                f"examples: {examples}"
+            )
     if method == "exact-mip":
         solver_log = os.path.join(output_dir, f"training_{solver}.log") if log else None
         if solver_log and write:
@@ -160,10 +190,16 @@ def run_pipeline(
             time_limit=time_limit,
             log_path=solver_log,
             frozen=frozen,
+            flex_days=flex_days,
         )
     elif method == "random":
         training = assign_training(
-            merged, training_months, class_size=class_size, seed=seed, frozen=frozen
+            merged,
+            training_months,
+            class_size=class_size,
+            seed=seed,
+            frozen=frozen,
+            flex_days=flex_days,
         )
     else:
         raise ValueError(f"unknown method {method!r}; choose 'random' or 'exact-mip'")
@@ -198,6 +234,8 @@ def run_pipeline(
         "training_months": training_months,
         "vacation": vacation,
         "metrics": metrics,
+        "flex_assignment": flex_df,
+        "flex_days": flex_days,
     }
 
 
@@ -213,24 +251,24 @@ def main() -> int:
     )
     parser.add_argument(
         "--output-data-dir",
-        default="outputs",
+        default="outputs/phase2_training",
         help="Directory for the files this pipeline generates "
-        "(default outputs; use e.g. outputs/exact_gurobi for a run).",
+        "(default outputs/phase2_training).",
     )
     parser.add_argument(
         "--regular",
         default=None,
-        help="Phase I regular roster (default outputs/Supply_Regular.csv).",
+        help="Phase I regular roster (default outputs/phase1/Supply_Regular.csv).",
     )
     parser.add_argument(
         "--standard",
         default=None,
-        help="Phase I standard-training roster (default outputs/Supply_Standard_Training.csv).",
+        help="Phase I standard-training roster (default outputs/phase1/Supply_Standard_Training.csv).",
     )
     parser.add_argument(
         "--special",
         default=None,
-        help="Phase I special-training roster (default outputs/Supply_Special_Training.csv).",
+        help="Phase I special-training roster (default outputs/phase1/Supply_Special_Training.csv).",
     )
     parser.add_argument(
         "--qual-data",
@@ -303,14 +341,19 @@ def main() -> int:
         help="Keep the training days from the Phase I training files fixed and "
         "schedule only the secondary-qualification trainings around them.",
     )
+    parser.add_argument("--flex-assignment", default="outputs/phase1/Flex_assignment.csv",
+                        help="Pre-assigned flex days from Phase 1 (default outputs/phase1/Flex_assignment.csv; "
+                             "pass none to disable).")
+    parser.add_argument("--flex-assignment-output", default=None,
+                        help="Qualified flex copy (default <output-data-dir>/Flex_assignment_qualified.csv).")
     args = parser.parse_args()
 
     in_dir = args.input_data_dir
     out_dir = args.output_data_dir
-    # The Phase I roster lives in outputs/ (it is written by members/akshat/main.py).
-    regular_path = args.regular or "outputs/Supply_Regular.csv"
-    standard_path = args.standard or "outputs/Supply_Standard_Training.csv"
-    special_path = args.special or "outputs/Supply_Special_Training.csv"
+    # The Phase 1 roster lives in outputs/phase1/.
+    regular_path = args.regular or "outputs/phase1/Supply_Regular.csv"
+    standard_path = args.standard or "outputs/phase1/Supply_Standard_Training.csv"
+    special_path = args.special or "outputs/phase1/Supply_Special_Training.csv"
     qual_data_path = args.qual_data or os.path.join(in_dir, "Supply_sample.csv")
     volume_path = args.volume or os.path.join(
         in_dir, "demand_volume_per_day_reference.csv"
@@ -337,6 +380,8 @@ def main() -> int:
         output_dir=out_dir,
         freeze_phase1_training=args.freeze_phase1_training,
         write=not args.no_write,
+        flex_assignment_path=args.flex_assignment,
+        flex_assignment_output_path=args.flex_assignment_output,
     )
 
     training = out["training"]
@@ -373,6 +418,7 @@ def main() -> int:
             os.path.join(out_dir, "intl_special_training_scheduled_df.csv"),
             out["training_months"],
             args.class_size,
+            flex_assignment_path=args.flex_assignment,
         )
         logging.info(
             f"training check       : {'OK' if not train_problems else train_problems}"

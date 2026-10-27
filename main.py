@@ -130,7 +130,7 @@ if __name__ == "__main__":
     flx = pd.read_csv(PHASE1_DIR / "Flex_assignment.csv")
 
     validator = BidlinePipelineValidator(reg, std, spc)
-    all_initial_tech_ids = set(reg["TECH_ID"]).union(std["TECH_ID"], spc["TECH_ID"])
+    all_initial_tech_ids = {str(value) for value in set(reg['TECH_ID']).union(std['TECH_ID'], spc['TECH_ID'])}
     unmapped_tech_ids = all_initial_tech_ids - set(validator.tech_id_patterns.keys())
 
     if unmapped_tech_ids:
@@ -173,7 +173,13 @@ if __name__ == "__main__":
 
     stage2_results = validator.stage2_training_checks(std2, spc2, flx)
 
-    if stage2_results["invalid_training_days"] or stage2_results["duplicate_trainings"]:
+    stage2_errors = (
+        stage2_results["invalid_training_days"]
+        or stage2_results["duplicate_trainings"]
+        or stage2_results['invalid_flex_days']
+        or stage2_results['training_flex_overlap']
+    )
+    if stage2_errors:
         logging.info("Stage 2 Errors Found:")
         logging.info(
             f" - Invalid training days (assigned on OFF day): {stage2_results['invalid_training_days']}"
@@ -181,6 +187,9 @@ if __name__ == "__main__":
         logging.info(
             f" - Duplicate trainings on same day: {stage2_results['duplicate_trainings']}"
         )
+        logging.info(f" - Flex days on original working days: {stage2_results['invalid_flex_days']}")
+        logging.info(f" - Training on pre-assigned flex days: {stage2_results['training_flex_overlap'][:10]}")
+        raise RuntimeError("Stage 2 integrity checks failed")
 
     report2, supply2 = CoverageReporter.evaluate(
         str(ROOT / "inputs" / "annual_desk_needs_reference.csv"),
@@ -243,6 +252,7 @@ if __name__ == "__main__":
         logging.info(
             f" - TECH_IDs exceeding 4 flex days: {stage4_results['max_count_violations']}"
         )
+    logging.info(f"  flex assignments checked: {len(final_flex):,}")
 
     report_final, supply_final = CoverageReporter.evaluate(
         str(ROOT / "inputs" / "annual_desk_needs_reference.csv"),

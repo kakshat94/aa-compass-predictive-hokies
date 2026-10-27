@@ -74,26 +74,40 @@ pip install pandas ortools
 From the project directory, after generating vacation assignments:
 
 ```bash
-python flex_day_maxflow.py --output-dir outputs/flex_maxflow
+python pipelines/phase2_vacation_flex/flex_day_maxflow.py   --output-dir outputs/phase2_vacation_flex
 ```
 
 For the earlier greedy baseline:
 
 ```bash
-python flex_day_maxflow.py --solver greedy --output-dir outputs/flex_greedy
+python pipelines/phase2_vacation_flex/flex_day_maxflow.py   --solver greedy --output-dir /tmp/flex_greedy
 ```
 
+<<<<<<< HEAD
 The default inputs are `inputs/initial_supply_data_reference.csv`, `inputs/annual_desk_needs_reference.csv`, and `outputs/vacation_initial.csv`. The script also incorporates the existing `outputs/demand_imputation_audit.csv` when needed. To include a training calendar, supply a compatible file with dispatcher IDs and dates using `--training path/to/training.csv`.
+=======
+The script defaults to the Phase 2 qualified roster, Phase 2 training calendar,
+and Phase 3a vacation output. `--preassigned-flex` defaults to
+`outputs/phase1/Flex_assignment.csv`; those days are treated as fixed, count
+against the four-day cap, and cannot be selected again. The script also reads
+`outputs/phase2_vacation_flex/demand_imputation_audit.csv` when it exists.
+Pass `--preassigned-flex none` to allocate flex from scratch.
+>>>>>>> 4aa9cd8fb9db830f6f0423bfeb41aa97028b78cf
 
 ### Output files
 
 | File | Contents |
 |---|---|
-| `flex_days.csv` | Final dispatcher/date/work-center/shift flex assignments |
-| `staffing_coverage_before_after_flex.csv` | Bucket-level staffing and shortage before and after flex days |
-| `flex_by_dispatcher.csv` | Individual flex-day counts and reference assignments |
+| `flex_days.csv` | Newly allocated flex days only |
+| `Flex_assignment_final.csv` | Pre-assigned plus newly allocated flex days |
+| `staffing_coverage_before_after_flex.csv` | Bucket-level staffing and shortage before flex, after pre-assigned flex, and after all flex |
+| `flex_by_dispatcher.csv` | Total, pre-assigned, and new flex-day counts per dispatcher |
 | `flex_summary.json` | Aggregate results, solver method, and optimization comparison |
 
 ## Current status and next steps
 
-**Status: working, provisional flex-day module.** The exact flow model has been run successfully on the current reference-based data, and both algorithms achieve the same coverage improvement. Before final competition submission, we need to integrate the team's optimized bid lines and training schedule, verify the official qualification/work-rest/flex rules, and rerun the analysis. If those rules introduce dependencies between flex assignments on different days, we may extend the model with CP-SAT.
+**Status: working, provisional flex-day module.** The exact flow model runs on
+the team roster, training calendar, vacation output, and Phase 1 flex
+pre-assignments. The competition work-rest, qualification, and mandatory
+four-day rules still need confirmation. If those rules introduce dependencies
+between flex assignments on different days, we may extend the model with CP-SAT.

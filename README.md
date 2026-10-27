@@ -116,19 +116,24 @@ CoverageReporter.print_summary(...)   # supply vs demand summary
 
 1. Calls `pipelines/phase2_training/run_pipeline()` with Phase 1 outputs as inputs.
 2. Applies primary/secondary qualifications to the regular roster.
-3. Solves the exact training MIP using the solver set in `SOLVER`
+3. Loads Phase 1 `Flex_assignment.csv`, blocks those dispatcher-days from every
+   training assignment, and writes a qualified flex copy with `FINAL_QUALS`,
+   the eight qualification flags, `QUAL_COUNT`, and `SECONDARY_QUALS`.
+4. Solves the exact training MIP using the solver set in `SOLVER`
    (`"xpress"` by default), freezing the Phase 1 training day assignments.
-4. Writes training outputs, then calls `verify_training()`.
-5. Concatenates standard + international training into `all_training_data.csv`.
+5. Writes training outputs, then calls `verify_training()`, which also rejects
+   any training that falls on a pre-assigned flex day.
+6. Concatenates standard + international training into `all_training_data.csv`.
 
 Inputs (from `outputs/phase1/`):
-- `Supply_Regular.csv`, `Supply_Standard_Training.csv`, `Supply_Special_Training.csv`, `Flex_Assignment.csv`
+- `Supply_Regular.csv`, `Supply_Standard_Training.csv`, `Supply_Special_Training.csv`, `Flex_assignment.csv`
 
 Outputs written to `outputs/phase2_training/`:
 - `Supply_Regular_qualified.csv`
 - `standard_training_data.csv` / `standard_training_scheduled_df.csv`
 - `intl_special_training_data.csv` / `intl_special_training_scheduled_df.csv`
 - `all_training_data.csv`
+- `Flex_assignment_qualified.csv`
 - `training_run_log.txt`, `training_xpress.log`
 
 ### Check 2 — Phase 2 Integrity
@@ -138,10 +143,21 @@ reusing the `BidlinePipelineValidator` from Check 1:
 ```python
 stage2_results = validator.stage2_training_checks(std2, spc2, flx)
 
+<<<<<<< HEAD
 if stage2_results['invalid_training_days'] or stage2_results['duplicate_trainings']:
     logging.info("Stage 2 Errors Found:")
     logging.info(f" - Invalid training days (assigned on OFF day): {stage2_results['invalid_training_days']}")
     logging.info(f" - Duplicate trainings on same day: {stage2_results['duplicate_trainings']}")
+=======
+if (stage2_results['invalid_training_days']
+        or stage2_results['duplicate_trainings']
+        or stage2_results['invalid_flex_days']
+        or stage2_results['training_flex_overlap']):
+    print("Stage 2 Errors Found:")
+    print(f" - Invalid training days (assigned on OFF day): {stage2_results['invalid_training_days']}")
+    print(f" - Duplicate trainings on same day: {stage2_results['duplicate_trainings']}")
+    print(f" - Training on pre-assigned flex days: {stage2_results['training_flex_overlap']}")
+>>>>>>> 4aa9cd8fb9db830f6f0423bfeb41aa97028b78cf
 
 CoverageReporter.print_summary(...)
 ```
@@ -178,17 +194,24 @@ Placeholder — final pipeline check to be implemented.
 Inputs:
 - `outputs/phase2_training/Supply_Regular_qualified.csv`
 - `outputs/phase2_training/all_training_data.csv`
+- `outputs/phase2_training/Flex_assignment_qualified.csv`
 - `outputs/phase2_vacation_flex/vacation_initial.csv`
 - `outputs/phase2_vacation_flex/demand_imputation_audit.csv`
 - `inputs/annual_desk_needs_reference.csv`
 
+The Phase 1 flex days are fixed inputs. Phase 3b seeds coverage with those days,
+then allocates only additional flex days within the remaining per-dispatcher cap.
+
 Outputs written to `outputs/phase2_vacation_flex/`:
-- `flex_days.csv`, `flex_by_dispatcher.csv`
+- `flex_days.csv` (new flex only), `Flex_assignment_final.csv` (pre-assigned + new)
+- `flex_by_dispatcher.csv`
 - `staffing_coverage_before_after_flex.csv`, `flex_summary.json`
 
 ### Check 3b — Phase 3b Integrity
 
-Placeholder — final pipeline check to be implemented.
+Reads `Flex_assignment_final.csv` and verifies every flex day is on an original
+off day and no dispatch exceeds four flex days across the year. The pipeline
+stops if either check fails.
 
 ---
 
