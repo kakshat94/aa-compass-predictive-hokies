@@ -341,11 +341,17 @@ def main() -> int:
         help="Keep the training days from the Phase I training files fixed and "
         "schedule only the secondary-qualification trainings around them.",
     )
-    parser.add_argument("--flex-assignment", default="outputs/phase1/Flex_assignment.csv",
-                        help="Pre-assigned flex days from Phase 1 (default outputs/phase1/Flex_assignment.csv; "
-                             "pass none to disable).")
-    parser.add_argument("--flex-assignment-output", default=None,
-                        help="Qualified flex copy (default <output-data-dir>/Flex_assignment_qualified.csv).")
+    parser.add_argument(
+        "--flex-assignment",
+        default="outputs/phase1/Flex_assignment.csv",
+        help="Pre-assigned flex days from Phase 1 (default outputs/phase1/Flex_assignment.csv; "
+        "pass none to disable).",
+    )
+    parser.add_argument(
+        "--flex-assignment-output",
+        default=None,
+        help="Qualified flex copy (default <output-data-dir>/Flex_assignment_qualified.csv).",
+    )
     args = parser.parse_args()
 
     in_dir = args.input_data_dir

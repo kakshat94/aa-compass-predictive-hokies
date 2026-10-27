@@ -112,7 +112,8 @@ class _Context:
 
     def eligible_days(self, tech: object, month: int) -> List[str]:
         return [
-            d for d, m in self.tech_days.get(tech, [])
+            d
+            for d, m in self.tech_days.get(tech, [])
             if m == month and (str(tech), d) not in self.blocked
         ]
 

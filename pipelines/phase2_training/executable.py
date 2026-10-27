@@ -31,8 +31,8 @@ def main(
         freeze_phase1_training=True,
         run_vacation_stage=False,
         write=True,
-        flex_assignment_path        = str(flex_assignment),
-        flex_assignment_output_path = str(flex_assignment_output),
+        flex_assignment_path=str(flex_assignment),
+        flex_assignment_output_path=str(flex_assignment_output),
     )
 
     problems = verify_training(

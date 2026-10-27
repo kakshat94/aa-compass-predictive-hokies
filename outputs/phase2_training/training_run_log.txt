@@ -1,38 +1,19 @@
 method=exact-mip
 solver=xpress
 frozen_phase1_rows=1758
-<<<<<<< HEAD
-regular_rows=93364
+regular_rows=93367
 standard_rows=1479
 intl_rows=601
 failures=0
-EVENING/M03: {'solver': 'xpress', 'mode': 'shift-month-frozen', 'status': 'optimal', 'objective': 4220.0, 'seconds': 0.032, 'requirements': 47}
-MORNING/M10: {'solver': 'xpress', 'mode': 'shift-month-frozen', 'status': 'optimal', 'objective': 2340.0, 'seconds': 0.022, 'requirements': 46}
-MORNING/M03: {'solver': 'xpress', 'mode': 'shift-month-frozen', 'status': 'optimal', 'objective': 4470.0, 'seconds': 0.03, 'requirements': 46}
-EVENING/M10: {'solver': 'xpress', 'mode': 'shift-month-frozen', 'status': 'optimal', 'objective': 2550.0, 'seconds': 0.017, 'requirements': 37}
-MORNING/M04: {'solver': 'xpress', 'mode': 'shift-month-frozen', 'status': 'optimal', 'objective': 1490.0, 'seconds': 0.014, 'requirements': 28}
-MIDNIGHT/M10: {'solver': 'xpress', 'mode': 'shift-month-frozen', 'status': 'optimal', 'objective': 1760.0, 'seconds': 0.016, 'requirements': 26}
-MIDNIGHT/M03: {'solver': 'xpress', 'mode': 'shift-month-frozen', 'status': 'optimal', 'objective': 1900.0, 'seconds': 0.013, 'requirements': 22}
-EVENING/M04: {'solver': 'xpress', 'mode': 'shift-month-frozen', 'status': 'optimal', 'objective': 1510.0, 'seconds': 0.013, 'requirements': 20}
+EVENING/M03: {'solver': 'xpress', 'mode': 'shift-month-frozen', 'status': 'optimal', 'objective': 4110.0, 'seconds': 0.023, 'requirements': 47}
+MORNING/M10: {'solver': 'xpress', 'mode': 'shift-month-frozen', 'status': 'optimal', 'objective': 2130.0, 'seconds': 0.024, 'requirements': 46}
+MORNING/M03: {'solver': 'xpress', 'mode': 'shift-month-frozen', 'status': 'optimal', 'objective': 4380.0, 'seconds': 0.018, 'requirements': 46}
+EVENING/M10: {'solver': 'xpress', 'mode': 'shift-month-frozen', 'status': 'optimal', 'objective': 2640.0, 'seconds': 0.019, 'requirements': 37}
+MORNING/M04: {'solver': 'xpress', 'mode': 'shift-month-frozen', 'status': 'optimal', 'objective': 1430.0, 'seconds': 0.016, 'requirements': 28}
+MIDNIGHT/M10: {'solver': 'xpress', 'mode': 'shift-month-frozen', 'status': 'optimal', 'objective': 1860.0, 'seconds': 0.015, 'requirements': 26}
+MIDNIGHT/M03: {'solver': 'xpress', 'mode': 'shift-month-frozen', 'status': 'optimal', 'objective': 1860.0, 'seconds': 0.014, 'requirements': 22}
+EVENING/M04: {'solver': 'xpress', 'mode': 'shift-month-frozen', 'status': 'optimal', 'objective': 1470.0, 'seconds': 0.013, 'requirements': 20}
 MIDNIGHT/M04: {'solver': 'xpress', 'mode': 'shift-month-frozen', 'status': 'optimal', 'objective': 940.0, 'seconds': 0.012, 'requirements': 17}
-EVENING/M11: {'solver': 'xpress', 'mode': 'shift-month-frozen', 'status': 'optimal', 'objective': 1600.0, 'seconds': 0.011, 'requirements': 16}
-MORNING/M11: {'solver': 'xpress', 'mode': 'shift-month-frozen', 'status': 'optimal', 'objective': 1220.0, 'seconds': 0.009, 'requirements': 12}
-MIDNIGHT/M11: {'solver': 'xpress', 'mode': 'shift-month-frozen', 'status': 'optimal', 'objective': 250.0, 'seconds': 0.009, 'requirements': 5}
-=======
-regular_rows=93357
-standard_rows=1479
-intl_rows=601
-failures=0
-EVENING/M03: {'solver': 'xpress', 'mode': 'shift-month-frozen', 'status': 'optimal', 'objective': 4440.0, 'seconds': 0.014, 'requirements': 49}
-MORNING/M03: {'solver': 'xpress', 'mode': 'shift-month-frozen', 'status': 'optimal', 'objective': 4350.0, 'seconds': 0.006, 'requirements': 47}
-MORNING/M10: {'solver': 'xpress', 'mode': 'shift-month-frozen', 'status': 'optimal', 'objective': 3040.0, 'seconds': 0.007, 'requirements': 46}
-EVENING/M10: {'solver': 'xpress', 'mode': 'shift-month-frozen', 'status': 'optimal', 'objective': 2750.0, 'seconds': 0.005, 'requirements': 36}
-MORNING/M04: {'solver': 'xpress', 'mode': 'shift-month-frozen', 'status': 'optimal', 'objective': 1410.0, 'seconds': 0.004, 'requirements': 30}
-MIDNIGHT/M10: {'solver': 'xpress', 'mode': 'shift-month-frozen', 'status': 'optimal', 'objective': 2040.0, 'seconds': 0.004, 'requirements': 26}
-MIDNIGHT/M03: {'solver': 'xpress', 'mode': 'shift-month-frozen', 'status': 'optimal', 'objective': 1780.0, 'seconds': 0.003, 'requirements': 21}
-EVENING/M04: {'solver': 'xpress', 'mode': 'shift-month-frozen', 'status': 'optimal', 'objective': 1430.0, 'seconds': 0.003, 'requirements': 20}
-EVENING/M11: {'solver': 'xpress', 'mode': 'shift-month-frozen', 'status': 'optimal', 'objective': 1180.0, 'seconds': 0.003, 'requirements': 17}
-MIDNIGHT/M04: {'solver': 'xpress', 'mode': 'shift-month-frozen', 'status': 'optimal', 'objective': 1010.0, 'seconds': 0.003, 'requirements': 14}
-MORNING/M11: {'solver': 'xpress', 'mode': 'shift-month-frozen', 'status': 'optimal', 'objective': 1530.0, 'seconds': 0.002, 'requirements': 12}
-MIDNIGHT/M11: {'solver': 'xpress', 'mode': 'shift-month-frozen', 'status': 'optimal', 'objective': 100.0, 'seconds': 0.002, 'requirements': 4}
->>>>>>> 4aa9cd8fb9db830f6f0423bfeb41aa97028b78cf
+EVENING/M11: {'solver': 'xpress', 'mode': 'shift-month-frozen', 'status': 'optimal', 'objective': 1260.0, 'seconds': 0.017, 'requirements': 16}
+MORNING/M11: {'solver': 'xpress', 'mode': 'shift-month-frozen', 'status': 'optimal', 'objective': 1220.0, 'seconds': 0.008, 'requirements': 12}
+MIDNIGHT/M11: {'solver': 'xpress', 'mode': 'shift-month-frozen', 'status': 'optimal', 'objective': 310.0, 'seconds': 0.008, 'requirements': 5}

@@ -4,7 +4,6 @@ It coordinates demand data, work center day sets, and bidline generation.
 """
 
 import xpress as xp
-import gurobipy as gp
 import pandas as pd
 import yaml
 import os
@@ -110,9 +109,13 @@ class Orchestrator:
                     self.coverage_vectors,
                 )
                 self.models[j].build_model()
-                logging.info("Begin to solve model for shift %s", j)
+                logging.info("Begin to solve model for %s shift", j)
                 self.models[j].model.solve()
-                logging.info("Begin to solve model for shift %s", j)
+                logging.info(
+                    "Solve for model for %s shift completed with %s bidlines",
+                    j,
+                    round(self.models[j].model.attributes.objval),
+                )
                 # Access objval through attributes
                 total_bids += self.models[j].model.attributes.objval
             else:
@@ -135,7 +138,13 @@ class Orchestrator:
                     self.coverage_vectors,
                 )
                 self.models[j].build_model()
+                logging.info("Begin to solve model for %s shift", j)
                 self.models[j].model.solve()
+                logging.info(
+                    "Solve for model for %s shift completed with %s bidlines",
+                    j,
+                    round(self.models[j].model.attributes.objval),
+                )
                 total_bids += (
                     2 * self.models[j].model.attributes.objval
                     if _MORNING_EQUALS_EVENING

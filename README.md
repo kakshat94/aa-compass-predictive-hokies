@@ -22,7 +22,6 @@ pipelines/
     config.py                       <- workcenter day-set construction
     model.py                        <- Gurobi bidline MIP
     orchestrator.py                 <- builds and solves shift models
-    params.yaml                     <- all parameterization (shifts, flex days)
     supply_generator.py             <- converts model solution to supply CSVs
     executable.py                   <- Executable file called from root
   phase2_training/
@@ -45,6 +44,7 @@ pipelines/
 common/
   coverage_report.py                <- CoverageReporter utility
 bidline_check.py                    <- BidlineChecker integrity checks
+params.yaml                         <- all parameterization (shifts, flex days)
 
 inputs/
   annual_desk_needs_reference.csv
@@ -74,7 +74,7 @@ FAIR_SECONDS = 120.0      # vacation fairness stage time budget
 ### Phase 1 — Bidline Creation
 
 1. Loads `inputs/annual_desk_needs_reference.csv` and builds workcenter day-sets via `ProjectConfig`.
-2. Runs `Orchestrator.initiate_models()` — solves a Gurobi MIP for MORNING
+2. Runs `Orchestrator.initiate_models()` — solves a Xpress Binary Program for MORNING
    and MIDNIGHT shifts (EVENING is derived from MORNING when
    `shifts.morning_equals_evening: true` in `params.yaml`).
 3. Calls `SupplyGenerator.process_all_models()` to convert the solution into
@@ -143,21 +143,10 @@ reusing the `BidlinePipelineValidator` from Check 1:
 ```python
 stage2_results = validator.stage2_training_checks(std2, spc2, flx)
 
-<<<<<<< HEAD
 if stage2_results['invalid_training_days'] or stage2_results['duplicate_trainings']:
     logging.info("Stage 2 Errors Found:")
     logging.info(f" - Invalid training days (assigned on OFF day): {stage2_results['invalid_training_days']}")
     logging.info(f" - Duplicate trainings on same day: {stage2_results['duplicate_trainings']}")
-=======
-if (stage2_results['invalid_training_days']
-        or stage2_results['duplicate_trainings']
-        or stage2_results['invalid_flex_days']
-        or stage2_results['training_flex_overlap']):
-    print("Stage 2 Errors Found:")
-    print(f" - Invalid training days (assigned on OFF day): {stage2_results['invalid_training_days']}")
-    print(f" - Duplicate trainings on same day: {stage2_results['duplicate_trainings']}")
-    print(f" - Training on pre-assigned flex days: {stage2_results['training_flex_overlap']}")
->>>>>>> 4aa9cd8fb9db830f6f0423bfeb41aa97028b78cf
 
 CoverageReporter.print_summary(...)
 ```
@@ -198,9 +187,6 @@ Inputs:
 - `outputs/phase2_vacation_flex/vacation_initial.csv`
 - `outputs/phase2_vacation_flex/demand_imputation_audit.csv`
 - `inputs/annual_desk_needs_reference.csv`
-
-The Phase 1 flex days are fixed inputs. Phase 3b seeds coverage with those days,
-then allocates only additional flex days within the remaining per-dispatcher cap.
 
 Outputs written to `outputs/phase2_vacation_flex/`:
 - `flex_days.csv` (new flex only), `Flex_assignment_final.csv` (pre-assigned + new)

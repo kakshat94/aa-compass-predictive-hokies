@@ -47,12 +47,12 @@ class BidlinePipelineValidator:
         4. Checks that no training shares a dispatcher-day with a flex day.
         """
         results = {
-            'invalid_training_days': [],
-            'duplicate_trainings': [],
-            'invalid_flex_days': [],
-            'training_flex_overlap': [],
+            "invalid_training_days": [],
+            "duplicate_trainings": [],
+            "invalid_flex_days": [],
+            "training_flex_overlap": [],
         }
-        
+
         # 1 & 2: Training Checks
         df_train = pd.concat([std_training_df, spc_training_df], ignore_index=True)
         if not df_train.empty:
@@ -82,19 +82,21 @@ class BidlinePipelineValidator:
                         break
 
             if not df_train.empty:
-                training_keys = set(zip(
-                    df_train['TECH_ID'].astype(str), df_train['SHIFT_DATE']
-                ))
-                flex_keys = set(zip(
-                    flex_df['TECH_ID'].astype(str), flex_df['SHIFT_DATE']
-                ))
-                results['training_flex_overlap'] = sorted({
-                    f"{tech}@{date.date()}"
-                    for tech, date in training_keys & flex_keys
-                })
+                training_keys = set(
+                    zip(df_train["TECH_ID"].astype(str), df_train["SHIFT_DATE"])
+                )
+                flex_keys = set(
+                    zip(flex_df["TECH_ID"].astype(str), flex_df["SHIFT_DATE"])
+                )
+                results["training_flex_overlap"] = sorted(
+                    {
+                        f"{tech}@{date.date()}"
+                        for tech, date in training_keys & flex_keys
+                    }
+                )
 
-        results['invalid_training_days'] = list(set(results['invalid_training_days']))
-        results['invalid_flex_days'] = list(set(results['invalid_flex_days']))
+        results["invalid_training_days"] = list(set(results["invalid_training_days"]))
+        results["invalid_flex_days"] = list(set(results["invalid_flex_days"]))
         return results
 
     def stage3_vacation_checks(self, vacation_df, supply_regular_qualified):

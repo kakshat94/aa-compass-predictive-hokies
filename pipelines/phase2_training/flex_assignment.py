@@ -51,7 +51,9 @@ def load_flex_assignments(
     source = Path(path)
     if not source.is_file():
         if optional:
-            print(f"WARNING: {name} file not found at {source}; continuing without pre-assigned flex.")
+            print(
+                f"WARNING: {name} file not found at {source}; continuing without pre-assigned flex."
+            )
             return pd.DataFrame(columns=columns), set()
         raise FileNotFoundError(f"Missing {name}: {source.resolve()}")
 
@@ -69,7 +71,9 @@ def load_flex_assignments(
     keys = set(zip(tech.astype(str), dates.astype(str)))
     if len(keys) != len(frame):
         duplicates = frame.loc[
-            pd.DataFrame({"TECH_ID": tech.astype(str), "SHIFT_DATE": dates}).duplicated(keep=False)
+            pd.DataFrame({"TECH_ID": tech.astype(str), "SHIFT_DATE": dates}).duplicated(
+                keep=False
+            )
         ]
         examples = duplicates[["TECH_ID", "SHIFT_DATE"]].head(5).to_dict("records")
         raise ValueError(f"{name} has duplicate (TECH_ID, SHIFT_DATE) rows: {examples}")
@@ -77,7 +81,9 @@ def load_flex_assignments(
     return frame, keys
 
 
-def enrich_flex_assignments(flex_df: pd.DataFrame, qualified_roster: pd.DataFrame) -> pd.DataFrame:
+def enrich_flex_assignments(
+    flex_df: pd.DataFrame, qualified_roster: pd.DataFrame
+) -> pd.DataFrame:
     """Fill qualification columns and add ``SECONDARY_QUALS`` to flex rows."""
     if flex_df.empty:
         return flex_df.copy()
@@ -90,7 +96,9 @@ def enrich_flex_assignments(flex_df: pd.DataFrame, qualified_roster: pd.DataFram
 
     missing_columns = [col for col in QUAL_COLUMNS if col not in profiles]
     if missing_columns:
-        raise ValueError(f"qualified roster is missing qualification columns {missing_columns}")
+        raise ValueError(
+            f"qualified roster is missing qualification columns {missing_columns}"
+        )
 
     result = flex_df.copy()
     result["_TECH_KEY"] = result["TECH_ID"].astype("string").str.strip()

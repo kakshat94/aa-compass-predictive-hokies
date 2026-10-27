@@ -53,7 +53,7 @@ class WorkforceOptimizer:
 
     def build_model(self):
 
-        logging.info("Defining model for shift %s", self.shift)
+        logging.info("Defining model for %s shift", self.shift)
 
         self.model = xp.problem(name=f"Bidline_Model{self.shift}")
 
