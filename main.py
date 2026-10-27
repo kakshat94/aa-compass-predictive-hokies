@@ -269,26 +269,6 @@ if __name__ == "__main__":
         report_final, stage="Final — Qualified Regular Supply"
     )
 
-    metrics = {
-        "Number of bidlines": str(bidlines),
-        "Total supply": str(report_final["SUPPLY"].sum()),
-        "Total Shortages": str(report_final["UNDER_COVERAGE"].sum()),
-        "Total Surplus": str(report_final["OVER_COVERAGE"].sum()),
-        "Total Vacation days assigned": str(
-            len(pd.read_csv("outputs/phase2_vacation_flex/vacation_initial.csv"))
-        ),
-        "Total Flex days assigned": str(len(final_flex)),
-        "Total supply (including workcenter-shift combination with no demand)": str(
-            len(supply_final)
-        ),
-        "Total surplus (including workcenter-shift combination with no demand)": "",
-    }
-
-    with open(
-        ROOT / "outputs" / "solutions" / "metrics.json", "w", encoding="utf-8"
-    ) as file:
-        json.dump(metrics, file, indent=4)
-
     # ── Timing summary ────────────────────────────────────────────────────────
     _section("TIMING SUMMARY")
     for step, secs in timings.items():
@@ -381,3 +361,28 @@ if __name__ == "__main__":
 
     for file_in, file_out in output_files:
         export_outputs(Path(file_in), file_out)
+
+    metrics = {
+        "Runtime": str(time.time() - t0),
+        "Number of bidlines": str(bidlines),
+        "Total supply": str(report_final["SUPPLY"].sum()),
+        "Total Shortages": str(report_final["UNDER_COVERAGE"].sum()),
+        "Total Surplus": str(report_final["OVER_COVERAGE"].sum()),
+        "Total Vacation days assigned": str(
+            len(pd.read_csv("outputs/solutions/vacation_data.csv"))
+        ),
+        "Total Flex days assigned": str(
+            len(pd.read_csv("outputs/solutions/flex_days_data.csv"))
+        ),
+        "Total supply (including workcenter-shift combination with no demand)": str(
+            len(
+                pd.read_csv(
+                    "outputs/solutions/supply_data_after_vacation_shrinkage.csv"
+                )
+            )
+        ),
+        "Total surplus (including workcenter-shift combination with no demand)": "",
+    }
+
+    with open(ROOT / "outputs" / "metrics.json", "w", encoding="utf-8") as file:
+        json.dump(metrics, file, indent=4)

@@ -4,9 +4,9 @@ shifts:
 
 flex_days:
   Latin:
-    max_flex_days: 2
+    max_flex_days: 1
   ROC:
-    max_flex_days: 2
+    max_flex_days: 0
   # Europe:
   #   max_flex_days: 1
   # Domestic:
