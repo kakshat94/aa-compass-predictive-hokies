@@ -73,3 +73,42 @@ work_centers:
       - "March"
     training_months:
       - "March"
+
+vacation:
+  # Rule 1: total vacations per date.  Allowed range is
+  # [min - tolerance_below, max + tolerance_above].  enabled: false -> any total.
+  rule1_daily_total:
+    enabled: true
+    min: 25
+    max: 29
+    tolerance_below: 0
+    tolerance_above: 0
+
+  # Rule 2: every dispatcher gets L or L+1 days (L chosen by the model);
+  # slack_days lets counts range from L - slack to L + 1 + slack.
+  # weight = price per day outside {L, L+1}: 1000 keeps counts even no matter
+  # the slack; ~1 lets the model use the whole band to cut shortage.
+  rule2_fairness:
+    slack_days: 2
+    weight: 1
+
+  # Rule 3: daily total = round(K / volume) for one scale K chosen by the model.
+  # tolerance = how much worse than the best proportional fit K may be
+  # (0 = best fit only; ~97 = any scale, i.e. effectively no constraint).
+  rule3_inverse_volume:
+    enabled: True
+    tolerance: 0.0
+
+  # Optional base: annual total within (value +- tolerance) x number of dates.
+  base_per_day:
+    enabled: false
+    value: 27
+    tolerance: 0
+
+flex:
+  max_days_per_dispatcher: 4      # minus days already in the pre-assigned flex file
+  home_work_center_only: true     # flex only onto the dispatcher's own WORK_CENTER_ID (not secondary quals)
+  same_shift_only: true           # false: may flex onto another shift
+  cross_work_center_cost: 1000    # preference for own desk (only matters if home_work_center_only: false)
+  cross_shift_cost: 1000          # preference for the dispatcher's own shift (if allowed)
+  balance_cost: 10                # spreads flex days across dispatchers

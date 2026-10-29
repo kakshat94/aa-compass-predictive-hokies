@@ -5,6 +5,7 @@ Run from a project directory containing data/ and outputs/:
 
 Requires: pandas, numpy, ortools (pip install -r requirements.txt)
 """
+
 from __future__ import annotations
 
 from collections import defaultdict
@@ -64,14 +65,18 @@ def read_csv(path: str) -> pd.DataFrame:
 def require(df: pd.DataFrame, cols: list[str], name: str) -> None:
     missing = sorted(set(cols) - set(df.columns))
     if missing:
-        raise ValueError(f"{name}: missing required columns {missing}; available: {list(df.columns)}")
+        raise ValueError(
+            f"{name}: missing required columns {missing}; available: {list(df.columns)}"
+        )
 
 
 def parse_dates(df: pd.DataFrame, column: str, name: str) -> pd.DataFrame:
     df = df.copy()
     df[column] = pd.to_datetime(df[column], errors="coerce").dt.normalize()
     if df[column].isna().any():
-        raise ValueError(f"{name}: invalid/missing {column} values in {df[column].isna().sum()} rows")
+        raise ValueError(
+            f"{name}: invalid/missing {column} values in {df[column].isna().sum()} rows"
+        )
     return df
 
 
@@ -85,9 +90,14 @@ def clean_supply(df: pd.DataFrame) -> pd.DataFrame:
     if df[["TECH_ID", "WORK_CENTER_ID", "SHIFT_TYPE"]].isna().any().any():
         raise ValueError("Supply has missing identifier, work center or shift")
     if df.duplicated(["TECH_ID", "SHIFT_DATE"]).any():
-        bad = df.loc[df.duplicated(["TECH_ID", "SHIFT_DATE"], keep=False),
-                     ["TECH_ID", "SHIFT_DATE", "WORK_CENTER_ID", "SHIFT_TYPE"]].head(8)
-        raise ValueError("Duplicate employee-date rows in supply; cannot model one vacation/day:\n" + str(bad))
+        bad = df.loc[
+            df.duplicated(["TECH_ID", "SHIFT_DATE"], keep=False),
+            ["TECH_ID", "SHIFT_DATE", "WORK_CENTER_ID", "SHIFT_TYPE"],
+        ].head(8)
+        raise ValueError(
+            "Duplicate employee-date rows in supply; cannot model one vacation/day:\n"
+            + str(bad)
+        )
     return df.sort_values(["SHIFT_DATE", "TECH_ID"]).reset_index(drop=True)
 
 
@@ -115,10 +125,12 @@ def clean_volume(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-
-def make_quota(volume: pd.DataFrame, dates: list[pd.Timestamp],
-               base: int = DEFAULT_BASE,
-               adjustment: int = DEFAULT_ADJUSTMENT) -> dict:
+def make_quota(
+    volume: pd.DataFrame,
+    dates: list[pd.Timestamp],
+    base: int = DEFAULT_BASE,
+    adjustment: int = DEFAULT_ADJUSTMENT,
+) -> dict:
     """Return configurable *daily bounds*, not assigned vacation quotas.
 
     Both policy values are scenario parameters. The daily number and annual
@@ -129,12 +141,12 @@ def make_quota(volume: pd.DataFrame, dates: list[pd.Timestamp],
         raise ValueError("base and adjustment must be nonnegative")
     if not dates:
         raise ValueError("No schedule dates provided")
-    return {d: (max(0, base - adjustment), base + adjustment)
-            for d in dates}
+    return {d: (max(0, base - adjustment), base + adjustment) for d in dates}
 
 
-def fill_missing_demand(demand: pd.DataFrame, supply: pd.DataFrame,
-                        dates: list[pd.Timestamp]) -> tuple[pd.DataFrame, pd.DataFrame]:
+def fill_missing_demand(
+    demand: pd.DataFrame, supply: pd.DataFrame, dates: list[pd.Timestamp]
+) -> tuple[pd.DataFrame, pd.DataFrame]:
     """Estimate absent desk-demand records from same bucket, previous/next week.
 
     Values are *imputed*, not validated actual demand. Return an audit table.
@@ -145,37 +157,70 @@ def fill_missing_demand(demand: pd.DataFrame, supply: pd.DataFrame,
         (r.SHIFT_DATE, r.WORK_CENTER, r.SHIFT_TYPE): int(r.DEMAND)
         for r in demand.itertuples(index=False)
     }
-    schedule_buckets = set(zip(supply["SHIFT_DATE"], supply["WORK_CENTER_ID"],
-                               supply["SHIFT_TYPE"]))
-    missing = sorted((d, c, sh) for d, c, sh in schedule_buckets
-                     if d in dates and (d, c, sh) not in known)
+    schedule_buckets = set(
+        zip(supply["SHIFT_DATE"], supply["WORK_CENTER_ID"], supply["SHIFT_TYPE"])
+    )
+    missing = sorted(
+        (d, c, sh)
+        for d, c, sh in schedule_buckets
+        if d in dates and (d, c, sh) not in known
+    )
     audit = []
     for d, c, sh in missing:
         # Same weekday and same work-center/shift preferred.
-        donor = next((candidate for candidate in
-                      [d - pd.Timedelta(days=7), d + pd.Timedelta(days=7)]
-                      if (candidate, c, sh) in known), None)
+        donor = next(
+            (
+                candidate
+                for candidate in [d - pd.Timedelta(days=7), d + pd.Timedelta(days=7)]
+                if (candidate, c, sh) in known
+            ),
+            None,
+        )
         if donor is None:
             # Last-resort: closest observed day for this exact work-center/shift.
-            candidates = [dd for (dd, cc, ss) in known
-                          if cc == c and ss == sh]
+            candidates = [dd for (dd, cc, ss) in known if cc == c and ss == sh]
             if not candidates:
-                raise ValueError(f"Cannot estimate desk demand for {d.date()}, "
-                                 f"{c}, {sh}: no donor exists for this bucket")
+                raise ValueError(
+                    f"Cannot estimate desk demand for {d.date()}, "
+                    f"{c}, {sh}: no donor exists for this bucket"
+                )
             donor = min(candidates, key=lambda dd: (abs((dd - d).days), dd))
         value = known[(donor, c, sh)]
         known[(d, c, sh)] = value
-        audit.append({"SHIFT_DATE": d, "WORK_CENTER": c, "SHIFT_TYPE": sh,
-                      "IMPUTED_DEMAND": value, "DONOR_DATE": donor,
-                      "METHOD": "same_weekday" if abs((donor-d).days) == 7 else "nearest_date"})
-        demand.loc[len(demand)] = {"SHIFT_DATE": d, "WORK_CENTER": c,
-                                   "SHIFT_TYPE": sh, "DEMAND": value}
+        audit.append(
+            {
+                "SHIFT_DATE": d,
+                "WORK_CENTER": c,
+                "SHIFT_TYPE": sh,
+                "IMPUTED_DEMAND": value,
+                "DONOR_DATE": donor,
+                "METHOD": (
+                    "same_weekday" if abs((donor - d).days) == 7 else "nearest_date"
+                ),
+            }
+        )
+        demand.loc[len(demand)] = {
+            "SHIFT_DATE": d,
+            "WORK_CENTER": c,
+            "SHIFT_TYPE": sh,
+            "DEMAND": value,
+        }
     if audit:
-        print(f"WARNING: Estimated {len(audit)} missing desk-demand buckets. "
-              "See demand_imputation_audit.csv; results are provisional.")
-    return demand, pd.DataFrame(audit, columns=[
-        "SHIFT_DATE", "WORK_CENTER", "SHIFT_TYPE", "IMPUTED_DEMAND",
-        "DONOR_DATE", "METHOD"])
+        print(
+            f"WARNING: Estimated {len(audit)} missing desk-demand buckets. "
+            "See demand_imputation_audit.csv; results are provisional."
+        )
+    return demand, pd.DataFrame(
+        audit,
+        columns=[
+            "SHIFT_DATE",
+            "WORK_CENTER",
+            "SHIFT_TYPE",
+            "IMPUTED_DEMAND",
+            "DONOR_DATE",
+            "METHOD",
+        ],
+    )
 
 
 def load_training(path: str | None) -> set[tuple[str, pd.Timestamp]]:
@@ -187,14 +232,22 @@ def load_training(path: str | None) -> set[tuple[str, pd.Timestamp]]:
     return set(zip(df["TECH_ID"].astype("string").str.strip(), df["SHIFT_DATE"]))
 
 
-
-def improve_with_lns(allowed: pd.DataFrame, demand_map: dict,
-                     original_bucket: dict, training_bucket: dict,
-                     quota: dict, chosen: list[int], n_emp: int,
-                     iterations: int, window_days: int, seconds: float,
-                     workers: int, max_window_days: int = 60,
-                     seed: int = 42,
-                     all_employee_ids=None) -> tuple[list[int], dict]:
+def improve_with_lns(
+    allowed: pd.DataFrame,
+    demand_map: dict,
+    original_bucket: dict,
+    training_bucket: dict,
+    quota: dict,
+    chosen: list[int],
+    n_emp: int,
+    iterations: int,
+    window_days: int,
+    seconds: float,
+    workers: int,
+    max_window_days: int = 60,
+    seed: int = 42,
+    all_employee_ids=None,
+) -> tuple[list[int], dict]:
     """Adaptive CP-SAT LNS: minimize worst individual imbalance first,
     then the total absolute deviation; enlarge windows after stagnation.
 
@@ -207,7 +260,9 @@ def improve_with_lns(allowed: pd.DataFrame, demand_map: dict,
     total absolute deviation (scaled to use integers).
     """
     if iterations < 0 or window_days < 1 or seconds <= 0:
-        raise ValueError("Iterations must be nonnegative, window_days >= 1, seconds > 0")
+        raise ValueError(
+            "Iterations must be nonnegative, window_days >= 1, seconds > 0"
+        )
     if max_window_days < window_days:
         raise ValueError("max_window_days must be >= window_days")
     rng = np.random.default_rng(seed)
@@ -245,8 +300,13 @@ def improve_with_lns(allowed: pd.DataFrame, demand_map: dict,
         return score[0] * FAIRNESS_WEIGHT + score[1]
 
     def shortage(b, number_vacations):
-        return max(0, demand_map[b] - original_bucket.get(b, 0)
-                   + training_bucket.get(b, 0) + number_vacations)
+        return max(
+            0,
+            demand_map[b]
+            - original_bucket.get(b, 0)
+            + training_bucket.get(b, 0)
+            + number_vacations,
+        )
 
     current_window = min(window_days, len(dates))
     accepted = 0
@@ -264,18 +324,25 @@ def improve_with_lns(allowed: pd.DataFrame, demand_map: dict,
         else:
             daily_priority = []
             for d in dates:
-                over = sum(max(0, incumbent_totals[str(rows[j].TECH_ID)] - target)
-                           for j in by_date[d] if chosen[j])
-                under = sum(max(0, target - incumbent_totals[str(rows[j].TECH_ID)])
-                            for j in by_date[d] if not chosen[j])
+                over = sum(
+                    max(0, incumbent_totals[str(rows[j].TECH_ID)] - target)
+                    for j in by_date[d]
+                    if chosen[j]
+                )
+                under = sum(
+                    max(0, target - incumbent_totals[str(rows[j].TECH_ID)])
+                    for j in by_date[d]
+                    if not chosen[j]
+                )
                 daily_priority.append(float(over + under))
-            rolling = np.convolve(np.asarray(daily_priority),
-                                  np.ones(current_window), mode="valid")
+            rolling = np.convolve(
+                np.asarray(daily_priority), np.ones(current_window), mode="valid"
+            )
             best = np.flatnonzero(rolling >= rolling.max() - 1e-8)
             # Seeded tie-breaking diversifies equally promising windows.
             start = int(rng.choice(best))
             selection_method = "imbalance_targeted"
-        window_dates = dates[start:start + current_window]
+        window_dates = dates[start : start + current_window]
         local_indices = [j for d in window_dates for j in by_date[d]]
         local_set = set(local_indices)
         model = cp_model.CpModel()
@@ -289,8 +356,9 @@ def improve_with_lns(allowed: pd.DataFrame, demand_map: dict,
         for j in local_indices:
             if chosen[j]:
                 r = rows[j]
-                incumbent_vac[(r.SHIFT_DATE, str(r.WORK_CENTER_ID),
-                               str(r.SHIFT_TYPE))] += 1
+                incumbent_vac[
+                    (r.SHIFT_DATE, str(r.WORK_CENTER_ID), str(r.SHIFT_TYPE))
+                ] += 1
         old_shortage = sum(shortage(b, incumbent_vac[b]) for b in window_buckets)
         short_vars = []
         for b in window_buckets:
@@ -306,12 +374,12 @@ def improve_with_lns(allowed: pd.DataFrame, demand_map: dict,
             emp_in = [j for j in by_emp[emp] if j in local_set]
             outside = incumbent_totals[emp] - sum(chosen[j] for j in emp_in)
             new_total = outside + sum(xs[j] for j in emp_in)
-            dev = model.NewIntVar(0, n_emp * len(dates) + total_vac,
-                                  f"dev_{it}_{emp}")
+            dev = model.NewIntVar(0, n_emp * len(dates) + total_vac, f"dev_{it}_{emp}")
             model.AddAbsEquality(dev, n_emp * new_total - total_vac)
             devs.append(dev)
-        max_dev = model.NewIntVar(0, n_emp * len(dates) + total_vac,
-                                  f"max_deviation_{it}")
+        max_dev = model.NewIntVar(
+            0, n_emp * len(dates) + total_vac, f"max_deviation_{it}"
+        )
         model.AddMaxEquality(max_dev, devs)
         model.Minimize(FAIRNESS_WEIGHT * max_dev + sum(devs))
         for j in local_indices:
@@ -334,29 +402,41 @@ def improve_with_lns(allowed: pd.DataFrame, demand_map: dict,
             for j in local_indices:
                 if proposal[j]:
                     r = rows[j]
-                    new_vac[(r.SHIFT_DATE, str(r.WORK_CENTER_ID),
-                             str(r.SHIFT_TYPE))] += 1
+                    new_vac[
+                        (r.SHIFT_DATE, str(r.WORK_CENTER_ID), str(r.SHIFT_TYPE))
+                    ] += 1
             new_shortage = sum(shortage(b, new_vac[b]) for b in window_buckets)
             # Verify instead of trusting an inexact/time-limited optimization.
-            valid_quotas = all(sum(proposal[j] for j in by_date[d]) == quota[d]
-                               for d in window_dates)
-            if valid_quotas and new_shortage <= old_shortage and new_score < incumbent_score:
+            valid_quotas = all(
+                sum(proposal[j] for j in by_date[d]) == quota[d] for d in window_dates
+            )
+            if (
+                valid_quotas
+                and new_shortage <= old_shortage
+                and new_score < incumbent_score
+            ):
                 chosen = proposal
                 incumbent_totals = new_totals
                 incumbent_score = new_score
                 accepted += 1
                 improved = True
-        logs.append({"iteration": it + 1, "method": selection_method,
-                     "start_date": str(window_dates[0].date()),
-                     "window_days": len(window_dates), "status": name,
-                     "accepted": improved,
-                     "max_deviation_before_days": score_before[0] / n_emp,
-                     "max_deviation_after_days": incumbent_score[0] / n_emp,
-                     "total_absolute_deviation_before": score_before[1] / n_emp,
-                     "total_absolute_deviation_after": incumbent_score[1] / n_emp,
-                     "fairness_score_before": objective_score(score_before),
-                     "fairness_score_after": objective_score(incumbent_score),
-                     "solver_seconds": round(solver.WallTime(), 3)})
+        logs.append(
+            {
+                "iteration": it + 1,
+                "method": selection_method,
+                "start_date": str(window_dates[0].date()),
+                "window_days": len(window_dates),
+                "status": name,
+                "accepted": improved,
+                "max_deviation_before_days": score_before[0] / n_emp,
+                "max_deviation_after_days": incumbent_score[0] / n_emp,
+                "total_absolute_deviation_before": score_before[1] / n_emp,
+                "total_absolute_deviation_after": incumbent_score[1] / n_emp,
+                "fairness_score_before": objective_score(score_before),
+                "fairness_score_after": objective_score(incumbent_score),
+                "solver_seconds": round(solver.WallTime(), 3),
+            }
+        )
         if improved:
             stagnation = 0
             current_window = max(window_days, current_window - 7)
@@ -365,18 +445,22 @@ def improve_with_lns(allowed: pd.DataFrame, demand_map: dict,
             if stagnation >= 2:
                 current_window = min(max_window_days, len(dates), current_window + 7)
                 stagnation = 0
-    return chosen, {"fairness_objective": "minimize_max_absolute_deviation_then_total_absolute_deviation",
-                    "lns_accepted": accepted,
-                    "lns_iterations_run": len(logs),
-                    "lns_statuses": [entry["status"] for entry in logs],
-                    "lns_mode": "adaptive_minimax_then_absolute_deviation",
-                    "lns_history": logs}
+    return chosen, {
+        "fairness_objective": "minimize_max_absolute_deviation_then_total_absolute_deviation",
+        "lns_accepted": accepted,
+        "lns_iterations_run": len(logs),
+        "lns_statuses": [entry["status"] for entry in logs],
+        "lns_mode": "adaptive_minimax_then_absolute_deviation",
+        "lns_history": logs,
+    }
 
 
-
-def repair_low_vacation_dispatchers(allowed: pd.DataFrame, chosen: list[int],
-                                    all_employee_ids: list[str],
-                                    passes: int = 3) -> tuple[list[int], dict]:
+def repair_low_vacation_dispatchers(
+    allowed: pd.DataFrame,
+    chosen: list[int],
+    all_employee_ids: list[str],
+    passes: int = 3,
+) -> tuple[list[int], dict]:
     """Cross-year, zero/low-vacation-targeted swap neighborhood.
 
     Replace a selected vacation with another eligible dispatcher on the SAME
@@ -407,9 +491,11 @@ def repair_low_vacation_dispatchers(allowed: pd.DataFrame, chosen: list[int],
 
     def metric():
         values = [counts[e] for e in ids]
-        return (max(dev(v) for v in values),
-                sum(dev(v) for v in values),
-                sum(v == 0 for v in values))
+        return (
+            max(dev(v) for v in values),
+            sum(dev(v) for v in values),
+            sum(v == 0 for v in values),
+        )
 
     before = metric()
     swaps = []
@@ -452,38 +538,66 @@ def repair_low_vacation_dispatchers(allowed: pd.DataFrame, chosen: list[int],
             chosen[j], chosen[k] = 1, 0
             counts[recipient] += 1
             counts[donor] -= 1
-            swaps.append({"pass": iteration + 1, "recipient": recipient,
-                          "donor": donor, "shift_date": str(rows[j].SHIFT_DATE.date()),
-                          "work_center": str(rows[j].WORK_CENTER_ID),
-                          "shift_type": str(rows[j].SHIFT_TYPE)})
+            swaps.append(
+                {
+                    "pass": iteration + 1,
+                    "recipient": recipient,
+                    "donor": donor,
+                    "shift_date": str(rows[j].SHIFT_DATE.date()),
+                    "work_center": str(rows[j].WORK_CENTER_ID),
+                    "shift_type": str(rows[j].SHIFT_TYPE),
+                }
+            )
             moved += 1
         if not moved:
             break
     after = metric()
-    return chosen, {"zero_repair_swaps": len(swaps),
-                    "zero_repair_before_zero_count": before[2],
-                    "zero_repair_after_zero_count": after[2],
-                    "zero_repair_before_max_deviation_days": before[0] / n,
-                    "zero_repair_after_max_deviation_days": after[0] / n,
-                    "zero_repair_before_abs_deviation": before[1] / n,
-                    "zero_repair_after_abs_deviation": after[1] / n,
-                    "zero_repair_history": swaps,
-                    "zero_repair_method": "same_day_same_work_center_shift_coverage_preserving_swaps"}
+    return chosen, {
+        "zero_repair_swaps": len(swaps),
+        "zero_repair_before_zero_count": before[2],
+        "zero_repair_after_zero_count": after[2],
+        "zero_repair_before_max_deviation_days": before[0] / n,
+        "zero_repair_after_max_deviation_days": after[0] / n,
+        "zero_repair_before_abs_deviation": before[1] / n,
+        "zero_repair_after_abs_deviation": after[1] / n,
+        "zero_repair_history": swaps,
+        "zero_repair_method": "same_day_same_work_center_shift_coverage_preserving_swaps",
+    }
+
 
 # Column order of the supplied Snowflake SUPPLY_DATA_AFTER_VACATION_SHRINKAGE_REFERENCE view.
 REFERENCE_SUPPLY_COLUMNS = [
-    "INDEX", "MAJOR_WORK_TYPE", "START_TIME", "EMPLOYEE_TITLE",
-    "WORK_CENTER_ID", "CONTRACTOR_FLAG", "CLUSTER",
-    "EMPLOYEE_WORK_CENTER_ID", "TECH_ID", "END_TIME", "SHIFT_DATE",
-    "SHIFT_LENGTH", "SHIFT_TYPE", "FINAL_QUALS", "PRIMARY_QUAL",
-    "DOMESTIC", "ATC", "ROC", "CHF", "OC", "LATIN", "EUROPE",
-    "PACIFIC", "QUAL_COUNT", "SF_LOAD_TMS",
+    "INDEX",
+    "MAJOR_WORK_TYPE",
+    "START_TIME",
+    "EMPLOYEE_TITLE",
+    "WORK_CENTER_ID",
+    "CONTRACTOR_FLAG",
+    "CLUSTER",
+    "EMPLOYEE_WORK_CENTER_ID",
+    "TECH_ID",
+    "END_TIME",
+    "SHIFT_DATE",
+    "SHIFT_LENGTH",
+    "SHIFT_TYPE",
+    "FINAL_QUALS",
+    "PRIMARY_QUAL",
+    "DOMESTIC",
+    "ATC",
+    "ROC",
+    "CHF",
+    "OC",
+    "LATIN",
+    "EUROPE",
+    "PACIFIC",
+    "QUAL_COUNT",
+    "SF_LOAD_TMS",
 ]
 
 
-def export_supply_after_vacation(supply: pd.DataFrame,
-                                 assignments: pd.DataFrame,
-                                 destination: Path) -> tuple[int, list[str]]:
+def export_supply_after_vacation(
+    supply: pd.DataFrame, assignments: pd.DataFrame, destination: Path
+) -> tuple[int, list[str]]:
     """Remove vacation-shift rows; retain all source supply fields and values.
 
     Do not manufacture missing qualification columns: such fields must come
@@ -498,7 +612,9 @@ def export_supply_after_vacation(supply: pd.DataFrame,
         raise ValueError("Vacation assignments are duplicated or missing from supply")
     remaining = supply.loc[~supply_keys.isin(vac_keys)].copy()
     # Reference ordering when possible; leave additional upstream columns intact.
-    missing_reference_columns = [c for c in REFERENCE_SUPPLY_COLUMNS if c not in supply.columns]
+    missing_reference_columns = [
+        c for c in REFERENCE_SUPPLY_COLUMNS if c not in supply.columns
+    ]
     ordered = [c for c in REFERENCE_SUPPLY_COLUMNS if c in remaining.columns]
     ordered += [c for c in remaining.columns if c not in ordered]
     remaining = remaining[ordered]
@@ -507,26 +623,41 @@ def export_supply_after_vacation(supply: pd.DataFrame,
     return len(remaining), missing_reference_columns
 
 
-def build_and_solve(supply: pd.DataFrame, demand: pd.DataFrame,
-                    quota: dict, training: set,
-                    seconds: float, workers: int, fair_seconds: float,
-                    lns_iterations: int = 0, lns_window_days: int = 21,
-                    lns_seconds: float = 10.0,
-                    lns_max_window_days: int = 60, lns_seed: int = 42,
-                    zero_repair_passes: int = 3,
-                    total_seconds: float = 30.0):
+def build_and_solve(
+    supply: pd.DataFrame,
+    demand: pd.DataFrame,
+    quota: dict,
+    training: set,
+    seconds: float,
+    workers: int,
+    fair_seconds: float,
+    lns_iterations: int = 0,
+    lns_window_days: int = 21,
+    lns_seconds: float = 10.0,
+    lns_max_window_days: int = 60,
+    lns_seed: int = 42,
+    zero_repair_passes: int = 3,
+    total_seconds: float = 30.0,
+):
     dates = sorted(quota)
     allowed = supply.loc[supply["SHIFT_DATE"].isin(dates)].copy()
     if allowed.empty:
         raise ValueError("No supply records match quota dates")
     # Filter training assignments BEFORE creating vacation candidate variables.
-    excluded = allowed.apply(lambda r: (r["TECH_ID"], r["SHIFT_DATE"]) in training, axis=1)
+    excluded = allowed.apply(
+        lambda r: (r["TECH_ID"], r["SHIFT_DATE"]) in training, axis=1
+    )
     allowed = allowed.loc[~excluded].reset_index(drop=True)
     counts = allowed.groupby("SHIFT_DATE").size()
-    insufficient = [(str(d.date()), quota[d][0], int(counts.get(d, 0)))
-                    for d in dates if int(counts.get(d, 0)) < quota[d][0]]
+    insufficient = [
+        (str(d.date()), quota[d][0], int(counts.get(d, 0)))
+        for d in dates
+        if int(counts.get(d, 0)) < quota[d][0]
+    ]
     if insufficient:
-        raise ValueError(f"Scenario minimum daily vacations cannot be met from eligible staff: {insufficient[:8]}")
+        raise ValueError(
+            f"Scenario minimum daily vacations cannot be met from eligible staff: {insufficient[:8]}"
+        )
 
     model = cp_model.CpModel()
     vac = [model.NewBoolVar(f"vac_{j}") for j in range(len(allowed))]
@@ -548,22 +679,32 @@ def build_and_solve(supply: pd.DataFrame, demand: pd.DataFrame,
         model.Add(daily_vars[d] == sum(by_day[d]))
     total_vacations = model.NewIntVar(
         sum(v[0] for v in quota.values()),
-        sum(v[1] for v in quota.values()), "annual_vacations")
+        sum(v[1] for v in quota.values()),
+        "annual_vacations",
+    )
     model.Add(total_vacations == sum(daily_vars.values()))
 
     # Every scheduled work row counts as one base unit of coverage unless it
     # is occupied by training or vacation. Training is already excluded from
     # vacation candidacy, but must ALSO reduce productive supply in coverage.
-    original_bucket = supply.groupby(["SHIFT_DATE", "WORK_CENTER_ID", "SHIFT_TYPE"]).size().to_dict()
+    original_bucket = (
+        supply.groupby(["SHIFT_DATE", "WORK_CENTER_ID", "SHIFT_TYPE"]).size().to_dict()
+    )
     training_bucket = defaultdict(int)
     for r in supply.itertuples(index=False):
         if (str(r.TECH_ID), r.SHIFT_DATE) in training:
-            training_bucket[(r.SHIFT_DATE, str(r.WORK_CENTER_ID), str(r.SHIFT_TYPE))] += 1
+            training_bucket[
+                (r.SHIFT_DATE, str(r.WORK_CENTER_ID), str(r.SHIFT_TYPE))
+            ] += 1
 
     needed = demand.loc[demand["SHIFT_DATE"].isin(dates)].copy()
-    demand_map = {(r.SHIFT_DATE, str(r.WORK_CENTER), str(r.SHIFT_TYPE)): int(r.DEMAND)
-                  for r in needed.itertuples(index=False)}
-    missing_bucket_keys = set(original_bucket).intersection({(d, c, s) for d,c,s in original_bucket if d in quota}) - set(demand_map)
+    demand_map = {
+        (r.SHIFT_DATE, str(r.WORK_CENTER), str(r.SHIFT_TYPE)): int(r.DEMAND)
+        for r in needed.itertuples(index=False)
+    }
+    missing_bucket_keys = set(original_bucket).intersection(
+        {(d, c, s) for d, c, s in original_bucket if d in quota}
+    ) - set(demand_map)
     if missing_bucket_keys:
         raise ValueError(
             f"Missing desk demand for {len(missing_bucket_keys)} "
@@ -592,7 +733,10 @@ def build_and_solve(supply: pd.DataFrame, demand: pd.DataFrame,
 
     first_solver, first_status = solve(seconds)
     if first_status not in (cp_model.FEASIBLE, cp_model.OPTIMAL):
-        raise RuntimeError("Coverage stage has no feasible schedule: " + first_solver.StatusName(first_status))
+        raise RuntimeError(
+            "Coverage stage has no feasible schedule: "
+            + first_solver.StatusName(first_status)
+        )
     first_best = int(first_solver.Value(total_shortage))
     chosen = [int(first_solver.Value(v)) for v in vac]
     first_status_name = first_solver.StatusName(first_status)
@@ -632,9 +776,13 @@ def build_and_solve(supply: pd.DataFrame, demand: pd.DataFrame,
                 if second_status in (cp_model.FEASIBLE, cp_model.OPTIMAL):
                     chosen = [int(second_solver.Value(v)) for v in vac]
                 else:
-                    print("WARNING: Fairness stage yielded no solution; retaining previous assignment.")
+                    print(
+                        "WARNING: Fairness stage yielded no solution; retaining previous assignment."
+                    )
     if first_status != cp_model.OPTIMAL:
-        print("WARNING: Coverage optimum not proven: subsequent entitlement and fairness objectives skipped.")
+        print(
+            "WARNING: Coverage optimum not proven: subsequent entitlement and fairness objectives skipped."
+        )
     elif total_stage_status_name not in ("OPTIMAL", "SKIPPED"):
         print("WARNING: Maximum entitlement not proven; fairness stage skipped.")
     # Once selected, daily counts are fixed for postprocessing LNS and swaps.
@@ -648,86 +796,147 @@ def build_and_solve(supply: pd.DataFrame, demand: pd.DataFrame,
     before_lns = chosen.copy()
     if lns_iterations > 0:
         chosen, lns_stats = improve_with_lns(
-            allowed, demand_map, original_bucket, training_bucket,
-            actual_quota, chosen, len(supply["TECH_ID"].unique()),
-            iterations=lns_iterations, window_days=lns_window_days,
-            seconds=lns_seconds, workers=workers,
-            max_window_days=lns_max_window_days, seed=lns_seed,
-            all_employee_ids=sorted(supply["TECH_ID"].astype(str).unique()))
+            allowed,
+            demand_map,
+            original_bucket,
+            training_bucket,
+            actual_quota,
+            chosen,
+            len(supply["TECH_ID"].unique()),
+            iterations=lns_iterations,
+            window_days=lns_window_days,
+            seconds=lns_seconds,
+            workers=workers,
+            max_window_days=lns_max_window_days,
+            seed=lns_seed,
+            all_employee_ids=sorted(supply["TECH_ID"].astype(str).unique()),
+        )
     else:
-        lns_stats = {"lns_accepted": 0, "lns_iterations_run": 0,
-                     "lns_statuses": []}
+        lns_stats = {"lns_accepted": 0, "lns_iterations_run": 0, "lns_statuses": []}
     # Additional zero-/low-vacation-targeted neighborhood across all 363 days.
     # A swap stays in the same day/work-center/shift bucket, so neither the
     # daily vacation quota nor the coverage total can change.
     fairness_after_adaptive_lns_selection = chosen.copy()
     chosen, zero_stats = repair_low_vacation_dispatchers(
-        allowed, chosen, sorted(supply["TECH_ID"].astype(str).unique()),
-        passes=zero_repair_passes)
+        allowed,
+        chosen,
+        sorted(supply["TECH_ID"].astype(str).unique()),
+        passes=zero_repair_passes,
+    )
     employee_ids = sorted(supply["TECH_ID"].astype(str).unique())
+
     def fairness_numbers(selection):
         totals = dict.fromkeys(employee_ids, 0)
         for j, selected in enumerate(selection):
             if selected:
                 totals[str(allowed.iloc[j]["TECH_ID"])] += 1
         values = np.array(list(totals.values()), dtype=float)
-        return {"min": int(values.min()), "max": int(values.max()),
-                "mean": float(values.mean()), "std": float(values.std()),
-                "total_absolute_deviation": float(np.abs(values-values.mean()).sum()),
-                "maximum_absolute_deviation": float(np.abs(values-values.mean()).max()),
-                "zero_vacation_dispatchers": int((values == 0).sum()),
-                "over_40_vacation_dispatchers": int((values > 40).sum())}
+        return {
+            "min": int(values.min()),
+            "max": int(values.max()),
+            "mean": float(values.mean()),
+            "std": float(values.std()),
+            "total_absolute_deviation": float(np.abs(values - values.mean()).sum()),
+            "maximum_absolute_deviation": float(np.abs(values - values.mean()).max()),
+            "zero_vacation_dispatchers": int((values == 0).sum()),
+            "over_40_vacation_dispatchers": int((values > 40).sum()),
+        }
+
     fairness_before = fairness_numbers(before_lns)
-    fairness_after_adaptive_lns = fairness_numbers(fairness_after_adaptive_lns_selection)
+    fairness_after_adaptive_lns = fairness_numbers(
+        fairness_after_adaptive_lns_selection
+    )
     fairness_after = fairness_numbers(chosen)
     result = allowed.loc[[j for j, selected in enumerate(chosen) if selected]].copy()
     result = result.sort_values(["SHIFT_DATE", "TECH_ID"])
-    return result, {"coverage_stage_status": first_status_name,
-                    "total_stage_status": total_stage_status_name,
-                    "fairness_stage_status": second_status_name,
-                    "initial_total_shortage": first_best,
-                    "training_validated": bool(training),
-                    "assigned_vacations": int(sum(chosen)),
-                    "total_quota": int(sum(chosen)),
-                    "annual_total_fixed": False,
-                    "daily_vacation_bounds": [list(quota[d]) for d in dates],
-                    "dispatchers": int(supply["TECH_ID"].nunique()),
-                    "num_dates": len(dates),
-                    "fairness_before_lns": fairness_before,
-                    "fairness_after_adaptive_lns": fairness_after_adaptive_lns,
-                    "fairness_after_lns": fairness_after,
-                    "daily_vacations": {str(d.date()): actual_quota[d] for d in dates},
-                    **lns_stats, **zero_stats}
+    return result, {
+        "coverage_stage_status": first_status_name,
+        "total_stage_status": total_stage_status_name,
+        "fairness_stage_status": second_status_name,
+        "initial_total_shortage": first_best,
+        "training_validated": bool(training),
+        "assigned_vacations": int(sum(chosen)),
+        "total_quota": int(sum(chosen)),
+        "annual_total_fixed": False,
+        "daily_vacation_bounds": [list(quota[d]) for d in dates],
+        "dispatchers": int(supply["TECH_ID"].nunique()),
+        "num_dates": len(dates),
+        "fairness_before_lns": fairness_before,
+        "fairness_after_adaptive_lns": fairness_after_adaptive_lns,
+        "fairness_after_lns": fairness_after,
+        "daily_vacations": {str(d.date()): actual_quota[d] for d in dates},
+        **lns_stats,
+        **zero_stats,
+    }
 
 
 def main():
-    p = argparse.ArgumentParser(description="Initial AA vacation scheduling with OR-Tools CP-SAT")
+    p = argparse.ArgumentParser(
+        description="Initial AA vacation scheduling with OR-Tools CP-SAT"
+    )
     p.add_argument("--supply", default=DEFAULT_SUPPLY)
     p.add_argument("--volume", default=DEFAULT_VOLUME)
     p.add_argument("--demand", default=DEFAULT_DEMAND)
     p.add_argument("--training", default=DEFAULT_TRAINING)
-    p.add_argument("--output", default=DEFAULT_OUTPUT,
-                   help="complete supply after removing vacation-assigned shifts")
-    p.add_argument("--vacation-output", default=DEFAULT_VACATION_ASSIGNMENTS,
-                   help="separate four-column vacation assignment CSV for flex scheduling")
-    p.add_argument("--base", type=int, default=DEFAULT_BASE,
-                   help="scenario policy baseline: default 27 daily vacations")
-    p.add_argument("--adjustment", type=int, default=DEFAULT_ADJUSTMENT,
-                   help="scenario policy +/- range: default 2")
-    p.add_argument("--total-seconds", type=float, default=30.0,
-                   help="time budget to maximize vacation total after optimal coverage")
-    p.add_argument("--seconds", type=float, default=90.0, help="CP-SAT coverage time budget")
-    p.add_argument("--fair-seconds", type=float, default=30.0, help="fairness stage only if coverage optimal")
+    p.add_argument(
+        "--output",
+        default=DEFAULT_OUTPUT,
+        help="complete supply after removing vacation-assigned shifts",
+    )
+    p.add_argument(
+        "--vacation-output",
+        default=DEFAULT_VACATION_ASSIGNMENTS,
+        help="separate four-column vacation assignment CSV for flex scheduling",
+    )
+    p.add_argument(
+        "--base",
+        type=int,
+        default=DEFAULT_BASE,
+        help="scenario policy baseline: default 27 daily vacations",
+    )
+    p.add_argument(
+        "--adjustment",
+        type=int,
+        default=DEFAULT_ADJUSTMENT,
+        help="scenario policy +/- range: default 2",
+    )
+    p.add_argument(
+        "--total-seconds",
+        type=float,
+        default=30.0,
+        help="time budget to maximize vacation total after optimal coverage",
+    )
+    p.add_argument(
+        "--seconds", type=float, default=90.0, help="CP-SAT coverage time budget"
+    )
+    p.add_argument(
+        "--fair-seconds",
+        type=float,
+        default=30.0,
+        help="fairness stage only if coverage optimal",
+    )
     p.add_argument("--workers", type=int, default=8)
-    p.add_argument("--lns-iterations", type=int, default=10,
-                   help="number of LNS windows; 0 disables LNS")
+    p.add_argument(
+        "--lns-iterations",
+        type=int,
+        default=10,
+        help="number of LNS windows; 0 disables LNS",
+    )
     p.add_argument("--lns-window-days", type=int, default=21)
-    p.add_argument("--lns-seconds", type=float, default=10.0,
-                   help="solver time budget per LNS window")
+    p.add_argument(
+        "--lns-seconds",
+        type=float,
+        default=10.0,
+        help="solver time budget per LNS window",
+    )
     p.add_argument("--lns-max-window-days", type=int, default=60)
     p.add_argument("--lns-seed", type=int, default=42)
-    p.add_argument("--zero-repair-passes", type=int, default=3,
-                   help="full-year coverage-preserving swaps targeting under-assigned dispatchers")
+    p.add_argument(
+        "--zero-repair-passes",
+        type=int,
+        default=3,
+        help="full-year coverage-preserving swaps targeting under-assigned dispatchers",
+    )
     args = p.parse_args()
 
     supply = clean_supply(read_csv(args.supply))
@@ -744,25 +953,42 @@ def main():
     # never silently fill missing desk demand with zero.
     demand, demand_audit = fill_missing_demand(demand, supply, dates)
     training = load_training(args.training)
-    assignments, stats = build_and_solve(supply, demand, quota, training,
-                                         args.seconds, args.workers, args.fair_seconds,
-                                         args.lns_iterations, args.lns_window_days,
-                                         args.lns_seconds, args.lns_max_window_days,
-                                         args.lns_seed, args.zero_repair_passes,
-                                         args.total_seconds)
+    assignments, stats = build_and_solve(
+        supply,
+        demand,
+        quota,
+        training,
+        args.seconds,
+        args.workers,
+        args.fair_seconds,
+        args.lns_iterations,
+        args.lns_window_days,
+        args.lns_seconds,
+        args.lns_max_window_days,
+        args.lns_seed,
+        args.zero_repair_passes,
+        args.total_seconds,
+    )
     fields = ["TECH_ID", "SHIFT_DATE", "WORK_CENTER_ID", "SHIFT_TYPE"]
     output = Path(args.output)
     output.parent.mkdir(parents=True, exist_ok=True)
-    demand_audit.to_csv(output.parent / "demand_imputation_audit.csv", index=False,
-                        date_format="%Y-%m-%d")
+    demand_audit.to_csv(
+        output.parent / "demand_imputation_audit.csv",
+        index=False,
+        date_format="%Y-%m-%d",
+    )
     stats["imputed_demand_buckets"] = len(demand_audit)
     if stats.get("zero_repair_history"):
         pd.DataFrame(stats["zero_repair_history"]).to_csv(
-            output.parent / "vacation_zero_repair_history.csv", index=False)
+            output.parent / "vacation_zero_repair_history.csv", index=False
+        )
     if stats.get("lns_history"):
         pd.DataFrame(stats["lns_history"]).to_csv(
-            output.parent / "vacation_lns_history.csv", index=False)
-    stats["demand_imputation_policy"] = "previous_week_or_next_week_then_nearest_same_bucket"
+            output.parent / "vacation_lns_history.csv", index=False
+        )
+    stats["demand_imputation_policy"] = (
+        "previous_week_or_next_week_then_nearest_same_bucket"
+    )
     vacation_output = Path(args.vacation_output)
     vacation_output.parent.mkdir(parents=True, exist_ok=True)
     if output.resolve() == vacation_output.resolve():
@@ -771,53 +997,85 @@ def main():
     assignments[fields].to_csv(vacation_output, index=False, date_format="%Y-%m-%d")
     # The main output has the SAME COLUMNS as the upstream dispatcher-level supply,
     # but omits rows corresponding to vacations (supply after vacation shrinkage).
-    remaining_rows, missing_cols = export_supply_after_vacation(supply, assignments, output)
+    remaining_rows, missing_cols = export_supply_after_vacation(
+        supply, assignments, output
+    )
     stats["supply_rows_before_vacation"] = int(len(supply))
     stats["supply_rows_after_vacation"] = remaining_rows
     stats["supply_rows_removed_for_vacation"] = int(len(assignments))
     stats["vacation_assignments_file"] = str(vacation_output)
     stats["missing_columns_from_screenshot_schema"] = missing_cols
     if missing_cols:
-        print("WARNING: Upstream supply does not contain these screenshot columns; "
-              "they were NOT fabricated:", missing_cols)
+        print(
+            "WARNING: Upstream supply does not contain these screenshot columns; "
+            "they were NOT fabricated:",
+            missing_cols,
+        )
     # Vacation fairness report includes dispatchers receiving zero vacation days.
     all_ids = sorted(supply["TECH_ID"].astype(str).unique())
     assigned_counts = assignments["TECH_ID"].astype(str).value_counts()
     fairness_report = pd.DataFrame({"TECH_ID": all_ids})
-    fairness_report["VACATION_DAYS"] = fairness_report["TECH_ID"].map(assigned_counts).fillna(0).astype(int)
+    fairness_report["VACATION_DAYS"] = (
+        fairness_report["TECH_ID"].map(assigned_counts).fillna(0).astype(int)
+    )
     # Diagnostic: distinguish solver unfairness from missing workday eligibility.
     # TODO: Recompute from Ashkat's final supply and Daniel's training calendar.
-    eligible = supply.loc[~supply.apply(
-        lambda r: (str(r["TECH_ID"]), r["SHIFT_DATE"]) in training, axis=1)]
+    eligible = supply.loc[
+        ~supply.apply(
+            lambda r: (str(r["TECH_ID"]), r["SHIFT_DATE"]) in training, axis=1
+        )
+    ]
     eligible_counts = eligible["TECH_ID"].astype(str).value_counts()
     work_counts = supply["TECH_ID"].astype(str).value_counts()
-    fairness_report["SCHEDULED_WORKDAYS"] = fairness_report["TECH_ID"].map(work_counts).fillna(0).astype(int)
-    fairness_report["ELIGIBLE_VACATION_DAYS"] = fairness_report["TECH_ID"].map(eligible_counts).fillna(0).astype(int)
-    fairness_report["DEVIATION_FROM_AVERAGE"] = (fairness_report["VACATION_DAYS"] -
-        stats["assigned_vacations"] / stats["dispatchers"])
-    fairness_report.to_csv(output.parent / "vacation_fairness_by_dispatcher.csv", index=False)
+    fairness_report["SCHEDULED_WORKDAYS"] = (
+        fairness_report["TECH_ID"].map(work_counts).fillna(0).astype(int)
+    )
+    fairness_report["ELIGIBLE_VACATION_DAYS"] = (
+        fairness_report["TECH_ID"].map(eligible_counts).fillna(0).astype(int)
+    )
+    fairness_report["DEVIATION_FROM_AVERAGE"] = (
+        fairness_report["VACATION_DAYS"]
+        - stats["assigned_vacations"] / stats["dispatchers"]
+    )
+    fairness_report.to_csv(
+        output.parent / "vacation_fairness_by_dispatcher.csv", index=False
+    )
     # Validate CP-SAT-selected daily counts against scenario policy bounds.
     observed = assignments.groupby("SHIFT_DATE").size().to_dict()
-    assert all(quota[d][0] <= observed.get(d, 0) <= quota[d][1]
-               for d in dates), "Daily scenario bounds violated"
+    assert all(
+        quota[d][0] <= observed.get(d, 0) <= quota[d][1] for d in dates
+    ), "Daily scenario bounds violated"
     assert sum(observed.values()) == stats["assigned_vacations"]
-    assert not any((str(r.TECH_ID), r.SHIFT_DATE) in training for r in assignments.itertuples(index=False))
+    assert not any(
+        (str(r.TECH_ID), r.SHIFT_DATE) in training
+        for r in assignments.itertuples(index=False)
+    )
     stats["training_file_supplied"] = bool(args.training)
     stats["daily_quota_method"] = "CP_SAT_decision_with_configurable_policy_bounds"
     stats["policy_base"] = args.base
     stats["policy_adjustment"] = args.adjustment
-    (output.parent / (output.stem + "_summary.json")).write_text(json.dumps(stats, indent=2))
-    pd.DataFrame({"SHIFT_DATE": dates,
-                  "POLICY_MIN": [quota[d][0] for d in dates],
-                  "POLICY_MAX": [quota[d][1] for d in dates],
-                  "VACATION_ASSIGNED": [observed.get(d, 0) for d in dates]}).to_csv(
-        output.parent / "vacation_daily_targets.csv", index=False, date_format="%Y-%m-%d")
+    (output.parent / (output.stem + "_summary.json")).write_text(
+        json.dumps(stats, indent=2)
+    )
+    pd.DataFrame(
+        {
+            "SHIFT_DATE": dates,
+            "POLICY_MIN": [quota[d][0] for d in dates],
+            "POLICY_MAX": [quota[d][1] for d in dates],
+            "VACATION_ASSIGNED": [observed.get(d, 0) for d in dates],
+        }
+    ).to_csv(
+        output.parent / "vacation_daily_targets.csv",
+        index=False,
+        date_format="%Y-%m-%d",
+    )
     print("Saved supply after vacation", output)
     print("Saved vacation assignments", vacation_output)
     print(json.dumps(stats, indent=2))
     print("Zero-vacation targeted swaps:", stats["zero_repair_swaps"])
-    print("Zero-vacation dispatchers after repair:",
-          stats["zero_repair_after_zero_count"])
+    print(
+        "Zero-vacation dispatchers after repair:", stats["zero_repair_after_zero_count"]
+    )
     if not args.training:
         print("WARNING: Daniel training input is absent. Results are PROVISIONAL.")
 

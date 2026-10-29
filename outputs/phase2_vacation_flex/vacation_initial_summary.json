@@ -1,354 +1,361 @@
 {
-  "coverage_stage_status": "OPTIMAL",
-  "fairness_stage_status": "FEASIBLE",
-  "initial_total_shortage": 430,
-  "training_validated": true,
-  "assigned_vacations": 9803,
-  "total_quota": 9803,
-  "dispatchers": 506,
-  "num_dates": 363,
-  "fairness_before_lns": {
-    "min": 0,
-    "max": 56,
-    "mean": 19.373517786561266,
-    "std": 11.821833249547991,
-    "total_absolute_deviation": 4697.146245059289,
-    "maximum_absolute_deviation": 36.626482213438734,
-    "zero_vacation_dispatchers": 6,
-    "over_40_vacation_dispatchers": 29
+  "module": "vacation_allocation (exact min-cost flow + flex-aware pricing)",
+  "config": {
+    "daily_min": 25,
+    "daily_max": 29,
+    "enforce_daily_bounds": true,
+    "base_daily": null,
+    "base_tolerance": 0.0,
+    "fairness_slack_days": 2,
+    "fairness_weight": 1,
+    "proportionality_tolerance": 0.0,
+    "enforce_proportionality": true,
+    "scale_grid_points": 41,
+    "max_flex_days": 4,
+    "flex_same_shift_only": true,
+    "flex_home_work_center_only": true,
+    "flex_pricing_iterations": 4,
+    "pricing_candidates": 3,
+    "cost_uncoverable": 1000,
+    "cost_coverable": 300,
+    "pricing_damping": 0.5,
+    "workday_tie_break": true
   },
-  "fairness_after_adaptive_lns": {
-    "min": 0,
-    "max": 44,
-    "mean": 19.373517786561266,
-    "std": 10.631670669373447,
-    "total_absolute_deviation": 4181.774703557313,
-    "maximum_absolute_deviation": 24.626482213438734,
-    "zero_vacation_dispatchers": 3,
-    "over_40_vacation_dispatchers": 18
+  "assumptions": [
+    "Vacation days are taken from existing workdays; each dispatcher works one work center/shift.",
+    "The annual total is not fixed. Priority: R1 daily total in [daily_min, daily_max] (hard); R2 every dispatcher L or L+1 days, L chosen by the model (hard); R3 daily total = floor or ceil of clip(K/volume) for one scale K whose proportional fit is within proportionality_tolerance of the best (hard); then minimise shortage left after best-case flex; then maximise vacations.",
+    "Flex headroom: a dispatcher can cover a desk on a day they are neither scheduled nor in training, if qualified for that work center (qualification columns) and, by default, normally on that shift; max_flex_days per dispatcher; no flex days used before this step.",
+    "Flex days are estimated for pricing and reporting only; none are assigned."
+  ],
+  "inputs": {
+    "supply_rows": 95825,
+    "dispatchers": 506,
+    "dates": 363,
+    "first_date": "2025-01-14",
+    "last_date": "2026-01-11",
+    "buckets": 8712,
+    "training_days_supplied": 2138,
+    "training_validated": true,
+    "volume_dates_imputed": [
+      "2026-01-11"
+    ],
+    "desk_demand_buckets_imputed": 48
   },
-  "fairness_after_lns": {
-    "min": 1,
-    "max": 44,
-    "mean": 19.373517786561266,
-    "std": 10.599090603314634,
-    "total_absolute_deviation": 4160.498023715416,
-    "maximum_absolute_deviation": 24.626482213438734,
-    "zero_vacation_dispatchers": 0,
-    "over_40_vacation_dispatchers": 18
+  "requirements": {
+    "daily_min": 25,
+    "daily_max": 29,
+    "per_dispatcher_min": 16,
+    "per_dispatcher_max": 21,
+    "per_dispatcher_spread": 5,
+    "per_dispatcher_std": 1.8127054921838666,
+    "dispatchers_with_zero_vacation": 0,
+    "total_vacations": 9535,
+    "R1_daily_bounds_ok": true,
+    "R2_fairness_slack_days": 2,
+    "R3_scale_K": 89398.8653,
+    "R3_fit_error": 4.124923285799244,
+    "R3_best_possible_fit_error": 4.124923285799244,
+    "R3_days_at_lower_bound": 46,
+    "R3_days_at_upper_bound": 50,
+    "R3_mean_abs_gap_to_ideal_target": 0.3658295899016803,
+    "pearson_vacations_vs_volume": -0.9006202269145678,
+    "pearson_vacations_vs_inverse_volume": 0.7820689188210918,
+    "spearman_vacations_vs_volume": -0.9479710135278342,
+    "average_daily_vacations": 26.267217630853995
   },
-  "fairness_objective": "minimize_max_absolute_deviation_then_total_absolute_deviation",
-  "lns_accepted": 5,
-  "lns_iterations_run": 10,
-  "lns_statuses": [
-    "OPTIMAL",
-    "OPTIMAL",
-    "OPTIMAL",
-    "OPTIMAL",
-    "OPTIMAL",
-    "OPTIMAL",
-    "OPTIMAL",
-    "OPTIMAL",
-    "OPTIMAL",
-    "OPTIMAL"
-  ],
-  "lns_mode": "adaptive_minimax_then_absolute_deviation",
-  "lns_history": [
-    {
-      "iteration": 1,
-      "method": "imbalance_targeted",
-      "start_date": "2025-09-09",
-      "window_days": 21,
-      "status": "OPTIMAL",
-      "accepted": true,
-      "max_deviation_before_days": 36.626482213438734,
-      "max_deviation_after_days": 29.626482213438734,
-      "total_absolute_deviation_before": 4697.146245059289,
-      "total_absolute_deviation_after": 4486.905138339921,
-      "fairness_score_before": 183861542277,
-      "fairness_score_after": 148722539641,
-      "solver_seconds": 6.055
-    },
-    {
-      "iteration": 2,
-      "method": "imbalance_targeted",
-      "start_date": "2025-09-04",
-      "window_days": 21,
-      "status": "OPTIMAL",
-      "accepted": true,
-      "max_deviation_before_days": 29.626482213438734,
-      "max_deviation_after_days": 27.626482213438734,
-      "total_absolute_deviation_before": 4486.905138339921,
-      "total_absolute_deviation_after": 4451.411067193676,
-      "fairness_score_before": 148722539641,
-      "fairness_score_after": 138682837037,
-      "solver_seconds": 5.309
-    },
-    {
-      "iteration": 3,
-      "method": "imbalance_targeted",
-      "start_date": "2025-09-06",
-      "window_days": 21,
-      "status": "OPTIMAL",
-      "accepted": false,
-      "max_deviation_before_days": 27.626482213438734,
-      "max_deviation_after_days": 27.626482213438734,
-      "total_absolute_deviation_before": 4451.411067193676,
-      "total_absolute_deviation_after": 4451.411067193676,
-      "fairness_score_before": 138682837037,
-      "fairness_score_after": 138682837037,
-      "solver_seconds": 1.452
-    },
-    {
-      "iteration": 4,
-      "method": "exploration",
-      "start_date": "2025-02-13",
-      "window_days": 21,
-      "status": "OPTIMAL",
-      "accepted": true,
-      "max_deviation_before_days": 27.626482213438734,
-      "max_deviation_after_days": 25.626482213438734,
-      "total_absolute_deviation_before": 4451.411067193676,
-      "total_absolute_deviation_after": 4226.545454545455,
-      "fairness_score_before": 138682837037,
-      "fairness_score_after": 128643038611,
-      "solver_seconds": 7.994
-    },
-    {
-      "iteration": 5,
-      "method": "imbalance_targeted",
-      "start_date": "2025-09-06",
-      "window_days": 21,
-      "status": "OPTIMAL",
-      "accepted": false,
-      "max_deviation_before_days": 25.626482213438734,
-      "max_deviation_after_days": 25.626482213438734,
-      "total_absolute_deviation_before": 4226.545454545455,
-      "total_absolute_deviation_after": 4226.545454545455,
-      "fairness_score_before": 128643038611,
-      "fairness_score_after": 128643038611,
-      "solver_seconds": 1.443
-    },
-    {
-      "iteration": 6,
-      "method": "imbalance_targeted",
-      "start_date": "2025-09-06",
-      "window_days": 21,
-      "status": "OPTIMAL",
-      "accepted": false,
-      "max_deviation_before_days": 25.626482213438734,
-      "max_deviation_after_days": 25.626482213438734,
-      "total_absolute_deviation_before": 4226.545454545455,
-      "total_absolute_deviation_after": 4226.545454545455,
-      "fairness_score_before": 128643038611,
-      "fairness_score_after": 128643038611,
-      "solver_seconds": 1.305
-    },
-    {
-      "iteration": 7,
-      "method": "imbalance_targeted",
-      "start_date": "2025-09-10",
-      "window_days": 28,
-      "status": "OPTIMAL",
-      "accepted": true,
-      "max_deviation_before_days": 25.626482213438734,
-      "max_deviation_after_days": 25.626482213438734,
-      "total_absolute_deviation_before": 4226.545454545455,
-      "total_absolute_deviation_after": 4204.786561264822,
-      "fairness_score_before": 128643038611,
-      "fairness_score_after": 128643027601,
-      "solver_seconds": 8.538
-    },
-    {
-      "iteration": 8,
-      "method": "exploration",
-      "start_date": "2025-10-06",
-      "window_days": 21,
-      "status": "OPTIMAL",
-      "accepted": true,
-      "max_deviation_before_days": 25.626482213438734,
-      "max_deviation_after_days": 24.626482213438734,
-      "total_absolute_deviation_before": 4204.786561264822,
-      "total_absolute_deviation_after": 4181.774703557312,
-      "fairness_score_before": 128643027601,
-      "fairness_score_after": 123623173635,
-      "solver_seconds": 3.141
-    },
-    {
-      "iteration": 9,
-      "method": "imbalance_targeted",
-      "start_date": "2025-09-06",
-      "window_days": 21,
-      "status": "OPTIMAL",
-      "accepted": false,
-      "max_deviation_before_days": 24.626482213438734,
-      "max_deviation_after_days": 24.626482213438734,
-      "total_absolute_deviation_before": 4181.774703557312,
-      "total_absolute_deviation_after": 4181.774703557312,
-      "fairness_score_before": 123623173635,
-      "fairness_score_after": 123623173635,
-      "solver_seconds": 1.721
-    },
-    {
-      "iteration": 10,
-      "method": "imbalance_targeted",
-      "start_date": "2025-09-06",
-      "window_days": 21,
-      "status": "OPTIMAL",
-      "accepted": false,
-      "max_deviation_before_days": 24.626482213438734,
-      "max_deviation_after_days": 24.626482213438734,
-      "total_absolute_deviation_before": 4181.774703557312,
-      "total_absolute_deviation_after": 4181.774703557312,
-      "fairness_score_before": 123623173635,
-      "fairness_score_after": 123623173635,
-      "solver_seconds": 1.585
-    }
-  ],
-  "zero_repair_swaps": 17,
-  "zero_repair_before_zero_count": 3,
-  "zero_repair_after_zero_count": 0,
-  "zero_repair_before_max_deviation_days": 24.626482213438734,
-  "zero_repair_after_max_deviation_days": 24.626482213438734,
-  "zero_repair_before_abs_deviation": 4181.774703557312,
-  "zero_repair_after_abs_deviation": 4160.498023715415,
-  "zero_repair_history": [
-    {
-      "pass": 1,
-      "recipient": "9100000",
-      "donor": "9100006",
-      "shift_date": "2025-01-22",
-      "work_center": "ATC",
-      "shift_type": "MORNING"
-    },
-    {
-      "pass": 1,
-      "recipient": "9100012",
-      "donor": "9100021",
-      "shift_date": "2025-01-22",
-      "work_center": "ATC",
-      "shift_type": "EVENING"
-    },
-    {
-      "pass": 1,
-      "recipient": "9100064",
-      "donor": "9100065",
-      "shift_date": "2025-01-19",
-      "work_center": "OC",
-      "shift_type": "EVENING"
-    },
-    {
-      "pass": 1,
-      "recipient": "100031",
-      "donor": "100093",
-      "shift_date": "2025-01-17",
-      "work_center": "Domestic",
-      "shift_type": "MORNING"
-    },
-    {
-      "pass": 1,
-      "recipient": "100014",
-      "donor": "100068",
-      "shift_date": "2025-01-18",
-      "work_center": "Domestic",
-      "shift_type": "MORNING"
-    },
-    {
-      "pass": 1,
-      "recipient": "100004",
-      "donor": "100094",
-      "shift_date": "2025-01-20",
-      "work_center": "Domestic",
-      "shift_type": "MORNING"
-    },
-    {
-      "pass": 1,
-      "recipient": "100007",
-      "donor": "100093",
-      "shift_date": "2025-04-10",
-      "work_center": "Domestic",
-      "shift_type": "MORNING"
-    },
-    {
-      "pass": 1,
-      "recipient": "100102",
-      "donor": "100190",
-      "shift_date": "2025-01-19",
-      "work_center": "Domestic",
-      "shift_type": "EVENING"
-    },
-    {
-      "pass": 1,
-      "recipient": "100096",
-      "donor": "100179",
-      "shift_date": "2025-03-19",
-      "work_center": "Domestic",
-      "shift_type": "EVENING"
-    },
-    {
-      "pass": 1,
-      "recipient": "100115",
-      "donor": "100178",
-      "shift_date": "2025-03-08",
-      "work_center": "Domestic",
-      "shift_type": "EVENING"
-    },
-    {
-      "pass": 1,
-      "recipient": "100118",
-      "donor": "100179",
-      "shift_date": "2025-08-01",
-      "work_center": "Domestic",
-      "shift_type": "EVENING"
-    },
-    {
-      "pass": 1,
-      "recipient": "100103",
-      "donor": "100169",
-      "shift_date": "2025-01-25",
-      "work_center": "Domestic",
-      "shift_type": "EVENING"
-    },
-    {
-      "pass": 1,
-      "recipient": "100121",
-      "donor": "100183",
-      "shift_date": "2025-01-27",
-      "work_center": "Domestic",
-      "shift_type": "EVENING"
-    },
-    {
-      "pass": 1,
-      "recipient": "100194",
-      "donor": "100199",
-      "shift_date": "2025-01-23",
-      "work_center": "Domestic",
-      "shift_type": "MIDNIGHT"
-    },
-    {
-      "pass": 1,
-      "recipient": "100098",
-      "donor": "100178",
-      "shift_date": "2025-01-31",
-      "work_center": "Domestic",
-      "shift_type": "EVENING"
-    },
-    {
-      "pass": 1,
-      "recipient": "100107",
-      "donor": "100179",
-      "shift_date": "2025-02-01",
-      "work_center": "Domestic",
-      "shift_type": "EVENING"
-    },
-    {
-      "pass": 1,
-      "recipient": "100114",
-      "donor": "100190",
-      "shift_date": "2025-02-10",
-      "work_center": "Domestic",
-      "shift_type": "EVENING"
-    }
-  ],
-  "zero_repair_method": "same_day_same_work_center_shift_coverage_preserving_swaps"
+  "coverage": {
+    "shortage_before_vacation": 64,
+    "shortage_after_vacation": 1207,
+    "vacation_induced_shortage": 1143,
+    "best_case_flex_coverable": 606,
+    "residual_shortage_after_best_case_flex": 601,
+    "demand_without_any_scheduled_supply": 17,
+    "preassigned_flex_rows": 230,
+    "preassigned_flex_adding_cover": 114,
+    "preassigned_flex_conflicts": 116,
+    "by_work_center_shift": [
+      {
+        "work_center": "ATC",
+        "shift": "EVENING",
+        "dispatchers": 12,
+        "shortage_before_vacation": 7,
+        "shortage_after_vacation": 123,
+        "flex_pool_dispatchers": 12,
+        "flex_pool_budget_if_exclusive": 48
+      },
+      {
+        "work_center": "ATC",
+        "shift": "MIDNIGHT",
+        "dispatchers": 2,
+        "shortage_before_vacation": 1,
+        "shortage_after_vacation": 21,
+        "flex_pool_dispatchers": 2,
+        "flex_pool_budget_if_exclusive": 8
+      },
+      {
+        "work_center": "ATC",
+        "shift": "MORNING",
+        "dispatchers": 12,
+        "shortage_before_vacation": 7,
+        "shortage_after_vacation": 130,
+        "flex_pool_dispatchers": 12,
+        "flex_pool_budget_if_exclusive": 48
+      },
+      {
+        "work_center": "CHF",
+        "shift": "EVENING",
+        "dispatchers": 2,
+        "shortage_before_vacation": 2,
+        "shortage_after_vacation": 21,
+        "flex_pool_dispatchers": 2,
+        "flex_pool_budget_if_exclusive": 8
+      },
+      {
+        "work_center": "CHF",
+        "shift": "MIDNIGHT",
+        "dispatchers": 2,
+        "shortage_before_vacation": 5,
+        "shortage_after_vacation": 27,
+        "flex_pool_dispatchers": 2,
+        "flex_pool_budget_if_exclusive": 8
+      },
+      {
+        "work_center": "CHF",
+        "shift": "MORNING",
+        "dispatchers": 2,
+        "shortage_before_vacation": 3,
+        "shortage_after_vacation": 22,
+        "flex_pool_dispatchers": 2,
+        "flex_pool_budget_if_exclusive": 8
+      },
+      {
+        "work_center": "Domestic",
+        "shift": "EVENING",
+        "dispatchers": 96,
+        "shortage_before_vacation": 0,
+        "shortage_after_vacation": 123,
+        "flex_pool_dispatchers": 96,
+        "flex_pool_budget_if_exclusive": 384
+      },
+      {
+        "work_center": "Domestic",
+        "shift": "MIDNIGHT",
+        "dispatchers": 48,
+        "shortage_before_vacation": 0,
+        "shortage_after_vacation": 34,
+        "flex_pool_dispatchers": 48,
+        "flex_pool_budget_if_exclusive": 192
+      },
+      {
+        "work_center": "Domestic",
+        "shift": "MORNING",
+        "dispatchers": 96,
+        "shortage_before_vacation": 0,
+        "shortage_after_vacation": 55,
+        "flex_pool_dispatchers": 96,
+        "flex_pool_budget_if_exclusive": 384
+      },
+      {
+        "work_center": "Europe",
+        "shift": "EVENING",
+        "dispatchers": 17,
+        "shortage_before_vacation": 0,
+        "shortage_after_vacation": 0,
+        "flex_pool_dispatchers": 17,
+        "flex_pool_budget_if_exclusive": 68
+      },
+      {
+        "work_center": "Europe",
+        "shift": "MIDNIGHT",
+        "dispatchers": 17,
+        "shortage_before_vacation": 0,
+        "shortage_after_vacation": 0,
+        "flex_pool_dispatchers": 17,
+        "flex_pool_budget_if_exclusive": 68
+      },
+      {
+        "work_center": "Europe",
+        "shift": "MORNING",
+        "dispatchers": 17,
+        "shortage_before_vacation": 0,
+        "shortage_after_vacation": 0,
+        "flex_pool_dispatchers": 17,
+        "flex_pool_budget_if_exclusive": 68
+      },
+      {
+        "work_center": "Latin",
+        "shift": "EVENING",
+        "dispatchers": 37,
+        "shortage_before_vacation": 0,
+        "shortage_after_vacation": 0,
+        "flex_pool_dispatchers": 37,
+        "flex_pool_budget_if_exclusive": 148
+      },
+      {
+        "work_center": "Latin",
+        "shift": "MIDNIGHT",
+        "dispatchers": 19,
+        "shortage_before_vacation": 0,
+        "shortage_after_vacation": 0,
+        "flex_pool_dispatchers": 19,
+        "flex_pool_budget_if_exclusive": 76
+      },
+      {
+        "work_center": "Latin",
+        "shift": "MORNING",
+        "dispatchers": 37,
+        "shortage_before_vacation": 0,
+        "shortage_after_vacation": 0,
+        "flex_pool_dispatchers": 37,
+        "flex_pool_budget_if_exclusive": 148
+      },
+      {
+        "work_center": "OC",
+        "shift": "EVENING",
+        "dispatchers": 22,
+        "shortage_before_vacation": 13,
+        "shortage_after_vacation": 218,
+        "flex_pool_dispatchers": 22,
+        "flex_pool_budget_if_exclusive": 88
+      },
+      {
+        "work_center": "OC",
+        "shift": "MIDNIGHT",
+        "dispatchers": 12,
+        "shortage_before_vacation": 4,
+        "shortage_after_vacation": 113,
+        "flex_pool_dispatchers": 12,
+        "flex_pool_budget_if_exclusive": 48
+      },
+      {
+        "work_center": "OC",
+        "shift": "MORNING",
+        "dispatchers": 22,
+        "shortage_before_vacation": 10,
+        "shortage_after_vacation": 213,
+        "flex_pool_dispatchers": 22,
+        "flex_pool_budget_if_exclusive": 88
+      },
+      {
+        "work_center": "Pacific",
+        "shift": "EVENING",
+        "dispatchers": 8,
+        "shortage_before_vacation": 1,
+        "shortage_after_vacation": 1,
+        "flex_pool_dispatchers": 8,
+        "flex_pool_budget_if_exclusive": 32
+      },
+      {
+        "work_center": "Pacific",
+        "shift": "MIDNIGHT",
+        "dispatchers": 8,
+        "shortage_before_vacation": 0,
+        "shortage_after_vacation": 0,
+        "flex_pool_dispatchers": 8,
+        "flex_pool_budget_if_exclusive": 32
+      },
+      {
+        "work_center": "Pacific",
+        "shift": "MORNING",
+        "dispatchers": 8,
+        "shortage_before_vacation": 1,
+        "shortage_after_vacation": 1,
+        "flex_pool_dispatchers": 8,
+        "flex_pool_budget_if_exclusive": 32
+      },
+      {
+        "work_center": "ROC",
+        "shift": "EVENING",
+        "dispatchers": 4,
+        "shortage_before_vacation": 2,
+        "shortage_after_vacation": 40,
+        "flex_pool_dispatchers": 4,
+        "flex_pool_budget_if_exclusive": 16
+      },
+      {
+        "work_center": "ROC",
+        "shift": "MIDNIGHT",
+        "dispatchers": 2,
+        "shortage_before_vacation": 4,
+        "shortage_after_vacation": 22,
+        "flex_pool_dispatchers": 2,
+        "flex_pool_budget_if_exclusive": 8
+      },
+      {
+        "work_center": "ROC",
+        "shift": "MORNING",
+        "dispatchers": 4,
+        "shortage_before_vacation": 4,
+        "shortage_after_vacation": 43,
+        "flex_pool_dispatchers": 4,
+        "flex_pool_budget_if_exclusive": 16
+      }
+    ]
+  },
+  "solver": {
+    "best_fit_scale_K": 89398.8653,
+    "best_fit_error": 4.124923285799244,
+    "admissible_scale_range": [
+      89398.8653,
+      89398.8653
+    ],
+    "candidates_tried": 2,
+    "base_total_range": null,
+    "chosen_scale_K": 89398.8653,
+    "chosen_fit_error": 4.124923285799244,
+    "chosen_fairness_level_L": 18,
+    "rounds": [
+      {
+        "round": 0,
+        "vacations": 9535,
+        "raw_shortage": 1207,
+        "flex_covered": 486,
+        "residual_after_flex": 721,
+        "flow_objective": 1140973033,
+        "seconds": 0.36,
+        "selected": false
+      },
+      {
+        "round": 1,
+        "vacations": 9535,
+        "raw_shortage": 1207,
+        "flex_covered": 605,
+        "residual_after_flex": 602,
+        "flow_objective": 1067206581,
+        "seconds": 0.29,
+        "selected": false
+      },
+      {
+        "round": 2,
+        "vacations": 9535,
+        "raw_shortage": 1207,
+        "flex_covered": 606,
+        "residual_after_flex": 601,
+        "flow_objective": 1024506581,
+        "seconds": 0.31,
+        "selected": true
+      },
+      {
+        "round": 3,
+        "vacations": 9535,
+        "raw_shortage": 1207,
+        "flex_covered": 606,
+        "residual_after_flex": 601,
+        "flow_objective": 1008862581,
+        "seconds": 0.37,
+        "selected": false
+      },
+      {
+        "round": 4,
+        "vacations": 9535,
+        "raw_shortage": 1207,
+        "flex_covered": 606,
+        "residual_after_flex": 601,
+        "flow_objective": 1000926581,
+        "seconds": 0.27,
+        "selected": false
+      }
+    ],
+    "total_seconds": 4.7
+  }
 }

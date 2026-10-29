@@ -208,9 +208,15 @@ if __name__ == "__main__":
 
     # ── Phase 3a — Vacation Scheduling ───────────────────────────────────────
     _section("PHASE 3a — Vacation Scheduling")
-    phase3.run_vacation(PHASE2_DIR, PHASE3_DIR, ROOT, FAIR_SECONDS)
+    phase3.run_vacation(PHASE2_DIR, PHASE3_DIR, ROOT, FAIR_SECONDS, PHASE1_DIR)
     timings["phase3_vacation"] = time.time() - t0
     logging.info(f"  elapsed: {_hms(timings['phase3_vacation'])}")
+
+    report_v, supply_v = CoverageReporter.evaluate(
+        str(ROOT / "inputs" / "annual_desk_needs_reference.csv"),
+        str(PHASE3_DIR / "vacation_outputs_updatedFormat.csv"),
+    )
+    CoverageReporter.print_summary(report_v, stage="Phase 3 — Vacation")
 
     # ── Check 3a — Phase 3a integrity ───────────────────────────────────────────
 
