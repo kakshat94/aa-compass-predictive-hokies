@@ -112,3 +112,59 @@ flex:
   cross_work_center_cost: 1000    # preference for own desk (only matters if home_work_center_only: false)
   cross_shift_cost: 1000          # preference for the dispatcher's own shift (if allowed)
   balance_cost: 10                # spreads flex days across dispatchers
+
+training:
+  # Historical P(secondary | primary) is computed from inputs/Supply_sample.csv.
+  # Each value scales that proportion: effective = historical * scale.
+  # 1.0 keeps the historical rate. 0.0 removes that secondary for that primary,
+  # so nobody with that primary is trained in it. Values must be in [0, 1].
+  secondary_proportion_scales:
+    ATC:
+      ROC: 1.0
+      CHF: 1.0
+      OC: 1.0
+      Latin: 1.0
+      Europe: 1.0
+      Pacific: 1.0
+    ROC:
+      ATC: 1.0
+      CHF: 1.0
+      OC: 1.0
+      Latin: 1.0
+      Europe: 1.0
+      Pacific: 1.0
+    CHF:
+      ATC: 1.0
+      ROC: 1.0
+      OC: 1.0
+      Latin: 1.0
+      Europe: 1.0
+      Pacific: 1.0
+    OC:
+      ATC: 1.0
+      ROC: 1.0
+      CHF: 1.0
+      Latin: 1.0
+      Europe: 1.0
+      Pacific: 1.0
+    Latin:
+      ATC: 1.0
+      ROC: 1.0
+      CHF: 1.0
+      OC: 1.0
+      Europe: 1.0
+      Pacific: 1.0
+    Europe:
+      ATC: 1.0
+      ROC: 1.0
+      CHF: 1.0
+      OC: 1.0
+      Latin: 1.0
+      Pacific: 1.0
+    Pacific:
+      ATC: 1.0
+      ROC: 1.0
+      CHF: 1.0
+      OC: 1.0
+      Latin: 1.0
+      Europe: 1.0

@@ -49,6 +49,9 @@ from pipelines.phase2_training.qualification_mapper import (  # noqa: E402
     sprinkle_qualifications,
     validate_quals,
 )
+from pipelines.phase2_training.training_config import (  # noqa: E402
+    load_secondary_proportion_scales,
+)
 from pipelines.phase2_training.training_assigner import (  # noqa: E402
     CLASS_SIZE_DEFAULT,
     assign_training,
@@ -135,6 +138,14 @@ def run_pipeline(
     written to ``flex_assignment_output_path`` (or the output directory).
     """
     priority_list = priority_list or DEFAULT_PRIORITY_LIST
+    prop_scales = load_secondary_proportion_scales(params_path, priority_list)
+    changed_scales = {
+        f"{primary}-{secondary}": scale
+        for (primary, secondary), scale in prop_scales.items()
+        if scale != 1.0
+    }
+    if changed_scales:
+        logging.info("secondary proportion scales: %s", changed_scales)
 
     inputs = [regular_path, standard_training_path, special_training_path]
     frames = [pd.read_csv(p) for p in inputs]
@@ -148,7 +159,9 @@ def run_pipeline(
         cohort, qual_data, priority_list, dedupe=dedupe
     )
     prop_table = build_prop_table(qual_data, priority_list)
-    merged = sprinkle_qualifications(merged, prop_table, priority_list, seed=seed)
+    merged = sprinkle_qualifications(
+        merged, prop_table, priority_list, seed=seed, prop_scales=prop_scales
+    )
     merged = merged[base_columns]  # drop MAPPED_QUAL_ID / _HIST_* helper columns
 
     # --- Pre-assigned flex: block training days and qualify the flex rows ---

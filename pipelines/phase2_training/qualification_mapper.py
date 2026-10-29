@@ -21,7 +21,7 @@ import math
 import os
 import random
 import re
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple
 
 import pandas as pd
 
@@ -239,8 +239,14 @@ def sprinkle_qualifications(
     prop_table: pd.DataFrame,
     priority_list: Optional[List[str]] = None,
     seed: int = RANDOM_SEED,
+    prop_scales: Optional[Dict[Tuple[str, str], float]] = None,
 ) -> pd.DataFrame:
-    """Algorithm 3: sprinkle secondary qualifications onto the supply data."""
+    """Algorithm 3: sprinkle secondary qualifications onto the supply data.
+
+    ``prop_scales`` optionally scales ``prop_table`` per ``(primary, secondary)``
+    pair. A missing pair or ``None`` keeps the historical proportion. A scale of
+    zero assigns nobody, which in turn removes that training requirement.
+    """
     priority_list = priority_list or DEFAULT_PRIORITY_LIST
     rng = random.Random(seed)
     df = merged_df.copy().reset_index(drop=True)
@@ -262,7 +268,14 @@ def sprinkle_qualifications(
         for s2, skill2 in enumerate(priority_list):
             if skill2 == "Domestic" or s1 == s2:
                 continue
-            prop = float(prop_table.loc[skill1, skill2])
+            scale = (
+                1.0
+                if prop_scales is None
+                else float(prop_scales.get((skill1, skill2), 1.0))
+            )
+            prop = float(prop_table.loc[skill1, skill2]) * scale
+            if prop <= 0:
+                continue
             k = int(math.floor(n * prop)) + 1
             col2 = _display_to_column(skill2)
             eligible = df.loc[
@@ -301,6 +314,7 @@ def apply_qualification_pipeline(
     priority_list: Optional[List[str]] = None,
     seed: int = RANDOM_SEED,
     dedupe: bool = False,
+    prop_scales: Optional[Dict[Tuple[str, str], float]] = None,
     output_paths: Optional[Dict[str, str]] = None,
     write: bool = True,
 ) -> Dict[str, pd.DataFrame]:
@@ -334,7 +348,9 @@ def apply_qualification_pipeline(
         cohort, qual_data, priority_list, dedupe=dedupe
     )
     prop_table = build_prop_table(qual_data, priority_list)
-    merged = sprinkle_qualifications(merged, prop_table, priority_list, seed=seed)
+    merged = sprinkle_qualifications(
+        merged, prop_table, priority_list, seed=seed, prop_scales=prop_scales
+    )
 
     if output_paths is None:
         output_paths = {

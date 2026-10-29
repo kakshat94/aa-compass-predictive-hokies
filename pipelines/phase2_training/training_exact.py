@@ -467,6 +467,9 @@ def _main() -> int:
         load_frozen_assignments,
         write_training_outputs,
     )
+    from pipelines.phase2_training.training_config import (
+        load_secondary_proportion_scales,
+    )
 
     frames = [pd.read_csv(p) for p in (regular_path, standard_path, special_path)]
     base_columns = list(frames[0].columns)
@@ -479,6 +482,9 @@ def _main() -> int:
         build_prop_table(qual_data, DEFAULT_PRIORITY_LIST),
         DEFAULT_PRIORITY_LIST,
         seed=_QUAL_SEED,
+        prop_scales=load_secondary_proportion_scales(
+            args.params, DEFAULT_PRIORITY_LIST
+        ),
     )
     merged = merged[base_columns]
 
