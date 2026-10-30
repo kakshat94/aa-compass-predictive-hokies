@@ -118,7 +118,7 @@ if __name__ == "__main__":
     # ── Phase 1 — Bidline Creation ────────────────────────────────────────────
     _section("PHASE 1 — Bidline Creation")
     t0 = time.time()
-    # bidlines = phase1.main(PHASE1_DIR, ROOT)
+    bidlines = phase1.main(PHASE1_DIR, ROOT)
     timings["phase1"] = time.time() - t0
     logging.info(f"  elapsed: {_hms(timings['phase1'])}")
 
@@ -165,7 +165,7 @@ if __name__ == "__main__":
 
     # ── Phase 2 — Qualification + Training ───────────────────────────────────
     _section("PHASE 2 — Qualification + Training")
-    # phase2.main(PHASE1_DIR, PHASE2_DIR, ROOT, PARAMS_PATH, SOLVER)
+    phase2.main(PHASE1_DIR, PHASE2_DIR, ROOT, PARAMS_PATH, SOLVER)
     timings["phase2"] = time.time() - t0
     logging.info(f"  elapsed: {_hms(timings['phase2'])}")
 
@@ -209,7 +209,7 @@ if __name__ == "__main__":
 
     # ── Phase 3a — Vacation Scheduling ───────────────────────────────────────
     _section("PHASE 3a — Vacation Scheduling")
-    # phase3.run_vacation(PHASE2_DIR, PHASE3_DIR, ROOT, FAIR_SECONDS, PHASE1_DIR)
+    phase3.run_vacation(PHASE2_DIR, PHASE3_DIR, ROOT, FAIR_SECONDS, PHASE1_DIR)
     timings["phase3_vacation"] = time.time() - t0
     logging.info(f"  elapsed: {_hms(timings['phase3_vacation'])}")
 
@@ -245,7 +245,7 @@ if __name__ == "__main__":
 
     # ── Phase 3b — Flex Day Scheduling ───────────────────────────────────────
     _section("PHASE 3b — Flex Day Scheduling")
-    # phase3.run_flex(PHASE2_DIR, PHASE3_DIR, ROOT, PHASE1_DIR)
+    phase3.run_flex(PHASE2_DIR, PHASE3_DIR, ROOT, PHASE1_DIR)
     timings["phase3_flex"] = time.time() - t0
     logging.info(f"  elapsed: {_hms(timings['phase3_flex'])}")
 
@@ -375,7 +375,7 @@ if __name__ == "__main__":
     supply_allpresent = len(
         pd.read_csv("outputs/solutions/supply_data_after_vacation_shrinkage.csv")
     )
-    bidlines = 483
+
     metrics = {
         "Runtime": str(time.time() - t0),
         "Number of bidlines": str(bidlines),
