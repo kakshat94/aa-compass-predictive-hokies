@@ -1,4 +1,4 @@
-EMP_ID,SKILL,TRAINING_SCHEDULE_DATE,PERIOD,FROM_SHIFT_TYPE,FROM_WORK_CENTER_ID
+emp_id,skill,training_schedule_date,period,from_shift_type,from_work_center_id
 100361,OC,3/2/2025,[3],MORNING,Pacific
 100361,Europe,3/4/2025,[3],MORNING,Pacific
 100362,Europe,3/5/2025,[3],MORNING,Pacific

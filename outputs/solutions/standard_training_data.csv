@@ -1,4 +1,4 @@
-MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,CLUSTER,EMPLOYEE_WORK_CENTER_ID,TECH_ID,END_TIME,SHIFT_DATE,SHIFT_LENGTH,SHIFT_TYPE,FINAL_QUALS,PRIMARY_QUAL,DOMESTIC,ATC,ROC,CHF,OC,LATIN,EUROPE,PACIFIC,QUAL_COUNT
+major_work_type,start_time,employee_title,work_center_id,contractor_flag,cluster,employee_work_center_id,tech_id,end_time,shift_date,shift_length,shift_type,Final_Quals,Primary_Qual,Domestic,ATC,ROC,CHF,OC,Latin,Europe,Pacific,Qual_Count
 All,2/22/2025 05:00:00,Domestic,Domestic,N,1,Domestic,100000,2/22/2025 13:00:00,2/22/2025,8,MORNING,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1
 All,9/16/2025 05:00:00,Domestic,Domestic,N,1,Domestic,100000,9/16/2025 13:00:00,9/16/2025,8,MORNING,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1
 All,5/26/2025 05:00:00,Domestic,Domestic,N,1,Domestic,100000,5/26/2025 13:00:00,5/26/2025,8,MORNING,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1

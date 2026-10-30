@@ -31,7 +31,7 @@ PHASE3_DIR = ROOT / "outputs" / "phase2_vacation_flex"
 SOLVER = "xpress"
 FAIR_SECONDS = 120.0
 
-SCHEMA = {
+SCHEMA_MAIN = {
     "MAJOR_WORK_TYPE": "major_work_type",
     "START_TIME": "start_time",
     "EMPLOYEE_TITLE": "employee_title",
@@ -57,6 +57,14 @@ SCHEMA = {
     "QUAL_COUNT": "Qual_Count",
 }
 
+SCHEMA_DF = {
+    "EMP_ID": "emp_id",
+    "SKILL": "skill",
+    "TRAINING_SCHEDULE_DATE": "training_schedule_date",
+    "PERIOD": "period",
+    "FROM_SHIFT_TYPE": "from_shift_type",
+    "FROM_WORK_CENTER_ID": "from_work_center_id"
+}
 
 def _hms(seconds: float) -> str:
     m, s = divmod(int(seconds), 60)
@@ -86,15 +94,25 @@ def export_outputs(file_in, file_out):
         df = pd.read_csv(file_in)
 
         # Enforce the schema (reorders columns and adds missing ones as NaN)
-        if file_out not in [
+        if file_out in [
             "standard_training_scheduled_df.csv",
             "intl_special_training_scheduled_df.csv",
         ]:
-            df = df.reindex(columns=SCHEMA.keys())
+            df.rename(columns=SCHEMA_DF, inplace=True)
+        elif file_out=="intl_special_training_data.csv":
+            schema_local = SCHEMA_MAIN.copy()
+            schema_local["MONTH"] = "Month"
+            df = df.reindex(columns=schema_local.keys())
+            df.rename(columns=schema_local, inplace=True)
+        else:
+            df = df.reindex(columns=SCHEMA_MAIN.keys())
+            df.rename(columns=SCHEMA_MAIN, inplace=True)
+            
 
         # Save out the formatted file
+        
         df.to_csv(export_path, index=False)
-        df.rename(columns=SCHEMA, inplace=True)
+        
         logging.info(f"Exported {file_in} to {export_path}\{file_out}")
     else:
         logging.warning("Final supply file not found, skipping export.")
