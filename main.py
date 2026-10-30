@@ -341,7 +341,7 @@ if __name__ == "__main__":
             "initial_supply_(bid_lines)_data_reference.csv",
         ),
         (
-            "outputs/phase2_vacation_flex/flex_maxflow/flex_added_combined.csv",
+            "outputs/phase2_vacation_flex/flex_maxflow/Flex_assignment_combined.csv",
             "flex_days_data.csv",
         ),
         ("outputs/phase2_vacation_flex/vacation_initial.csv", "vacation_data.csv"),
