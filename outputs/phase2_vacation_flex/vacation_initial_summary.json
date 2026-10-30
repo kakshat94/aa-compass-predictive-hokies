@@ -28,13 +28,13 @@
     "Flex days are estimated for pricing and reporting only; none are assigned."
   ],
   "inputs": {
-    "supply_rows": 95825,
-    "dispatchers": 506,
+    "supply_rows": 91458,
+    "dispatchers": 483,
     "dates": 363,
     "first_date": "2025-01-14",
     "last_date": "2026-01-11",
     "buckets": 8712,
-    "training_days_supplied": 2138,
+    "training_days_supplied": 2050,
     "training_validated": true,
     "volume_dates_imputed": [
       "2026-01-11"
@@ -44,12 +44,12 @@
   "requirements": {
     "daily_min": 25,
     "daily_max": 29,
-    "per_dispatcher_min": 16,
-    "per_dispatcher_max": 21,
+    "per_dispatcher_min": 18,
+    "per_dispatcher_max": 23,
     "per_dispatcher_spread": 5,
-    "per_dispatcher_std": 1.8127054921838666,
+    "per_dispatcher_std": 2.2778712169599995,
     "dispatchers_with_zero_vacation": 0,
-    "total_vacations": 9535,
+    "total_vacations": 9523,
     "R1_daily_bounds_ok": true,
     "R2_fairness_slack_days": 2,
     "R3_scale_K": 89398.8653,
@@ -57,29 +57,29 @@
     "R3_best_possible_fit_error": 4.124923285799244,
     "R3_days_at_lower_bound": 46,
     "R3_days_at_upper_bound": 50,
-    "R3_mean_abs_gap_to_ideal_target": 0.3658295899016803,
-    "pearson_vacations_vs_volume": -0.9006202269145678,
-    "pearson_vacations_vs_inverse_volume": 0.7820689188210918,
-    "spearman_vacations_vs_volume": -0.9479710135278342,
-    "average_daily_vacations": 26.267217630853995
+    "R3_mean_abs_gap_to_ideal_target": 0.37265809286210033,
+    "pearson_vacations_vs_volume": -0.9066342048462626,
+    "pearson_vacations_vs_inverse_volume": 0.7890485440450368,
+    "spearman_vacations_vs_volume": -0.9514125114080525,
+    "average_daily_vacations": 26.234159779614323
   },
   "coverage": {
-    "shortage_before_vacation": 64,
-    "shortage_after_vacation": 1207,
-    "vacation_induced_shortage": 1143,
-    "best_case_flex_coverable": 606,
-    "residual_shortage_after_best_case_flex": 601,
-    "demand_without_any_scheduled_supply": 17,
-    "preassigned_flex_rows": 230,
-    "preassigned_flex_adding_cover": 114,
-    "preassigned_flex_conflicts": 116,
+    "shortage_before_vacation": 86,
+    "shortage_after_vacation": 2909,
+    "vacation_induced_shortage": 2823,
+    "best_case_flex_coverable": 1105,
+    "residual_shortage_after_best_case_flex": 1804,
+    "demand_without_any_scheduled_supply": 15,
+    "preassigned_flex_rows": 361,
+    "preassigned_flex_adding_cover": 361,
+    "preassigned_flex_conflicts": 0,
     "by_work_center_shift": [
       {
         "work_center": "ATC",
         "shift": "EVENING",
         "dispatchers": 12,
         "shortage_before_vacation": 7,
-        "shortage_after_vacation": 123,
+        "shortage_after_vacation": 147,
         "flex_pool_dispatchers": 12,
         "flex_pool_budget_if_exclusive": 48
       },
@@ -88,7 +88,7 @@
         "shift": "MIDNIGHT",
         "dispatchers": 2,
         "shortage_before_vacation": 1,
-        "shortage_after_vacation": 21,
+        "shortage_after_vacation": 26,
         "flex_pool_dispatchers": 2,
         "flex_pool_budget_if_exclusive": 8
       },
@@ -96,8 +96,8 @@
         "work_center": "ATC",
         "shift": "MORNING",
         "dispatchers": 12,
-        "shortage_before_vacation": 7,
-        "shortage_after_vacation": 130,
+        "shortage_before_vacation": 8,
+        "shortage_after_vacation": 154,
         "flex_pool_dispatchers": 12,
         "flex_pool_budget_if_exclusive": 48
       },
@@ -106,7 +106,7 @@
         "shift": "EVENING",
         "dispatchers": 2,
         "shortage_before_vacation": 2,
-        "shortage_after_vacation": 21,
+        "shortage_after_vacation": 26,
         "flex_pool_dispatchers": 2,
         "flex_pool_budget_if_exclusive": 8
       },
@@ -115,7 +115,7 @@
         "shift": "MIDNIGHT",
         "dispatchers": 2,
         "shortage_before_vacation": 5,
-        "shortage_after_vacation": 27,
+        "shortage_after_vacation": 31,
         "flex_pool_dispatchers": 2,
         "flex_pool_budget_if_exclusive": 8
       },
@@ -124,97 +124,97 @@
         "shift": "MORNING",
         "dispatchers": 2,
         "shortage_before_vacation": 3,
-        "shortage_after_vacation": 22,
+        "shortage_after_vacation": 27,
         "flex_pool_dispatchers": 2,
         "flex_pool_budget_if_exclusive": 8
       },
       {
         "work_center": "Domestic",
         "shift": "EVENING",
-        "dispatchers": 96,
+        "dispatchers": 92,
         "shortage_before_vacation": 0,
-        "shortage_after_vacation": 123,
-        "flex_pool_dispatchers": 96,
-        "flex_pool_budget_if_exclusive": 384
+        "shortage_after_vacation": 678,
+        "flex_pool_dispatchers": 92,
+        "flex_pool_budget_if_exclusive": 368
       },
       {
         "work_center": "Domestic",
         "shift": "MIDNIGHT",
-        "dispatchers": 48,
+        "dispatchers": 46,
         "shortage_before_vacation": 0,
-        "shortage_after_vacation": 34,
-        "flex_pool_dispatchers": 48,
-        "flex_pool_budget_if_exclusive": 192
+        "shortage_after_vacation": 330,
+        "flex_pool_dispatchers": 46,
+        "flex_pool_budget_if_exclusive": 184
       },
       {
         "work_center": "Domestic",
         "shift": "MORNING",
-        "dispatchers": 96,
+        "dispatchers": 92,
         "shortage_before_vacation": 0,
-        "shortage_after_vacation": 55,
-        "flex_pool_dispatchers": 96,
-        "flex_pool_budget_if_exclusive": 384
+        "shortage_after_vacation": 681,
+        "flex_pool_dispatchers": 92,
+        "flex_pool_budget_if_exclusive": 368
       },
       {
         "work_center": "Europe",
         "shift": "EVENING",
-        "dispatchers": 17,
-        "shortage_before_vacation": 0,
-        "shortage_after_vacation": 0,
-        "flex_pool_dispatchers": 17,
-        "flex_pool_budget_if_exclusive": 68
+        "dispatchers": 16,
+        "shortage_before_vacation": 3,
+        "shortage_after_vacation": 3,
+        "flex_pool_dispatchers": 16,
+        "flex_pool_budget_if_exclusive": 64
       },
       {
         "work_center": "Europe",
         "shift": "MIDNIGHT",
-        "dispatchers": 17,
-        "shortage_before_vacation": 0,
-        "shortage_after_vacation": 0,
-        "flex_pool_dispatchers": 17,
-        "flex_pool_budget_if_exclusive": 68
+        "dispatchers": 16,
+        "shortage_before_vacation": 4,
+        "shortage_after_vacation": 4,
+        "flex_pool_dispatchers": 16,
+        "flex_pool_budget_if_exclusive": 64
       },
       {
         "work_center": "Europe",
         "shift": "MORNING",
-        "dispatchers": 17,
-        "shortage_before_vacation": 0,
-        "shortage_after_vacation": 0,
-        "flex_pool_dispatchers": 17,
-        "flex_pool_budget_if_exclusive": 68
+        "dispatchers": 16,
+        "shortage_before_vacation": 3,
+        "shortage_after_vacation": 3,
+        "flex_pool_dispatchers": 16,
+        "flex_pool_budget_if_exclusive": 64
       },
       {
         "work_center": "Latin",
         "shift": "EVENING",
-        "dispatchers": 37,
-        "shortage_before_vacation": 0,
-        "shortage_after_vacation": 0,
-        "flex_pool_dispatchers": 37,
-        "flex_pool_budget_if_exclusive": 148
+        "dispatchers": 33,
+        "shortage_before_vacation": 4,
+        "shortage_after_vacation": 4,
+        "flex_pool_dispatchers": 33,
+        "flex_pool_budget_if_exclusive": 132
       },
       {
         "work_center": "Latin",
         "shift": "MIDNIGHT",
-        "dispatchers": 19,
-        "shortage_before_vacation": 0,
-        "shortage_after_vacation": 0,
-        "flex_pool_dispatchers": 19,
-        "flex_pool_budget_if_exclusive": 76
+        "dispatchers": 17,
+        "shortage_before_vacation": 3,
+        "shortage_after_vacation": 3,
+        "flex_pool_dispatchers": 17,
+        "flex_pool_budget_if_exclusive": 68
       },
       {
         "work_center": "Latin",
         "shift": "MORNING",
-        "dispatchers": 37,
-        "shortage_before_vacation": 0,
-        "shortage_after_vacation": 0,
-        "flex_pool_dispatchers": 37,
-        "flex_pool_budget_if_exclusive": 148
+        "dispatchers": 33,
+        "shortage_before_vacation": 4,
+        "shortage_after_vacation": 4,
+        "flex_pool_dispatchers": 33,
+        "flex_pool_budget_if_exclusive": 132
       },
       {
         "work_center": "OC",
         "shift": "EVENING",
         "dispatchers": 22,
         "shortage_before_vacation": 13,
-        "shortage_after_vacation": 218,
+        "shortage_after_vacation": 263,
         "flex_pool_dispatchers": 22,
         "flex_pool_budget_if_exclusive": 88
       },
@@ -223,7 +223,7 @@
         "shift": "MIDNIGHT",
         "dispatchers": 12,
         "shortage_before_vacation": 4,
-        "shortage_after_vacation": 113,
+        "shortage_after_vacation": 139,
         "flex_pool_dispatchers": 12,
         "flex_pool_budget_if_exclusive": 48
       },
@@ -232,7 +232,7 @@
         "shift": "MORNING",
         "dispatchers": 22,
         "shortage_before_vacation": 10,
-        "shortage_after_vacation": 213,
+        "shortage_after_vacation": 258,
         "flex_pool_dispatchers": 22,
         "flex_pool_budget_if_exclusive": 88
       },
@@ -268,7 +268,7 @@
         "shift": "EVENING",
         "dispatchers": 4,
         "shortage_before_vacation": 2,
-        "shortage_after_vacation": 40,
+        "shortage_after_vacation": 48,
         "flex_pool_dispatchers": 4,
         "flex_pool_budget_if_exclusive": 16
       },
@@ -277,7 +277,7 @@
         "shift": "MIDNIGHT",
         "dispatchers": 2,
         "shortage_before_vacation": 4,
-        "shortage_after_vacation": 22,
+        "shortage_after_vacation": 27,
         "flex_pool_dispatchers": 2,
         "flex_pool_budget_if_exclusive": 8
       },
@@ -286,7 +286,7 @@
         "shift": "MORNING",
         "dispatchers": 4,
         "shortage_before_vacation": 4,
-        "shortage_after_vacation": 43,
+        "shortage_after_vacation": 51,
         "flex_pool_dispatchers": 4,
         "flex_pool_budget_if_exclusive": 16
       }
@@ -303,59 +303,19 @@
     "base_total_range": null,
     "chosen_scale_K": 89398.8653,
     "chosen_fit_error": 4.124923285799244,
-    "chosen_fairness_level_L": 18,
+    "chosen_fairness_level_L": 20,
     "rounds": [
       {
         "round": 0,
-        "vacations": 9535,
-        "raw_shortage": 1207,
-        "flex_covered": 486,
-        "residual_after_flex": 721,
-        "flow_objective": 1140973033,
-        "seconds": 0.36,
-        "selected": false
-      },
-      {
-        "round": 1,
-        "vacations": 9535,
-        "raw_shortage": 1207,
-        "flex_covered": 605,
-        "residual_after_flex": 602,
-        "flow_objective": 1067206581,
-        "seconds": 0.29,
-        "selected": false
-      },
-      {
-        "round": 2,
-        "vacations": 9535,
-        "raw_shortage": 1207,
-        "flex_covered": 606,
-        "residual_after_flex": 601,
-        "flow_objective": 1024506581,
-        "seconds": 0.31,
+        "vacations": 9523,
+        "raw_shortage": 2909,
+        "flex_covered": 1105,
+        "residual_after_flex": 1804,
+        "flow_objective": 2822696189,
+        "seconds": 0.28,
         "selected": true
-      },
-      {
-        "round": 3,
-        "vacations": 9535,
-        "raw_shortage": 1207,
-        "flex_covered": 606,
-        "residual_after_flex": 601,
-        "flow_objective": 1008862581,
-        "seconds": 0.37,
-        "selected": false
-      },
-      {
-        "round": 4,
-        "vacations": 9535,
-        "raw_shortage": 1207,
-        "flex_covered": 606,
-        "residual_after_flex": 601,
-        "flow_objective": 1000926581,
-        "seconds": 0.27,
-        "selected": false
       }
     ],
-    "total_seconds": 4.7
+    "total_seconds": 4.3
   }
 }

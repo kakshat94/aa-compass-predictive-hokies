@@ -31,31 +31,31 @@ PHASE3_DIR = ROOT / "outputs" / "phase2_vacation_flex"
 SOLVER = "xpress"
 FAIR_SECONDS = 120.0
 
-SCHEMA = [
-    "MAJOR_WORK_TYPE",
-    "START_TIME",
-    "EMPLOYEE_TITLE",
-    "WORK_CENTER_ID",
-    "CONTRACTOR_FLAG",
-    "CLUSTER",
-    "EMPLOYEE_WORK_CENTER_ID",
-    "TECH_ID",
-    "END_TIME",
-    "SHIFT_DATE",
-    "SHIFT_LENGTH",
-    "SHIFT_TYPE",
-    "FINAL_QUALS",
-    "PRIMARY_QUAL",
-    "DOMESTIC",
-    "ATC",
-    "ROC",
-    "CHF",
-    "OC",
-    "LATIN",
-    "EUROPE",
-    "PACIFIC",
-    "QUAL_COUNT",
-]
+SCHEMA = {
+    "MAJOR_WORK_TYPE": "major_work_type",
+    "START_TIME": "start_time",
+    "EMPLOYEE_TITLE": "employee_title",
+    "WORK_CENTER_ID": "work_center_id",
+    "CONTRACTOR_FLAG": "contractor_flag",
+    "CLUSTER": "cluster",
+    "EMPLOYEE_WORK_CENTER_ID": "employee_work_center_id",
+    "TECH_ID": "tech_id",
+    "END_TIME": "end_time",
+    "SHIFT_DATE": "shift_date",
+    "SHIFT_LENGTH": "shift_length",
+    "SHIFT_TYPE": "shift_type",
+    "FINAL_QUALS": "Final_Quals",
+    "PRIMARY_QUAL": "Primary_Qual",
+    "DOMESTIC": "Domestic",
+    "ATC": "ATC",
+    "ROC": "ROC",
+    "CHF": "CHF",
+    "OC": "OC",
+    "LATIN": "Latin",
+    "EUROPE": "Europe",
+    "PACIFIC": "Pacific",
+    "QUAL_COUNT": "Qual_Count",
+}
 
 
 def _hms(seconds: float) -> str:
@@ -90,10 +90,11 @@ def export_outputs(file_in, file_out):
             "standard_training_scheduled_df.csv",
             "intl_special_training_scheduled_df.csv",
         ]:
-            df = df.reindex(columns=SCHEMA)
+            df = df.reindex(columns=SCHEMA.keys())
 
         # Save out the formatted file
         df.to_csv(export_path, index=False)
+        df.rename(columns=SCHEMA, inplace=True)
         logging.info(f"Exported {file_in} to {export_path}\{file_out}")
     else:
         logging.warning("Final supply file not found, skipping export.")
@@ -117,7 +118,7 @@ if __name__ == "__main__":
     # ── Phase 1 — Bidline Creation ────────────────────────────────────────────
     _section("PHASE 1 — Bidline Creation")
     t0 = time.time()
-    bidlines = phase1.main(PHASE1_DIR, ROOT)
+    # bidlines = phase1.main(PHASE1_DIR, ROOT)
     timings["phase1"] = time.time() - t0
     logging.info(f"  elapsed: {_hms(timings['phase1'])}")
 
@@ -164,7 +165,7 @@ if __name__ == "__main__":
 
     # ── Phase 2 — Qualification + Training ───────────────────────────────────
     _section("PHASE 2 — Qualification + Training")
-    phase2.main(PHASE1_DIR, PHASE2_DIR, ROOT, PARAMS_PATH, SOLVER)
+    # phase2.main(PHASE1_DIR, PHASE2_DIR, ROOT, PARAMS_PATH, SOLVER)
     timings["phase2"] = time.time() - t0
     logging.info(f"  elapsed: {_hms(timings['phase2'])}")
 
@@ -208,7 +209,7 @@ if __name__ == "__main__":
 
     # ── Phase 3a — Vacation Scheduling ───────────────────────────────────────
     _section("PHASE 3a — Vacation Scheduling")
-    phase3.run_vacation(PHASE2_DIR, PHASE3_DIR, ROOT, FAIR_SECONDS, PHASE1_DIR)
+    # phase3.run_vacation(PHASE2_DIR, PHASE3_DIR, ROOT, FAIR_SECONDS, PHASE1_DIR)
     timings["phase3_vacation"] = time.time() - t0
     logging.info(f"  elapsed: {_hms(timings['phase3_vacation'])}")
 
@@ -244,7 +245,7 @@ if __name__ == "__main__":
 
     # ── Phase 3b — Flex Day Scheduling ───────────────────────────────────────
     _section("PHASE 3b — Flex Day Scheduling")
-    phase3.run_flex(PHASE2_DIR, PHASE3_DIR, ROOT, PHASE1_DIR)
+    # phase3.run_flex(PHASE2_DIR, PHASE3_DIR, ROOT, PHASE1_DIR)
     timings["phase3_flex"] = time.time() - t0
     logging.info(f"  elapsed: {_hms(timings['phase3_flex'])}")
 
@@ -308,6 +309,7 @@ if __name__ == "__main__":
     df_qualified_unique = df_qualified_subset.drop_duplicates(subset=join_keys)
 
     # Perform a left join on TECH_ID and SHIFT_TYPE
+    df_regular = pd.concat([df_regular, pd.read_csv(PHASE1_DIR / "Supply_Standard_Training.csv"), pd.read_csv(PHASE1_DIR / "Supply_Special_Training.csv")])
     df_merged = pd.merge(
         df_regular[
             [
@@ -339,7 +341,7 @@ if __name__ == "__main__":
             "initial_supply_(bid_lines)_data_reference.csv",
         ),
         (
-            "outputs/phase2_vacation_flex/flex_maxflow/flex_added_supply_rows.csv",
+            "outputs/phase2_vacation_flex/flex_maxflow/flex_added_combined.csv",
             "flex_days_data.csv",
         ),
         ("outputs/phase2_vacation_flex/vacation_initial.csv", "vacation_data.csv"),
@@ -373,7 +375,7 @@ if __name__ == "__main__":
     supply_allpresent = len(
         pd.read_csv("outputs/solutions/supply_data_after_vacation_shrinkage.csv")
     )
-
+    bidlines = 483
     metrics = {
         "Runtime": str(time.time() - t0),
         "Number of bidlines": str(bidlines),

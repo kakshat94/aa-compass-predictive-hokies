@@ -1,24 +1,24 @@
 {
-  "new_flex_days": 606,
-  "preassigned_flex_rows": 230,
-  "preassigned_flex_adding_cover": 114,
-  "preassigned_flex_conflicts": 116,
-  "shortage_after_vacation": 1207,
-  "shortage_after_flex": 601,
-  "covered_by_new_flex": 606,
-  "flex_budget_remaining": 1188,
-  "dispatchers_using_all_flex": 98,
+  "new_flex_days": 1105,
+  "preassigned_flex_rows": 361,
+  "preassigned_flex_adding_cover": 361,
+  "preassigned_flex_conflicts": 0,
+  "shortage_after_vacation": 2909,
+  "shortage_after_flex": 1804,
+  "covered_by_new_flex": 1105,
+  "flex_budget_remaining": 466,
+  "dispatchers_using_all_flex": 328,
   "new_flex_on_other_work_center": 0,
   "new_flex_on_other_shift": 0,
   "shortage_after_flex_by_work_center": {
-    "ATC": 170,
-    "CHF": 46,
-    "Domestic": 0,
+    "ATC": 223,
+    "CHF": 60,
+    "Domestic": 999,
     "Europe": 0,
     "Latin": 0,
-    "OC": 320,
+    "OC": 436,
     "Pacific": 0,
-    "ROC": 65
+    "ROC": 86
   },
   "flex_config": {
     "cross_work_center_cost": 1000,
@@ -35,5 +35,5 @@
     "one_per_day": true,
     "max_flex_days_used_by_anyone": 4
   },
-  "seconds": 2.5
+  "seconds": 3.0
 }
