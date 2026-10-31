@@ -96,11 +96,9 @@ def clean_demand(df: pd.DataFrame) -> pd.DataFrame:
     if (df["DEMAND"] < 0).any() or not (df["DEMAND"] % 1 == 0).all():
         raise ValueError("Desk demand values must be nonnegative integers")
     key = ["SHIFT_DATE", "WORK_CENTER", "SHIFT_TYPE"]
-    if (
-        df.assign(_k=df["WORK_CENTER"].map(norm_wc))
-        .duplicated(["SHIFT_DATE", "_k", "SHIFT_TYPE"])
-        .any()
-    ):
+    if df.assign(_k=df["WORK_CENTER"].map(norm_wc)).duplicated(
+        ["SHIFT_DATE", "_k", "SHIFT_TYPE"]
+    ).any():
         raise ValueError(f"Desk demand contains duplicate {key} keys")
     return df
 
@@ -123,6 +121,17 @@ def load_training(path: str | Path | None) -> set[tuple[str, pd.Timestamp]]:
     df = read_csv(path)
     require(df, ["TECH_ID", "SHIFT_DATE"], "training calendar")
     df = parse_dates(df, "SHIFT_DATE", "training calendar")
+    return set(zip(_clean_ids(df["TECH_ID"]), df["SHIFT_DATE"]))
+
+
+def load_blocked_days(path: str | Path | None) -> set[tuple[str, pd.Timestamp]]:
+    """Dates a dispatcher is already assigned a shift (work or training), e.g.
+    Supply_Regular_Merged.csv; no flex day may be placed on them."""
+    if path is None:
+        return set()
+    df = read_csv(path)
+    require(df, ["TECH_ID", "SHIFT_DATE"], "merged schedule")
+    df = parse_dates(df, "SHIFT_DATE", "merged schedule")
     return set(zip(_clean_ids(df["TECH_ID"]), df["SHIFT_DATE"]))
 
 

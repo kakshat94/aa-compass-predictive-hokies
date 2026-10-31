@@ -22,6 +22,9 @@ _MORNING_EQUALS_EVENING: bool = _PARAMS.get("shifts", {}).get(
 _FLEX_PARAMS: Dict[str, int] = {
     wc: cfg["max_flex_days"] for wc, cfg in _PARAMS.get("flex_days", {}).items()
 }
+_BUFFER_PARAMS: Dict[str, int] = {
+    wc: val for wc, val in _PARAMS.get("Buffer_demand", {}).items()
+}
 
 
 class Orchestrator:
@@ -53,6 +56,8 @@ class Orchestrator:
                 .max()
                 .to_dict()
             )
+            for shift in max_d:
+                max_d[shift] += _BUFFER_PARAMS.get(shift, 0)
             for shift, value in max_d.items():
                 q, r = divmod(value, 8)
                 max_bidlines[wc][shift] = 15 * q + 2 * r
@@ -66,6 +71,10 @@ class Orchestrator:
         logging.info("Optimizer flex days in consderation")
         for i, e in _FLEX_PARAMS.items():
             logging.info("Max flex days for %s is %s", i, e)
+
+        logging.info("Buffer_demand in considerations")
+        for i, e in _BUFFER_PARAMS.items():
+            logging.info("Buffer for %s is %s", i, e)
 
         w_ctrs = self.wc_day_sets.keys()
         # Create Gurobi environment and model

@@ -13,17 +13,8 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from vacation_allocation import (
-    AllocationConfig,
-    data_io,
-    run_allocation,
-    run_from_files,
-)  # noqa: E402
-from vacation_allocation.allocator import (
-    InfeasibleAllocation,
-    allocate,
-    capacity_ok,
-)  # noqa: E402
+from vacation_allocation import AllocationConfig, data_io, run_allocation, run_from_files  # noqa: E402
+from vacation_allocation.allocator import InfeasibleAllocation, allocate, capacity_ok  # noqa: E402
 from vacation_allocation.flex_capacity import FlexCapacity  # noqa: E402
 from vacation_allocation.problem import build_problem  # noqa: E402
 from vacation_allocation.volume_targets import (  # noqa: E402
@@ -42,12 +33,7 @@ def make_instance(n_days=6, techs_per_group=3, seed=0, demand_slack=1):
     rng = np.random.default_rng(seed)
     dates = pd.date_range("2025-03-03", periods=n_days)
     rows, tid = [], 1000
-    groups = [
-        ("Domestic", "MORNING"),
-        ("Domestic", "EVENING"),
-        ("OC", "MORNING"),
-        ("OC", "EVENING"),
-    ]
+    groups = [("Domestic", "MORNING"), ("Domestic", "EVENING"), ("OC", "MORNING"), ("OC", "EVENING")]
     for wc, sh in groups:
         for _ in range(techs_per_group):
             tid += 1
@@ -79,36 +65,23 @@ def test_admissible_scales_and_daily_bounds():
     vol = np.array([1583.0, 2800, 3000, 3200, 3300, 3400, 3500, 3700])
     grid, k_star, e_star = admissible_scales(vol, 25, 29, 0.05, 11)
     dense = np.linspace(25 * vol.min(), 29 * vol.max(), 200_001)
-    assert (
-        e_star <= min(fit_error(k, vol, 25, 29) for k in dense[::50]) + 1e-6
-    )  # global best
+    assert e_star <= min(fit_error(k, vol, 25, 29) for k in dense[::50]) + 1e-6  # global best
     assert all(fit_error(k, vol, 25, 29) <= e_star * 1.05 + 1e-9 for k in grid)
     assert k_star in grid
     only, k1, _ = admissible_scales(vol, 25, 29, 0.0, 11)
     assert len(only) == 1 and only[0] == k1
     ideal, lo, hi = daily_bounds_for_scale(k_star, vol, 25, 29)
-    assert (
-        (lo >= 25).all()
-        and (hi <= 29).all()
-        and ((hi - lo) <= 1).all()
-        and (lo <= ideal + 1e-9).all()
-    )
+    assert (lo >= 25).all() and (hi <= 29).all() and ((hi - lo) <= 1).all() and (lo <= ideal + 1e-9).all()
     order = np.argsort(vol)
-    assert (
-        np.diff(ideal[order]) <= 1e-12
-    ).all()  # busier day never gets a higher target
+    assert (np.diff(ideal[order]) <= 1e-12).all()  # busier day never gets a higher target
     free = (ideal > 25) & (ideal < 29)
-    assert np.allclose(
-        (ideal * vol)[free], k_star
-    )  # exactly K / volume where not clipped
+    assert np.allclose((ideal * vol)[free], k_star)  # exactly K / volume where not clipped
 
 
 def test_impute_volume_prefers_previous_week_then_next_then_errors():
     dates = list(pd.date_range("2025-01-01", periods=15))
     vol = pd.DataFrame({"DATE": dates[:14], "DEMAND": np.arange(100.0, 114.0)})
-    series, audit = impute_volume(
-        vol, dates
-    )  # day 15 missing -> day 8 (7 days earlier)
+    series, audit = impute_volume(vol, dates)  # day 15 missing -> day 8 (7 days earlier)
     assert series.iloc[-1] == vol["DEMAND"].iloc[7]
     assert audit["DONOR_DATE"].iloc[0] == dates[7]
     # first day missing and there is a following week
@@ -126,22 +99,15 @@ def test_fill_missing_demand_audit_and_donor_rule():
     supply = data_io.clean_supply(supply)
     demand = data_io.clean_demand(demand)
     dates = [pd.Timestamp(d) for d in sorted(supply["SHIFT_DATE"].unique())]
-    drop = demand.index[
-        (demand["SHIFT_DATE"] == dates[0]) & (demand["WORK_CENTER"] == "OC")
-    ]
+    drop = demand.index[(demand["SHIFT_DATE"] == dates[0]) & (demand["WORK_CENTER"] == "OC")]
     assert len(drop) > 0
     filled, audit = data_io.fill_missing_demand(demand.drop(drop), supply, dates)
     assert len(filled) == len(demand) and len(audit) == len(drop)
     assert list(audit.columns) == data_io.AUDIT_COLUMNS
-    known = {
-        (r.SHIFT_DATE, r.WORK_CENTER, r.SHIFT_TYPE): r.DEMAND
-        for r in demand.itertuples()
-    }
+    known = {(r.SHIFT_DATE, r.WORK_CENTER, r.SHIFT_TYPE): r.DEMAND for r in demand.itertuples()}
     for r in audit.itertuples():
         week_later = (dates[0] + pd.Timedelta(days=7), r.WORK_CENTER, r.SHIFT_TYPE)
-        if (
-            week_later in known
-        ):  # no earlier week exists, so the following week must be used
+        if week_later in known:  # no earlier week exists, so the following week must be used
             assert r.DONOR_DATE == week_later[0] and r.METHOD == "same_weekday"
             assert r.IMPUTED_DEMAND == known[week_later]
         else:
@@ -165,11 +131,7 @@ def test_allocation_meets_hard_requirements():
     res = run_allocation(supply, demand, volume, set(), cfg)
     daily = res.assignments.groupby("SHIFT_DATE").size()
     assert daily.between(1, 3).all() and len(daily) == 8
-    counts = (
-        res.assignments.groupby("TECH_ID")
-        .size()
-        .reindex(res.fairness["TECH_ID"], fill_value=0)
-    )
+    counts = res.assignments.groupby("TECH_ID").size().reindex(res.fairness["TECH_ID"], fill_value=0)
     assert counts.max() - counts.min() <= 1
     # each vacation is an existing workday, used once; supply is partitioned
     keys = ["TECH_ID", "SHIFT_DATE"]
@@ -181,12 +143,8 @@ def test_allocation_meets_hard_requirements():
 
 def test_flow_is_optimal_against_brute_force():
     """Shortage first, then most vacations: the flow must hit the true optimum."""
-    supply, demand, volume = make_instance(
-        n_days=3, techs_per_group=2, seed=11, demand_slack=1
-    )
-    cfg = AllocationConfig(
-        daily_min=1, daily_max=3, workday_tie_break=False, flex_pricing_iterations=0
-    )
+    supply, demand, volume = make_instance(n_days=3, techs_per_group=2, seed=11, demand_slack=1)
+    cfg = AllocationConfig(daily_min=1, daily_max=3, workday_tie_break=False, flex_pricing_iterations=0)
     problem, _ = _problem(supply, demand, volume)
     n_rows, n = len(problem.supply), problem.n_tech
     assert n_rows <= 22, "keep the brute force small"
@@ -208,11 +166,7 @@ def test_flow_is_optimal_against_brute_force():
                 continue
             if (per_tech < level).any() or (per_tech > level + 1).any():
                 continue
-            s = int(
-                problem.shortage(
-                    np.bincount(problem.row_bucket[sel], minlength=problem.n_bucket)
-                ).sum()
-            )
+            s = int(problem.shortage(np.bincount(problem.row_bucket[sel], minlength=problem.n_bucket)).sum())
             best = (s, -total) if best is None else min(best, (s, -total))
     assert best is not None
     assert got == best
@@ -236,39 +190,23 @@ def test_infeasible_requirements_are_reported():
     supply, demand, volume = make_instance(n_days=4, techs_per_group=1, seed=2)
     problem, _ = _problem(supply, demand, volume)
     cfg = AllocationConfig(daily_min=40, daily_max=50)
-    assert "fewer eligible workdays" in capacity_ok(
-        problem, cfg, np.full(problem.n_day, 40), 0
-    )
+    assert "fewer eligible workdays" in capacity_ok(problem, cfg, np.full(problem.n_day, 40), 0)
     with pytest.raises(InfeasibleAllocation):
-        run_allocation(
-            supply,
-            demand,
-            volume,
-            set(),
-            AllocationConfig(daily_min=40, daily_max=50, flex_pricing_iterations=0),
-        )
+        run_allocation(supply, demand, volume, set(), AllocationConfig(daily_min=40, daily_max=50,
+                                                                       flex_pricing_iterations=0))
 
 
 def test_total_is_chosen_by_shortage_then_maximised():
     # no slack anywhere: every vacation creates shortage -> fewest vacations allowed
-    supply, demand, volume = make_instance(
-        n_days=10, techs_per_group=4, seed=8, demand_slack=0
-    )
+    supply, demand, volume = make_instance(n_days=10, techs_per_group=4, seed=8, demand_slack=0)
     tight = run_allocation(supply, demand, volume, set(), AllocationConfig(**SMALL))
     log = tight.search_log[tight.search_log["status"] == "solved"]
-    assert (
-        tight.stats["coverage"]["residual_shortage_after_best_case_flex"]
-        == log["residual_after_flex"].min()
-    )
-    best = log[log["residual_after_flex"] == log["residual_after_flex"].min()]
-    best = best[
-        best["shortage_after_vacation"] == best["shortage_after_vacation"].min()
-    ]
+    # objective: least unmet demand after vacations (flex ignored), then most vacations
+    assert tight.stats["coverage"]["shortage_after_vacation"] == log["shortage_after_vacation"].min()
+    best = log[log["shortage_after_vacation"] == log["shortage_after_vacation"].min()]
     assert len(tight.assignments) == best["vacations"].max()
     # plenty of slack: no shortage possible -> as many vacations as R1-R3 allow
-    supply, demand, volume = make_instance(
-        n_days=10, techs_per_group=4, seed=8, demand_slack=6
-    )
+    supply, demand, volume = make_instance(n_days=10, techs_per_group=4, seed=8, demand_slack=6)
     loose = run_allocation(supply, demand, volume, set(), AllocationConfig(**SMALL))
     log = loose.search_log[loose.search_log["status"] == "solved"]
     assert loose.stats["coverage"]["shortage_after_vacation"] == 0
@@ -277,9 +215,7 @@ def test_total_is_chosen_by_shortage_then_maximised():
 
 
 def test_relaxed_fairness_trades_equal_split_for_less_shortage():
-    supply, demand, volume = make_instance(
-        n_days=10, techs_per_group=5, seed=9, demand_slack=0
-    )
+    supply, demand, volume = make_instance(n_days=10, techs_per_group=5, seed=9, demand_slack=0)
     strict = run_allocation(supply, demand, volume, set(), AllocationConfig(**SMALL))
     loose = run_allocation(
         supply, demand, volume, set(),
@@ -295,9 +231,7 @@ def test_relaxed_fairness_trades_equal_split_for_less_shortage():
 # --------------------------------------------------------------------------
 def test_flex_capacity_matches_independent_maxflow():
     nx = pytest.importorskip("networkx")
-    supply, demand, volume = make_instance(
-        n_days=6, techs_per_group=4, seed=21, demand_slack=0
-    )
+    supply, demand, volume = make_instance(n_days=6, techs_per_group=4, seed=21, demand_slack=0)
     problem, _ = _problem(supply, demand, volume)
     cfg = AllocationConfig(max_flex_days=2, **{k: v for k, v in SMALL.items()})
     flex = FlexCapacity(problem, cfg)
@@ -310,14 +244,8 @@ def test_flex_capacity_matches_independent_maxflow():
 
         g = nx.DiGraph()
         for b in np.flatnonzero(short > 0):
-            wc, sh, d = (
-                problem.bucket_wc[b],
-                problem.bucket_shift[b],
-                problem.bucket_day[b],
-            )
-            for t in np.flatnonzero(
-                problem.tech_quals[wc] & (np.array(problem.tech_home_wc) == wc)
-            ):
+            wc, sh, d = problem.bucket_wc[b], problem.bucket_shift[b], problem.bucket_day[b]
+            for t in np.flatnonzero(problem.tech_quals[wc] & (np.array(problem.tech_home_wc) == wc)):
                 if sh in problem.tech_shifts[t] and not problem.busy[t, d]:
                     g.add_edge(("T", t), ("TD", t, d), capacity=1)
                     g.add_edge(("TD", t, d), ("B", b), capacity=1)
@@ -325,9 +253,7 @@ def test_flex_capacity_matches_independent_maxflow():
         for t in range(problem.n_tech):
             if ("T", t) in g:
                 g.add_edge("src", ("T", t), capacity=cfg.max_flex_days)
-        expected = (
-            nx.maximum_flow_value(g, "src", "snk") if "snk" in g and "src" in g else 0
-        )
+        expected = nx.maximum_flow_value(g, "src", "snk") if "snk" in g and "src" in g else 0
         assert got.covered == expected
         assert got.residual == got.raw_shortage - expected
 
@@ -349,9 +275,7 @@ def test_run_from_files_writes_expected_outputs(tmp_path):
     original = pd.read_csv(tmp_path / "supply.csv")
     assert list(vac.columns) == list(original.columns) == list(rem.columns)
     assert len(vac) + len(rem) == len(original)
-    assert (
-        vac["SHIFT_DATE"].str.fullmatch(r"\d{4}-\d{2}-\d{2}").all()
-    )  # YYYY-MM-DD like the reference
+    assert vac["SHIFT_DATE"].str.fullmatch(r"\d{4}-\d{2}-\d{2}").all()  # YYYY-MM-DD like the reference
     assert vac["INDEX"].isna().all()
     for name in ("audit", "summary", "targets", "fairness", "shortage"):
         assert paths[name].exists()
@@ -379,14 +303,7 @@ def test_validator_rejects_broken_allocations():
 
     # (b) the same workday used twice violates the partition
     with pytest.raises(AssertionError):
-        validate_allocation(
-            sup,
-            pd.concat([res.assignments, res.assignments.iloc[:1]]),
-            res.remaining,
-            cfg,
-            set(),
-            total,
-        )
+        validate_allocation(sup, pd.concat([res.assignments, res.assignments.iloc[:1]]), res.remaining, cfg, set(), total)
 
     # (c) giving one dispatcher many extra days violates R2
     tech = res.assignments["TECH_ID"].iloc[0]
@@ -416,12 +333,8 @@ def test_shortage_goal_relaxes_rules_in_the_agreed_order():
 
 
 def test_base_level_fixes_or_bounds_the_total():
-    supply, demand, volume = make_instance(
-        n_days=10, techs_per_group=4, seed=8, demand_slack=0
-    )
-    fixed = run_allocation(
-        supply, demand, volume, set(), AllocationConfig(base_daily=2, **SMALL)
-    )
+    supply, demand, volume = make_instance(n_days=10, techs_per_group=4, seed=8, demand_slack=0)
+    fixed = run_allocation(supply, demand, volume, set(), AllocationConfig(base_daily=2, **SMALL))
     assert len(fixed.assignments) == 2 * 10
     band = run_allocation(
         supply, demand, volume, set(),
@@ -435,10 +348,7 @@ def test_base_level_fixes_or_bounds_the_total():
     assert len(fixed_r3off.assignments) == 20
     # the band contains the fixed total, so it can only do as well or better
     b, f = band.stats["coverage"], fixed_r3off.stats["coverage"]
-    key = lambda c: (
-        c["residual_shortage_after_best_case_flex"],
-        c["shortage_after_vacation"],
-    )  # noqa: E731
+    key = lambda c: (c["residual_shortage_after_best_case_flex"], c["shortage_after_vacation"])  # noqa: E731
     assert key(b) <= key(f)
     with pytest.raises(ValueError):
         AllocationConfig(base_daily=40, **SMALL).validate()
@@ -450,9 +360,7 @@ def test_base_level_fixes_or_bounds_the_total():
 def _flex_case(seed=4, max_flex=2):
     from vacation_allocation.problem import clean_preflex
 
-    supply, demand, volume = make_instance(
-        n_days=8, techs_per_group=4, seed=seed, demand_slack=0
-    )
+    supply, demand, volume = make_instance(n_days=8, techs_per_group=4, seed=seed, demand_slack=0)
     sup = data_io.clean_supply(supply)
     techs = sorted(sup["TECH_ID"].unique())
     dates = sorted(sup["SHIFT_DATE"].unique())
@@ -464,28 +372,13 @@ def _flex_case(seed=4, max_flex=2):
     pre_rows = [{"TECH_ID": t, "SHIFT_DATE": d, "WORK_CENTER_ID": home.loc[t, "WORK_CENTER_ID"],
                  "SHIFT_TYPE": home.loc[t, "SHIFT_TYPE"]} for t, d in pre]  # fmt: skip
     t0, d0 = sorted(work)[0]  # one conflicting row: already a workday
-    pre_rows.append(
-        {
-            "TECH_ID": t0,
-            "SHIFT_DATE": d0,
-            "WORK_CENTER_ID": "Domestic",
-            "SHIFT_TYPE": "MORNING",
-        }
-    )
+    pre_rows.append({"TECH_ID": t0, "SHIFT_DATE": d0, "WORK_CENTER_ID": "Domestic", "SHIFT_TYPE": "MORNING"})
     preflex = clean_preflex(pd.DataFrame(pre_rows))
     cfg = AllocationConfig(max_flex_days=max_flex, **SMALL)
     dem = data_io.clean_demand(demand)
     dts = [pd.Timestamp(d) for d in dates]
     dem, _ = data_io.fill_missing_demand(dem, sup, dts)
-    return (
-        sup,
-        demand,
-        volume,
-        training,
-        preflex,
-        cfg,
-        build_problem(sup, dem, dts, training, preflex),
-    )
+    return sup, demand, volume, training, preflex, cfg, build_problem(sup, dem, dts, training, preflex)
 
 
 def test_preassigned_flex_budget_cover_and_conflicts():
@@ -531,9 +424,7 @@ def test_flex_assignment_rules_and_optimality():
         g.add_edge(("B", b), "snk", capacity=int(short[b]))
     for t in range(problem.n_tech):
         if ("T", t) in g:
-            g.add_edge(
-                "src", ("T", t), capacity=int(max(0, 2 - problem.tech_preflex[t]))
-            )
+            g.add_edge("src", ("T", t), capacity=int(max(0, 2 - problem.tech_preflex[t])))
     best = nx.maximum_flow_value(g, "src", "snk") if "src" in g else 0
     assert fa.covered == best == flex.evaluate(short).covered
 
@@ -547,15 +438,9 @@ def test_flex_pipeline_end_to_end(tmp_path):
     res = run_flex(sup, vac.assignments, demand, training, preflex, cfg, FlexConfig())
     s = res["summary"]
     assert s["covered_by_new_flex"] == vac.stats["coverage"]["best_case_flex_coverable"]
-    assert (
-        s["shortage_after_flex"]
-        == vac.stats["coverage"]["residual_shortage_after_best_case_flex"]
-    )
+    assert s["shortage_after_flex"] == vac.stats["coverage"]["residual_shortage_after_best_case_flex"]
     assert len(res["combined"]) == len(preflex) + s["new_flex_days"]
-    assert (
-        len(res["final"])
-        == len(sup) - len(vac.assignments) + (len(preflex) - 1) + s["new_flex_days"]
-    )
+    assert len(res["final"]) == len(sup) - len(vac.assignments) + (len(preflex) - 1) + s["new_flex_days"]
     paths = write_flex(res, tmp_path)
     assert all(p.exists() for p in paths.values())
 
@@ -577,24 +462,11 @@ flex: {max_days_per_dispatcher: 3, same_shift_only: false, home_work_center_only
 """)
     s = load_settings(p)
     v = s.vacation
-    assert (v.daily_min, v.daily_max, v.fairness_slack_days, v.fairness_weight) == (
-        23,
-        30,
-        3,
-        50,
-    )
-    assert (
-        not v.enforce_proportionality and v.base_daily == 27 and v.base_tolerance == 0.5
-    )
-    assert (
-        v.max_flex_days == 3
-        and not v.flex_same_shift_only
-        and not v.flex_home_work_center_only
-    )
+    assert (v.daily_min, v.daily_max, v.fairness_slack_days, v.fairness_weight) == (23, 30, 3, 50)
+    assert not v.enforce_proportionality and v.base_daily == 27 and v.base_tolerance == 0.5
+    assert v.max_flex_days == 3 and not v.flex_same_shift_only and not v.flex_home_work_center_only
     assert s.flex.balance_cost == 5
-    p.write_text(
-        "files: {supply: s.csv}"
-    )  # file paths are no longer configured in YAML
+    p.write_text("files: {supply: s.csv}")  # file paths are no longer configured in YAML
     with pytest.raises(ValueError, match="unknown top-level"):
         load_settings(p)
     p.write_text("vacation: {rule2_fairness: {slak_days: 3}}")
@@ -606,9 +478,7 @@ flex: {max_days_per_dispatcher: 3, same_shift_only: false, home_work_center_only
 
 
 def test_rule1_can_be_switched_off():
-    supply, demand, volume = make_instance(
-        n_days=6, techs_per_group=3, seed=2, demand_slack=0
-    )
+    supply, demand, volume = make_instance(n_days=6, techs_per_group=3, seed=2, demand_slack=0)
     r = run_allocation(supply, demand, volume, set(),
                        AllocationConfig(enforce_daily_bounds=False, enforce_proportionality=False,
                                         base_daily=1, base_tolerance=0, flex_pricing_iterations=0))  # fmt: skip
@@ -621,16 +491,45 @@ def test_secondary_quals_used_only_when_allowed():
     sup, demand, volume, training, preflex, cfg, problem = _flex_case()
     short = problem.shortage(np.minimum(3, problem.bucket_eligible))
     home_only = assign_flex(problem, FlexCapacity(problem, cfg), short, FlexConfig())
-    assert all(
-        problem.bucket_wc[b] == problem.tech_home_wc[t]
-        for t, b in zip(home_only.tech, home_only.bucket)
-    )
+    assert all(problem.bucket_wc[b] == problem.tech_home_wc[t] for t, b in zip(home_only.tech, home_only.bucket))
     import dataclasses
-
     wide_cfg = dataclasses.replace(cfg, flex_home_work_center_only=False)
     wide = assign_flex(problem, FlexCapacity(problem, wide_cfg), short, FlexConfig())
     assert wide.covered >= home_only.covered
-    assert any(
-        problem.bucket_wc[b] != problem.tech_home_wc[t]
-        for t, b in zip(wide.tech, wide.bucket)
-    )
+    assert any(problem.bucket_wc[b] != problem.tech_home_wc[t] for t, b in zip(wide.tech, wide.bucket))
+
+
+def test_base_unreachable_within_r3_tolerance_widens_r3():
+    vol = np.array([1583.0, 2800, 3000, 3200, 3300, 3400, 3500, 3700] * 10)
+    nd = vol.size
+    info = {}
+    target = 28 * nd  # far from the best fit for this data: needs a looser R3
+    grid, k, e = admissible_scales(vol, 24, 29, 0.05, 11, (target, target), info)
+    assert grid.size > 0 and info["effective_tolerance"] > 0.05
+    for kk in grid:  # every scale returned can actually reach the base exactly
+        _, lo, hi = daily_bounds_for_scale(kk, vol, 24, 29)
+        assert lo.sum() <= target <= hi.sum()
+        assert fit_error(kk, vol, 24, 29) <= e * (1 + info["effective_tolerance"]) + 1e-9
+    info2 = {}
+    admissible_scales(vol, 24, 29, 0.05, 11, None, info2)
+    assert info2["effective_tolerance"] == 0.05  # untouched without a base
+
+
+def test_merged_schedule_days_never_get_flex():
+    from vacation_allocation.flex_assignment import FlexConfig
+    from vacation_allocation.flex_pipeline import run_flex
+
+    sup, demand, volume, _, preflex, cfg, _ = _flex_case()
+    techs = sorted(sup["TECH_ID"].unique())
+    dates = sorted(sup["SHIFT_DATE"].unique())
+    work = set(zip(sup["TECH_ID"], sup["SHIFT_DATE"]))
+    pk = set(zip(preflex["TECH_ID"], preflex["SHIFT_DATE"]))
+    off = [(t, d) for t in techs for d in dates if (t, d) not in work and (t, d) not in pk]
+    blocked = work | set(off[::2])  # merged schedule = workdays + "training" on half the off-days
+    vac = run_allocation(sup, demand, volume, set(), cfg, preflex, blocked)
+    res = run_flex(sup, vac.assignments, demand, set(), preflex, cfg, FlexConfig(), blocked)
+    keys = set(zip(res["new"]["TECH_ID"], res["new"]["SHIFT_DATE"]))
+    assert len(keys) > 0 and not (keys & blocked)
+    assert res["summary"]["covered_by_new_flex"] == vac.stats["coverage"]["best_case_flex_coverable"]
+    # regular supply is untouched by the merged schedule
+    assert len(vac.assignments) + len(vac.remaining) == len(sup)

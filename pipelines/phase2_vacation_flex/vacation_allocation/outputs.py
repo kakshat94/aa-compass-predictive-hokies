@@ -75,7 +75,5 @@ def write_all(result, out_dir: str | Path) -> dict[str, Path]:
     result.shortage_by_bucket.to_csv(paths["shortage"], index=False, date_format=fmt)
     if result.search_log is not None:
         result.search_log.to_csv(paths["search"], index=False)
-    paths["summary"].write_text(
-        json.dumps(result.stats, indent=2, default=_json_default)
-    )
+    paths["summary"].write_text(json.dumps(result.stats, indent=2, default=_json_default))
     return paths

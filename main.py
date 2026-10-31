@@ -148,6 +148,9 @@ if __name__ == "__main__":
     spc = pd.read_csv(PHASE1_DIR / "Supply_Special_Training.csv")
     flx = pd.read_csv(PHASE1_DIR / "Flex_assignment.csv")
 
+    df_regular = pd.concat([reg, std, spc])
+    df_regular.to_csv(PHASE1_DIR / "Supply_Regular_Merged.csv", index=False)
+
     validator = BidlinePipelineValidator(reg, std, spc)
     all_initial_tech_ids = {
         str(value)
@@ -302,7 +305,6 @@ if __name__ == "__main__":
 
     # ── Begin Export ────────────────────────────────────────────────────────
 
-    df_regular = pd.read_csv(PHASE1_DIR / "Supply_Regular.csv")
     df_qualified = pd.read_csv(PHASE2_DIR / "Supply_Regular_qualified.csv")
 
     # Define the join keys and the specific columns to pull over
@@ -327,7 +329,7 @@ if __name__ == "__main__":
     df_qualified_unique = df_qualified_subset.drop_duplicates(subset=join_keys)
 
     # Perform a left join on TECH_ID and SHIFT_TYPE
-    df_regular = pd.concat([df_regular, pd.read_csv(PHASE1_DIR / "Supply_Standard_Training.csv"), pd.read_csv(PHASE1_DIR / "Supply_Special_Training.csv")])
+    
     df_merged = pd.merge(
         df_regular[
             [

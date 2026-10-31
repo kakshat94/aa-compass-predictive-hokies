@@ -174,6 +174,14 @@ def run_pipeline(
             )
             written = write_flex_assignments(flex_df, flex_output)
             print(f"pre-assigned flex     : {len(flex_df):,} rows -> {written}")
+    else:
+        if write:
+            flex_output = flex_assignment_output_path or os.path.join(
+                output_dir, "Flex_assignment_qualified.csv"
+            )
+            written = write_flex_assignments(flex_df, flex_output)
+            print(f"pre-assigned flex     : {len(flex_df):,} rows -> {written}")
+
 
     # --- Stage 2: training assignment (random or exact MIP) ---
     training_months = load_training_months(params_path)

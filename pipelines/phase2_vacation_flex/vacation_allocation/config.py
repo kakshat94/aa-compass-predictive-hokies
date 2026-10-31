@@ -65,7 +65,11 @@ class AllocationConfig:
     # True: a dispatcher may only flex onto their own WORK_CENTER_ID, never onto
     # a desk they hold only as a secondary qualification.
     flex_home_work_center_only: bool = True
-    flex_pricing_iterations: int = 4  # 0 disables flex-aware re-pricing
+    # Vacation objective.  False (default): minimise the desk demand left
+    # uncovered by the vacations themselves, ignoring any flex days still to
+    # be assigned.  True: minimise what would remain after best-case flex.
+    flex_aware_vacations: bool = False
+    flex_pricing_iterations: int = 4  # flex-aware re-pricing (only if flex_aware_vacations)
     pricing_candidates: int = 3  # best (scale, level) candidates that get re-priced
 
     # Price of one vacation that creates a shortage in a bucket, in "price
@@ -84,10 +88,7 @@ class AllocationConfig:
         if self.base_daily is not None:
             if self.base_tolerance < 0:
                 raise ValueError("base_tolerance must be >= 0")
-            if (
-                self.enforce_daily_bounds
-                and not self.daily_min <= self.base_daily <= self.daily_max
-            ):
+            if self.enforce_daily_bounds and not self.daily_min <= self.base_daily <= self.daily_max:
                 raise ValueError("base_daily must lie within [daily_min, daily_max]")
         if self.fairness_slack_days < 0 or self.fairness_weight < 0:
             raise ValueError("fairness_slack_days and fairness_weight must be >= 0")

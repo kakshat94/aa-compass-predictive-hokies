@@ -41,6 +41,7 @@ def run_flex(
     preflex_df: pd.DataFrame | None,
     cfg: AllocationConfig,
     fcfg: FlexConfig,
+    blocked: set | None = None,
 ) -> dict:
     t0 = time.time()
     supply = data_io.clean_supply(supply_df)
@@ -48,23 +49,17 @@ def run_flex(
     dates = [pd.Timestamp(d) for d in sorted(supply["SHIFT_DATE"].unique())]
     demand, _ = data_io.fill_missing_demand(demand, supply, dates)
     preflex = clean_preflex(preflex_df)
-    problem = build_problem(supply, demand, dates, training, preflex)
+    blocked = blocked or set()
+    problem = build_problem(supply, demand, dates, training, preflex, blocked)
 
     # vacations -> rows of the regular supply
     vac = vacation_df.copy()
     vac = data_io.parse_dates(vac, "SHIFT_DATE", "vacations")
     vac["TECH_ID"] = data_io._clean_ids(vac["TECH_ID"])
     vkeys = set(zip(vac["TECH_ID"], vac["SHIFT_DATE"]))
-    sel = np.array(
-        [
-            (t, d) in vkeys
-            for t, d in zip(problem.supply["TECH_ID"], problem.supply["SHIFT_DATE"])
-        ]
-    )
+    sel = np.array([(t, d) in vkeys for t, d in zip(problem.supply["TECH_ID"], problem.supply["SHIFT_DATE"])])
     if sel.sum() != len(vkeys):
-        raise ValueError(
-            f"{len(vkeys) - int(sel.sum())} vacation rows are not workdays in the supply file"
-        )
+        raise ValueError(f"{len(vkeys) - int(sel.sum())} vacation rows are not workdays in the supply file")
     vac_b = np.bincount(problem.row_bucket[sel], minlength=problem.n_bucket)
 
     flex = FlexCapacity(problem, cfg)
@@ -72,9 +67,7 @@ def run_flex(
     est = flex.evaluate(short)
     fa = assign_flex(problem, flex, short, fcfg)
     if fa.covered != est.covered:  # same arcs, same budgets: must agree exactly
-        raise AssertionError(
-            f"flex assignment covers {fa.covered}, max-flow says {est.covered}"
-        )
+        raise AssertionError(f"flex assignment covers {fa.covered}, max-flow says {est.covered}")
     short_after = problem.shortage(vac_b, fa.per_bucket)
 
     # ---- tables
@@ -90,42 +83,27 @@ def run_flex(
             "HOME_SHIFT": ["/".join(sorted(problem.tech_shifts[t])) for t in fa.tech],
         }
     )
-    new_days["OTHER_WORK_CENTER"] = [
-        problem.bucket_wc[b] != home[t] for t, b in zip(fa.tech, fa.bucket)
-    ]
+    new_days["OTHER_WORK_CENTER"] = [problem.bucket_wc[b] != home[t] for t, b in zip(fa.tech, fa.bucket)]
     new_days["OTHER_SHIFT"] = [problem.bucket_shift[b] not in problem.tech_shifts[t]
                                for t, b in zip(fa.tech, fa.bucket)]  # fmt: skip
 
     supply_cols = list(problem.supply.columns)
     added = flex_rows(problem, fa, supply_cols)
-    pf_cols = (
-        list(preflex.columns)
-        if preflex is not None
-        else supply_cols + ["SECONDARY_QUALS"]
-    )
+    pf_cols = list(preflex.columns) if preflex is not None else supply_cols + ["SECONDARY_QUALS"]
     combined = pd.concat(
-        [
-            preflex if preflex is not None else pd.DataFrame(columns=pf_cols),
-            flex_rows(problem, fa, pf_cols),
-        ],
+        [preflex if preflex is not None else pd.DataFrame(columns=pf_cols), flex_rows(problem, fa, pf_cols)],
         ignore_index=True,
     )
     after_vac = problem.supply.loc[~sel]
     pf_valid_rows = pd.DataFrame(columns=supply_cols)
     if preflex is not None and len(problem.preflex_valid):
-        k = set(
-            zip(problem.preflex_valid["TECH_ID"], problem.preflex_valid["SHIFT_DATE"])
-        )
-        pf_valid_rows = preflex[
-            [(t, d) in k for t, d in zip(preflex["TECH_ID"], preflex["SHIFT_DATE"])]
-        ].copy()
+        k = set(zip(problem.preflex_valid["TECH_ID"], problem.preflex_valid["SHIFT_DATE"]))
+        pf_valid_rows = preflex[[(t, d) in k for t, d in zip(preflex["TECH_ID"], preflex["SHIFT_DATE"])]].copy()
         if "_WC" in supply_cols and "_WC" not in pf_valid_rows.columns:
             pf_valid_rows["_WC"] = pf_valid_rows["WORK_CENTER_ID"]
         pf_valid_rows = pf_valid_rows.reindex(columns=supply_cols)
     final = pd.concat([after_vac, pf_valid_rows, added], ignore_index=True)
-    final = final.sort_values(["SHIFT_DATE", "TECH_ID"], kind="stable").reset_index(
-        drop=True
-    )
+    final = final.sort_values(["SHIFT_DATE", "TECH_ID"], kind="stable").reset_index(drop=True)
 
     cov = pd.DataFrame(
         {
@@ -151,13 +129,11 @@ def run_flex(
             "PREASSIGNED_FLEX": problem.tech_preflex,
             "NEW_FLEX": fa.per_tech,
             "TOTAL_FLEX": problem.tech_preflex + fa.per_tech,
-            "REMAINING_FLEX": np.maximum(
-                0, cfg.max_flex_days - problem.tech_preflex - fa.per_tech
-            ),
+            "REMAINING_FLEX": np.maximum(0, cfg.max_flex_days - problem.tech_preflex - fa.per_tech),
         }
     )
 
-    checks = validate_flex(problem, new_days, training, preflex, cfg)
+    checks = validate_flex(problem, new_days, training | blocked, preflex, cfg)
     summary = {
         "new_flex_days": int(len(new_days)),
         "preassigned_flex_rows": int(problem.tech_preflex.sum()),
@@ -170,11 +146,7 @@ def run_flex(
         "dispatchers_using_all_flex": int((by_person["REMAINING_FLEX"] == 0).sum()),
         "new_flex_on_other_work_center": int(new_days["OTHER_WORK_CENTER"].sum()),
         "new_flex_on_other_shift": int(new_days["OTHER_SHIFT"].sum()),
-        "shortage_after_flex_by_work_center": cov.groupby("WORK_CENTER")[
-            "SHORTAGE_AFTER_FLEX"
-        ]
-        .sum()
-        .to_dict(),
+        "shortage_after_flex_by_work_center": cov.groupby("WORK_CENTER")["SHORTAGE_AFTER_FLEX"].sum().to_dict(),
         "flex_config": {**vars(fcfg), "max_flex_days": cfg.max_flex_days,
                         "same_shift_only": cfg.flex_same_shift_only,
                         "home_work_center_only": cfg.flex_home_work_center_only},  # fmt: skip
@@ -190,32 +162,20 @@ def run_flex(
 def validate_flex(problem, new_days: pd.DataFrame, training: set, preflex, cfg) -> dict:
     """Independent checks of the flex rules on the output table."""
     work = set(zip(problem.supply["TECH_ID"], problem.supply["SHIFT_DATE"]))
-    pf = (
-        set(zip(preflex["TECH_ID"], preflex["SHIFT_DATE"]))
-        if preflex is not None
-        else set()
-    )
+    pf = set(zip(preflex["TECH_ID"], preflex["SHIFT_DATE"])) if preflex is not None else set()
     keys = list(zip(new_days["TECH_ID"], new_days["SHIFT_DATE"]))
     assert len(keys) == len(set(keys)), "two flex days for one dispatcher on one date"
     assert not any(k in work for k in keys), "flex day on a scheduled workday"
-    assert not any(k in training for k in keys), "flex day on a training day"
+    assert not any(k in training for k in keys), "flex day on a training day or an already-assigned shift"
     assert not any(k in pf for k in keys), "flex day on a pre-assigned flex day"
     pre = pd.Series(problem.tech_preflex, index=problem.tech_ids)
-    total = (
-        new_days.groupby("TECH_ID").size().reindex(problem.tech_ids, fill_value=0) + pre
-    )
-    assert (
-        total[new_days["TECH_ID"].unique()] <= cfg.max_flex_days
-    ).all(), "flex budget exceeded"
+    total = new_days.groupby("TECH_ID").size().reindex(problem.tech_ids, fill_value=0) + pre
+    assert (total[new_days["TECH_ID"].unique()] <= cfg.max_flex_days).all(), "flex budget exceeded"
     tcode = {t: i for i, t in enumerate(problem.tech_ids)}
     for t, wc in zip(new_days["TECH_ID"], new_days["WORK_CENTER_ID"]):
-        assert problem.tech_quals[data_io.norm_wc(wc)][
-            tcode[t]
-        ], f"{t} not qualified for {wc}"
+        assert problem.tech_quals[data_io.norm_wc(wc)][tcode[t]], f"{t} not qualified for {wc}"
     if cfg.flex_home_work_center_only:
-        assert not new_days[
-            "OTHER_WORK_CENTER"
-        ].any(), "flex on a desk other than the dispatcher's WORK_CENTER_ID"
+        assert not new_days["OTHER_WORK_CENTER"].any(), "flex on a desk other than the dispatcher's WORK_CENTER_ID"
     if cfg.flex_same_shift_only:
         assert not new_days["OTHER_SHIFT"].any(), "flex on another shift"
     return {"off_day_only": True, "budget_respected": True, "qualified": True,
@@ -243,21 +203,21 @@ def write_flex(res: dict, out_dir: str | Path) -> dict[str, Path]:
         paths[k] = out / name
         df.to_csv(paths[k], index=False, date_format=FMT)
     paths["summary"] = out / "flex_summary.json"
-    paths["summary"].write_text(
-        json.dumps(res["summary"], indent=2, default=_json_default)
-    )
+    paths["summary"].write_text(json.dumps(res["summary"], indent=2, default=_json_default))
     return paths
 
 
 def run_flex_from_files(
     supply_path, vacation_path, demand_path, out_dir, training_path=None, preflex_path=None,
-    cfg: AllocationConfig | None = None, fcfg: FlexConfig | None = None,
+    cfg: AllocationConfig | None = None, fcfg: FlexConfig | None = None, merged_schedule_path=None,
 ):  # fmt: skip
     cfg, fcfg = cfg or AllocationConfig(), fcfg or FlexConfig()
     training = data_io.load_training(training_path) if training_path else set()
     preflex = data_io.read_csv(preflex_path) if preflex_path else None
+    blocked = data_io.load_blocked_days(merged_schedule_path) if merged_schedule_path else set()
     res = run_flex(
         data_io.read_csv(supply_path), data_io.read_csv(vacation_path), data_io.read_csv(demand_path),
-        training, preflex, cfg, fcfg,
+        training, preflex, cfg, fcfg, blocked,
     )  # fmt: skip
+    res["summary"]["merged_schedule_days_blocked"] = len(blocked)
     return res, write_flex(res, out_dir)

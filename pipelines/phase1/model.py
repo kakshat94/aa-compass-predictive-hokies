@@ -13,6 +13,9 @@ with open(_PARAMS_PATH) as _f:
 _FLEX_PARAMS: Dict[str, int] = {
     wc: cfg["max_flex_days"] for wc, cfg in _PARAMS.get("flex_days", {}).items()
 }
+_BUFFER_PARAMS: Dict[str, int] = {
+    wc: val for wc, val in _PARAMS.get("Buffer_demand", {}).items()
+}
 
 
 class WorkforceOptimizer:
@@ -92,7 +95,7 @@ class WorkforceOptimizer:
                 for wc, number, offset in self.X_set
                 if wc == w
             )
-            >= self.demand[w][day]
+            >= self.demand[w][day] + _BUFFER_PARAMS.get(w,0)
             for w in self.demand.keys()
             for day in self.coverage_days[w]
         ]

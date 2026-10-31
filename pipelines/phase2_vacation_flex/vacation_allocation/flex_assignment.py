@@ -37,17 +37,12 @@ from .problem import Problem
 
 @dataclass(frozen=True)
 class FlexConfig:
-    cross_work_center_cost: int = (
-        1_000  # per flex day on a desk other than the home desk
-    )
+    cross_work_center_cost: int = 1_000  # per flex day on a desk other than the home desk
     cross_shift_cost: int = 1_000  # per flex day on another shift (only if allowed)
     balance_cost: int = 10  # k-th flex day of one dispatcher costs balance_cost*(2k-1)
 
     def validate(self) -> None:
-        if (
-            min(self.cross_work_center_cost, self.cross_shift_cost, self.balance_cost)
-            < 0
-        ):
+        if min(self.cross_work_center_cost, self.cross_shift_cost, self.balance_cost) < 0:
             raise ValueError("flex costs must be >= 0")
 
 
@@ -73,17 +68,13 @@ def assign_flex(
     ct, cb, cd = flex.cand_t[keep], flex.cand_b[keep], flex.cand_d[keep]
     if ct.size == 0:
         z = np.zeros(0, dtype=np.int64)
-        return FlexAssignment(
-            z, z, z, np.zeros(nb, np.int64), np.zeros(nt, np.int64), 0
-        )
+        return FlexAssignment(z, z, z, np.zeros(nb, np.int64), np.zeros(nt, np.int64), 0)
 
     home = np.array(problem.tech_home_wc, dtype=object)
     bwc = np.array(problem.bucket_wc, dtype=object)
     bsh = np.array(problem.bucket_shift, dtype=object)
     cross_wc = home[ct] != bwc[cb]
-    cross_sh = np.array(
-        [bsh[b] not in problem.tech_shifts[t] for t, b in zip(ct, cb)], dtype=bool
-    )
+    cross_sh = np.array([bsh[b] not in problem.tech_shifts[t] for t, b in zip(ct, cb)], dtype=bool)
     arc_cost = cross_wc * fcfg.cross_work_center_cost + cross_sh * fcfg.cross_shift_cost
 
     budget = flex.budget
@@ -111,42 +102,24 @@ def assign_flex(
     # source -> dispatcher: one arc per budget unit, convex cost spreads flex days
     for k in range(1, int(budget.max()) + 1):
         t_k = techs[budget[techs] >= k]
-        add(
-            np.full(t_k.size, SRC),
-            T0 + t_k,
-            np.ones(t_k.size),
-            np.full(t_k.size, fcfg.balance_cost * (2 * k - 1)),
-        )
+        add(np.full(t_k.size, SRC), T0 + t_k, np.ones(t_k.size), np.full(t_k.size, fcfg.balance_cost * (2 * k - 1)))
     # dispatcher -> [dispatcher, date] (at most one flex per date)
     td_tech = uniq // nd
-    add(
-        T0 + td_tech,
-        TD0 + np.arange(uniq.size),
-        np.ones(uniq.size),
-        np.zeros(uniq.size),
-    )
+    add(T0 + td_tech, TD0 + np.arange(uniq.size), np.ones(uniq.size), np.zeros(uniq.size))
     n_before = sum(a.size for a in tails)
     # [dispatcher, date] -> bucket
     add(TD0 + inv, B0 + cb, np.ones(ct.size), arc_cost)
     cand_slice = slice(n_before, n_before + ct.size)
     # bucket -> sink: each covered unit earns the reward
     short_b = np.flatnonzero(sh > 0)
-    add(
-        B0 + short_b,
-        np.full(short_b.size, SNK),
-        sh[short_b],
-        np.full(short_b.size, -reward),
-    )
+    add(B0 + short_b, np.full(short_b.size, SNK), sh[short_b], np.full(short_b.size, -reward))
     # unused budget
     total_budget = int(budget[techs].sum())
     add([SRC], [SNK], [total_budget], [0])
 
     smcf = min_cost_flow.SimpleMinCostFlow()
     arcs = smcf.add_arcs_with_capacity_and_unit_cost(
-        np.concatenate(tails),
-        np.concatenate(heads),
-        np.concatenate(caps),
-        np.concatenate(costs),
+        np.concatenate(tails), np.concatenate(heads), np.concatenate(caps), np.concatenate(costs)
     )
     supply = np.zeros(n_nodes, dtype=np.int64)
     supply[SRC], supply[SNK] = total_budget, -total_budget
@@ -181,12 +154,8 @@ def shift_times(supply: pd.DataFrame) -> dict:
         return {}
     st = pd.to_datetime(supply["START_TIME"], errors="coerce")
     en = pd.to_datetime(supply["END_TIME"], errors="coerce")
-    df = pd.DataFrame(
-        {"sh": supply["SHIFT_TYPE"], "o": st - supply["SHIFT_DATE"], "d": en - st}
-    ).dropna()
-    return {
-        sh: (g["o"].mode().iloc[0], g["d"].mode().iloc[0]) for sh, g in df.groupby("sh")
-    }
+    df = pd.DataFrame({"sh": supply["SHIFT_TYPE"], "o": st - supply["SHIFT_DATE"], "d": en - st}).dropna()
+    return {sh: (g["o"].mode().iloc[0], g["d"].mode().iloc[0]) for sh, g in df.groupby("sh")}
 
 
 def flex_rows(problem: Problem, fa: FlexAssignment, columns: list[str]) -> pd.DataFrame:
@@ -215,10 +184,7 @@ def flex_rows(problem: Problem, fa: FlexAssignment, columns: list[str]) -> pd.Da
     out = pd.DataFrame(rows)
     if "SECONDARY_QUALS" in columns and len(out):
         if "FINAL_QUALS" in out.columns and "PRIMARY_QUAL" in out.columns:
-            out["SECONDARY_QUALS"] = [
-                _secondary(fq, pq)
-                for fq, pq in zip(out["FINAL_QUALS"], out["PRIMARY_QUAL"])
-            ]
+            out["SECONDARY_QUALS"] = [_secondary(fq, pq) for fq, pq in zip(out["FINAL_QUALS"], out["PRIMARY_QUAL"])]
         else:
             out["SECONDARY_QUALS"] = "[]"
     for c in columns:
@@ -228,9 +194,5 @@ def flex_rows(problem: Problem, fa: FlexAssignment, columns: list[str]) -> pd.Da
 
 
 def _secondary(final_quals: str, primary: str) -> str:
-    items = [
-        x
-        for x in str(final_quals).strip("[]").replace("'", " ").split()
-        if x and x != primary
-    ]
+    items = [x for x in str(final_quals).strip("[]").replace("'", " ").split() if x and x != primary]
     return "[" + " ".join(f"'{x}'" for x in items) + "]"

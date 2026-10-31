@@ -88,17 +88,17 @@ def _error_curve(v: np.ndarray, lo: float, hi: float, n: int = 20_001):
 
 
 def admissible_scales(
-    volume: np.ndarray,
-    lo: float,
-    hi: float,
-    tolerance: float,
-    points: int,
+    volume: np.ndarray, lo: float, hi: float, tolerance: float, points: int,
     total_range: tuple[int, int] | None = None,
+    info: dict | None = None,
 ) -> tuple[np.ndarray, float, float]:
     """Scales K whose fit error is within (1+tolerance) of the best.
 
     With ``total_range`` only scales whose rounded daily totals can sum to a
-    value inside the range are kept (the base-per-day constraint).
+    value inside the range are kept (the base-per-day constraint).  If no scale
+    within the tolerance can reach that range, the tolerance is widened to the
+    smallest value that can (R3 gives way before the base); the tolerance
+    actually used is reported in ``info["effective_tolerance"]``.
     Returns (up to ``points`` scales spread over the admissible set, best K, best error).
     """
     v = np.asarray(volume, dtype=float)
@@ -116,9 +116,14 @@ def admissible_scales(
         ideal = np.clip(ks[:, None] / v[None, :], lo, hi)
         fl = np.floor(ideal + 1e-9).sum(axis=1)
         ce = np.ceil(ideal - 1e-9).sum(axis=1)
-        mask &= (fl <= total_range[1]) & (ce >= total_range[0])
-        if not mask.any():
+        reach = (fl <= total_range[1]) & (ce >= total_range[0])
+        if not reach.any():  # the daily bounds themselves cannot produce this total
             return np.zeros(0), k_star, e_star
+        if not (mask & reach).any():  # widen R3 just enough to reach the base
+            needed = float(err[reach].min()) / e_star - 1 if e_star > 0 else 0.0
+            tolerance = max(tolerance, needed)
+            mask = err <= e_star * (1 + tolerance) + 1e-12
+        mask &= reach
         if not mask[i]:  # best fit cannot reach the base range: use the best that can
             j = np.flatnonzero(mask)[np.argmin(err[mask])]
             k_star_ok = float(ks[j])
@@ -126,6 +131,8 @@ def admissible_scales(
             k_star_ok = k_star
     else:
         k_star_ok = k_star
+    if info is not None:
+        info["effective_tolerance"] = float(tolerance)
     ok = ks[mask]
     if points <= 1 or ok.size <= 1:
         if ok.size == 1:

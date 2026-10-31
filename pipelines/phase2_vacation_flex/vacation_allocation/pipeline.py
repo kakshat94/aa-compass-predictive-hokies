@@ -18,12 +18,7 @@ from .flex_capacity import FlexCapacity
 from .outputs import write_all
 from .problem import Problem, build_problem, clean_preflex
 from .validation import validate_allocation, volume_relationship
-from .volume_targets import (
-    admissible_scales,
-    daily_bounds_for_scale,
-    fit_error,
-    impute_volume,
-)
+from .volume_targets import admissible_scales, daily_bounds_for_scale, fit_error, impute_volume
 
 log = logging.getLogger(__name__)
 
@@ -32,7 +27,8 @@ ASSUMPTIONS = [
     "The annual total is not fixed. Priority: R1 daily total in [daily_min, daily_max] (hard); "
     "R2 every dispatcher L or L+1 days, L chosen by the model (hard); R3 daily total = floor or ceil of "
     "clip(K/volume) for one scale K whose proportional fit is within proportionality_tolerance of the "
-    "best (hard); then minimise shortage left after best-case flex; then maximise vacations.",
+    "best (hard); then minimise desk demand left uncovered by the vacations (flex not considered); "
+    "then maximise vacations.",
     "Flex headroom: a dispatcher can cover a desk on a day they are neither scheduled nor in training, "
     "if qualified for that work center (qualification columns) and, by default, normally on that shift; "
     "max_flex_days per dispatcher; no flex days used before this step.",
@@ -70,7 +66,8 @@ def _price_loop(problem: Problem, cand: dict, flex: FlexCapacity, cfg, rounds: i
                        total_range=cand.get("total_range"))  # fmt: skip
         short = problem.shortage(sol.per_bucket)
         fx = flex.evaluate(short)
-        score = (fx.residual, fx.raw_shortage, -int(sol.selected.sum()))
+        vac = -int(sol.selected.sum())
+        score = (fx.residual, fx.raw_shortage, vac) if cfg.flex_aware_vacations else (fx.raw_shortage, vac)
         history.append(
             {
                 "round": it,
@@ -91,9 +88,7 @@ def _price_loop(problem: Problem, cand: dict, flex: FlexCapacity, cfg, rounds: i
         prev = sol.selected
         if stale >= 2 or it == rounds:
             break
-        target_price = np.where(
-            fx.coverable_at_margin, cfg.cost_coverable, cfg.cost_uncoverable
-        )
+        target_price = np.where(fx.coverable_at_margin, cfg.cost_coverable, cfg.cost_uncoverable)
         price = np.rint(
             cfg.pricing_damping * price + (1 - cfg.pricing_damping) * target_price
         ).astype(np.int64)
@@ -105,7 +100,8 @@ def _price_loop(problem: Problem, cand: dict, flex: FlexCapacity, cfg, rounds: i
 def _search(problem: Problem, volume: np.ndarray, flex: FlexCapacity, cfg):
     """Try every admissible (scale K, fairness level L); return the best and a log.
 
-    Ranking: residual shortage after best-case flex, then raw shortage, then
+    Ranking: unmet desk demand after vacations (or, with flex_aware_vacations,
+    residual after best-case flex first), then
     more vacations, then closer proportional fit.
     """
     total_range = None
@@ -115,24 +111,29 @@ def _search(problem: Problem, volume: np.ndarray, flex: FlexCapacity, cfg):
             int(np.ceil((cfg.base_daily - cfg.base_tolerance) * nd - 1e-9)),
             int(np.floor((cfg.base_daily + cfg.base_tolerance) * nd + 1e-9)),
         )
+    scale_info: dict = {}
     scales, k_star, e_star = admissible_scales(
         volume, cfg.daily_min, cfg.daily_max, cfg.proportionality_tolerance,
-        cfg.scale_grid_points, total_range,
+        cfg.scale_grid_points, total_range, scale_info,
     )  # fmt: skip
+    eff_tol = scale_info.get("effective_tolerance", cfg.proportionality_tolerance)
+    if cfg.enforce_proportionality and eff_tol > cfg.proportionality_tolerance + 1e-12:
+        log.warning(
+            "Base range %s is not reachable within proportionality_tolerance=%.3g; "
+            "R3 tolerance widened to %.3g so the base can be met (R3 gives way first).",
+            total_range, cfg.proportionality_tolerance, eff_tol,
+        )  # fmt: skip
     options = []
     if cfg.enforce_proportionality:
         if scales.size == 0:
             raise InfeasibleAllocation(
-                f"no scale K within the proportionality tolerance can reach the base range "
-                f"{total_range}; raise proportionality_tolerance or base_tolerance"
+                f"the base range {total_range} cannot be reached with daily totals in "
+                f"[{cfg.daily_min}, {cfg.daily_max}] following any inverse-volume scale; "
+                "raise base_tolerance or widen rule 1"
             )
         for k in scales:
-            ideal, lo_, hi_ = daily_bounds_for_scale(
-                k, volume, cfg.daily_min, cfg.daily_max
-            )
-            options.append(
-                (k, ideal, lo_, hi_, fit_error(k, volume, cfg.daily_min, cfg.daily_max))
-            )
+            ideal, lo_, hi_ = daily_bounds_for_scale(k, volume, cfg.daily_min, cfg.daily_max)
+            options.append((k, ideal, lo_, hi_, fit_error(k, volume, cfg.daily_min, cfg.daily_max)))
     else:  # R3 off: any daily total within R1
         n = len(volume)
         options.append((float("nan"), np.full(n, np.nan), np.full(n, cfg.daily_min, dtype=np.int64),
@@ -161,8 +162,9 @@ def _search(problem: Problem, volume: np.ndarray, flex: FlexCapacity, cfg):
                           "level": level, "row": row, "total_range": total_range})  # fmt: skip
     if not cands:
         raise InfeasibleAllocation(
-            "no admissible scale/fairness level satisfies R1-R3: "
-            + "; ".join(r["status"] for r in log_rows[:3])
+            "no admissible scale/fairness level satisfies R1-R3: " + "; ".join(
+                r["status"] for r in log_rows[:3]
+            )
         )
 
     # round 0 (uniform shortage price) for every candidate
@@ -174,7 +176,7 @@ def _search(problem: Problem, volume: np.ndarray, flex: FlexCapacity, cfg):
             log_rows.append({**c["row"], "status": f"infeasible: {exc}"})
             continue
         scored.append((score + (c["err"],), c, sol, fx, hist))
-        log_rows.append({**c["row"], "status": "solved", "vacations": -score[2],
+        log_rows.append({**c["row"], "status": "solved", "vacations": -score[-1],
                          "shortage_after_vacation": fx.raw_shortage,
                          "residual_after_flex": fx.residual})  # fmt: skip
     if not scored:
@@ -183,24 +185,21 @@ def _search(problem: Problem, volume: np.ndarray, flex: FlexCapacity, cfg):
 
     # flex-aware re-pricing for the most promising candidates
     best = scored[0]
-    if cfg.flex_pricing_iterations > 0:
+    if cfg.flex_aware_vacations and cfg.flex_pricing_iterations > 0:
         for _, c, _, _, _ in scored[: cfg.pricing_candidates]:
-            score, sol, fx, hist = _price_loop(
-                problem, c, flex, cfg, cfg.flex_pricing_iterations
-            )
+            score, sol, fx, hist = _price_loop(problem, c, flex, cfg, cfg.flex_pricing_iterations)
             if score + (c["err"],) < best[0]:
                 best = (score + (c["err"],), c, sol, fx, hist)
     _, c, sol, fx, hist = best
     info = {
         "best_fit_scale_K": k_star,
         "best_fit_error": e_star,
-        "admissible_scale_range": (
-            [float(np.nanmin(scales)), float(np.nanmax(scales))]
-            if cfg.enforce_proportionality
-            else None
-        ),
+        "admissible_scale_range": [float(np.nanmin(scales)), float(np.nanmax(scales))]
+        if cfg.enforce_proportionality else None,
         "candidates_tried": len(log_rows),
         "base_total_range": list(total_range) if total_range else None,
+        "proportionality_tolerance_requested": cfg.proportionality_tolerance,
+        "proportionality_tolerance_used": eff_tol if cfg.enforce_proportionality else None,
         "chosen_scale_K": c["K"],
         "chosen_fit_error": c["err"],
         "chosen_fairness_level_L": c["level"],
@@ -209,15 +208,11 @@ def _search(problem: Problem, volume: np.ndarray, flex: FlexCapacity, cfg):
     return c, sol, fx, info, pd.DataFrame(log_rows)
 
 
-def _group_table(
-    problem: Problem, flex: FlexCapacity, per_bucket: np.ndarray, cfg
-) -> list:
+def _group_table(problem: Problem, flex: FlexCapacity, per_bucket: np.ndarray, cfg) -> list:
     short = problem.shortage(per_bucket)
     base = problem.shortage(np.zeros_like(per_bucket))
     rows = {}
-    for b, (key, wc, sh) in enumerate(
-        zip(problem.bucket_keys, problem.bucket_wc, problem.bucket_shift)
-    ):
+    for b, (key, wc, sh) in enumerate(zip(problem.bucket_keys, problem.bucket_wc, problem.bucket_shift)):
         r = rows.setdefault(
             (key[1], sh),
             {"work_center": key[1], "shift": sh, "dispatchers": 0, "shortage_before_vacation": 0,
@@ -225,9 +220,7 @@ def _group_table(
         )  # fmt: skip
         r["shortage_before_vacation"] += int(base[b])
         r["shortage_after_vacation"] += int(short[b])
-    labels = np.array([k[1] for k in problem.bucket_keys], dtype=object)[
-        problem.row_bucket
-    ]
+    labels = np.array([k[1] for k in problem.bucket_keys], dtype=object)[problem.row_bucket]
     shifts = np.array(problem.bucket_shift, dtype=object)[problem.row_bucket]
     rostered = (
         pd.DataFrame({"l": labels, "s": shifts, "t": problem.row_tech})
@@ -251,6 +244,7 @@ def run_allocation(
     training: set | None = None,
     cfg: AllocationConfig | None = None,
     preflex_df: pd.DataFrame | None = None,
+    blocked: set | None = None,
 ) -> AllocationResult:
     cfg = cfg or AllocationConfig()
     cfg.validate()
@@ -269,13 +263,9 @@ def run_allocation(
     # --- desk demand (imputation is audited; the flex module reads the audit file)
     demand, demand_audit = data_io.fill_missing_demand(demand, supply, dates)
 
-    problem = build_problem(supply, demand, dates, training, clean_preflex(preflex_df))
+    problem = build_problem(supply, demand, dates, training, clean_preflex(preflex_df), blocked)
     if not cfg.enforce_daily_bounds:  # R1 off: 0 .. eligible workdays per day
-        cap = int(
-            np.bincount(
-                problem.row_day[problem.row_eligible], minlength=problem.n_day
-            ).max()
-        )
+        cap = int(np.bincount(problem.row_day[problem.row_eligible], minlength=problem.n_day).max())
         cfg = dataclasses.replace(cfg, daily_min=0, daily_max=cap)
     flex = FlexCapacity(problem, cfg)
     log.info(
@@ -328,9 +318,7 @@ def run_allocation(
     fairness["VACATION_DAYS"] = tech_counts.reindex(problem.tech_ids).to_numpy()
     fairness["SCHEDULED_WORKDAYS"] = problem.tech_workdays
     fairness["ELIGIBLE_VACATION_DAYS"] = problem.tech_eligible_days
-    fairness["DEVIATION_FROM_AVERAGE"] = (
-        fairness["VACATION_DAYS"] - total / problem.n_tech
-    )
+    fairness["DEVIATION_FROM_AVERAGE"] = fairness["VACATION_DAYS"] - total / problem.n_tech
 
     short_after = problem.shortage(sol.per_bucket)
     short_before = problem.shortage(np.zeros_like(sol.per_bucket))
@@ -353,7 +341,9 @@ def run_allocation(
 
     ideal_gap = float(np.abs(daily["VACATION_TARGET"] - daily["IDEAL_TARGET"]).mean())
     stats = {
-        "module": "vacation_allocation (exact min-cost flow + flex-aware pricing)",
+        "module": "vacation_allocation (exact min-cost flow)",
+        "vacation_objective": "residual after best-case flex" if cfg.flex_aware_vacations
+        else "unmet demand after vacations (flex not considered)",
         "config": cfg.to_dict(),
         "assumptions": ASSUMPTIONS,
         "inputs": {
@@ -375,12 +365,8 @@ def run_allocation(
             "R3_scale_K": cand["K"],
             "R3_fit_error": cand["err"],
             "R3_best_possible_fit_error": search_info["best_fit_error"],
-            "R3_days_at_lower_bound": int(
-                (daily["IDEAL_TARGET"] <= cfg.daily_min + 1e-9).sum()
-            ),
-            "R3_days_at_upper_bound": int(
-                (daily["IDEAL_TARGET"] >= cfg.daily_max - 1e-9).sum()
-            ),
+            "R3_days_at_lower_bound": int((daily["IDEAL_TARGET"] <= cfg.daily_min + 1e-9).sum()),
+            "R3_days_at_upper_bound": int((daily["IDEAL_TARGET"] >= cfg.daily_max - 1e-9).sum()),
             "R3_mean_abs_gap_to_ideal_target": ideal_gap,
             **volume_relationship(daily_counts, vol_by_date),
             "average_daily_vacations": float(daily_counts.mean()),
@@ -402,14 +388,7 @@ def run_allocation(
         "solver": {**search_info, "total_seconds": round(time.time() - t_start, 1)},
     }
     return AllocationResult(
-        assignments,
-        remaining,
-        daily,
-        fairness,
-        shortage_tbl,
-        demand_audit,
-        stats,
-        search_log,
+        assignments, remaining, daily, fairness, shortage_tbl, demand_audit, stats, search_log
     )
 
 
@@ -422,13 +401,13 @@ def run_from_files(
     training_path=None,
     cfg: AllocationConfig | None = None,
     preflex_path=None,
+    merged_schedule_path=None,
 ) -> tuple[AllocationResult, dict[str, Path]]:
     training = data_io.load_training(training_path) if training_path else set()
     preflex = data_io.read_csv(preflex_path) if preflex_path else None
-    if not training:
-        log.warning(
-            "No training calendar supplied: results are PROVISIONAL w.r.t. training days."
-        )
+    blocked = data_io.load_blocked_days(merged_schedule_path) if merged_schedule_path else set()
+    if not training and not blocked:
+        log.warning("No training calendar or merged schedule supplied: flex estimate may use training days.")
     result = run_allocation(
         data_io.read_csv(supply_path),
         data_io.read_csv(demand_path),
@@ -436,6 +415,7 @@ def run_from_files(
         training,
         cfg,
         preflex,
+        blocked,
     )
     paths = write_all(result, output_dir)
     log.info("wrote %s", ", ".join(p.name for p in paths.values()))

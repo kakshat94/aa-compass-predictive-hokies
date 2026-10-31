@@ -24,7 +24,7 @@ SCHEMA = {
     "flex": {"max_days_per_dispatcher", "same_shift_only", "home_work_center_only", "cross_work_center_cost",
              "cross_shift_cost", "balance_cost"},
     "solver": {"cost_uncoverable", "cost_coverable", "scale_grid_points",
-               "flex_pricing_iterations", "pricing_candidates"},
+               "flex_pricing_iterations", "pricing_candidates", "flex_aware_vacations"},
 }  # fmt: skip
 
 
@@ -38,16 +38,11 @@ class Settings:
 def _check(section: str, d: dict) -> None:
     unknown = set(d) - SCHEMA[section]
     if unknown:
-        raise ValueError(
-            f"unknown key(s) in '{section}': {sorted(unknown)}; allowed: {sorted(SCHEMA[section])}"
-        )
+        raise ValueError(f"unknown key(s) in '{section}': {sorted(unknown)}; allowed: {sorted(SCHEMA[section])}")
 
 
 def load_settings(path) -> Settings:
     raw = yaml.safe_load(Path(path).read_text()) or {}
-    _check_top = set(raw) - {"vacation", "flex", "solver"}
-    # if _check_top:
-    #     raise ValueError(f"unknown top-level key(s): {sorted(_check_top)}")
     vac, flx, sol = (raw.get(k) or {} for k in ("vacation", "flex", "solver"))
     for name, d in (("vacation", vac), ("flex", flx), ("solver", sol)):
         _check(name, d)

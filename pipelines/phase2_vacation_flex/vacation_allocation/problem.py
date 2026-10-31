@@ -22,9 +22,7 @@ from .data_io import demand_lookup, norm_wc
 
 @dataclass
 class Problem:
-    supply: (
-        pd.DataFrame
-    )  # cleaned regular supply; row i of row_* arrays is supply row i
+    supply: pd.DataFrame  # cleaned regular supply; row i of row_* arrays is supply row i
     dates: list
     tech_ids: list  # sorted dispatcher ids; index = tech code
     row_tech: np.ndarray
@@ -50,7 +48,7 @@ class Problem:
     tech_home_wc: list  # normalised home work centre
     tech_quals: dict  # normalised work centre -> bool array over dispatchers
     tech_preflex: np.ndarray  # pre-assigned flex days per dispatcher (all rows)
-    busy: np.ndarray  # [tech, day] scheduled, training or pre-assigned flex
+    busy: np.ndarray  # [tech, day] scheduled, training, merged-schedule shift or pre-assigned flex
     training_busy: np.ndarray  # [tech, day] training day
 
     wc_label: dict = field(default_factory=dict)  # normalised -> original label
@@ -70,21 +68,12 @@ class Problem:
         return len(self.bucket_keys)
 
     def supply_after(self, vacations_per_bucket, flex_per_bucket=None) -> np.ndarray:
-        s = (
-            self.bucket_total
-            - self.bucket_training
-            + self.bucket_extra
-            - vacations_per_bucket
-        )
+        s = self.bucket_total - self.bucket_training + self.bucket_extra - vacations_per_bucket
         return s if flex_per_bucket is None else s + flex_per_bucket
 
     def shortage(self, vacations_per_bucket, flex_per_bucket=None) -> np.ndarray:
         """Desk demand left uncovered for a given vacation (and optional flex) count."""
-        return np.maximum(
-            0,
-            self.bucket_demand
-            - self.supply_after(vacations_per_bucket, flex_per_bucket),
-        )
+        return np.maximum(0, self.bucket_demand - self.supply_after(vacations_per_bucket, flex_per_bucket))
 
 
 def clean_preflex(df: pd.DataFrame | None) -> pd.DataFrame | None:
@@ -93,11 +82,7 @@ def clean_preflex(df: pd.DataFrame | None) -> pd.DataFrame | None:
         return None
     from .data_io import _clean_ids, parse_dates, require
 
-    require(
-        df,
-        ["TECH_ID", "SHIFT_DATE", "WORK_CENTER_ID", "SHIFT_TYPE"],
-        "pre-assigned flex",
-    )
+    require(df, ["TECH_ID", "SHIFT_DATE", "WORK_CENTER_ID", "SHIFT_TYPE"], "pre-assigned flex")
     df = parse_dates(df, "SHIFT_DATE", "pre-assigned flex")
     df["TECH_ID"] = _clean_ids(df["TECH_ID"])
     df["SHIFT_TYPE"] = df["SHIFT_TYPE"].astype(str).str.strip().str.upper()
@@ -110,7 +95,11 @@ def build_problem(
     dates: list[pd.Timestamp],
     training: set,
     preflex: pd.DataFrame | None = None,
+    blocked: set | None = None,
 ) -> Problem:
+    """``blocked``: (TECH_ID, date) pairs on which the dispatcher already has a
+    shift (work or training, e.g. Supply_Regular_Merged.csv).  They only stop
+    flex days; they do not change the regular supply or vacation eligibility."""
     sup = supply.reset_index(drop=True)
     tech_ids = sorted(sup["TECH_ID"].unique())
     tcode = {t: i for i, t in enumerate(tech_ids)}
@@ -133,14 +122,14 @@ def build_problem(
         if t in tcode and d in dcode:
             train_busy[tcode[t], dcode[d]] = True
     in_training = train_busy[row_tech, row_day]
+    blocked_busy = np.zeros((nt, nd), dtype=bool)
+    for t, d in blocked or ():
+        if t in tcode and d in dcode:
+            blocked_busy[tcode[t], dcode[d]] = True
 
     # --- pre-assigned flex: always uses budget; adds a person only on a real off-day
-    pf_valid = pd.DataFrame(
-        columns=["TECH_ID", "SHIFT_DATE", "WORK_CENTER_ID", "SHIFT_TYPE"]
-    )
-    pf_conf = pd.DataFrame(
-        columns=["TECH_ID", "SHIFT_DATE", "WORK_CENTER_ID", "SHIFT_TYPE", "REASON"]
-    )
+    pf_valid = pd.DataFrame(columns=["TECH_ID", "SHIFT_DATE", "WORK_CENTER_ID", "SHIFT_TYPE"])
+    pf_conf = pd.DataFrame(columns=["TECH_ID", "SHIFT_DATE", "WORK_CENTER_ID", "SHIFT_TYPE", "REASON"])
     tech_preflex = np.zeros(nt, dtype=np.int64)
     preflex_busy = np.zeros((nt, nd), dtype=bool)
     if preflex is not None and len(preflex):
@@ -160,6 +149,8 @@ def build_problem(
                 reason[i] = "already a scheduled workday"
             elif train_busy[t, d]:
                 reason[i] = "training day"
+            elif blocked_busy[t, d]:
+                reason[i] = "shift already assigned in merged schedule"
             preflex_busy[t, d] = True
         ok = reason == ""
         pf_valid = pf.loc[ok].reset_index(drop=True)
@@ -172,9 +163,7 @@ def build_problem(
     for lab in demand["WORK_CENTER"].unique():
         wc_label.setdefault(norm_wc(lab), lab)
     keys = set(zip(row_day.tolist(), row_wc.tolist(), row_sh.tolist()))
-    keys |= {
-        (dcode[d], wc, sh) for (d, wc, sh), v in dem.items() if d in dcode and v > 0
-    }
+    keys |= {(dcode[d], wc, sh) for (d, wc, sh), v in dem.items() if d in dcode and v > 0}
     pf_keys = list(
         zip(
             pf_valid["SHIFT_DATE"].map(dcode).astype(int).tolist(),
@@ -194,9 +183,7 @@ def build_problem(
     bucket_keys = [(dates[k[0]], wc_label.get(k[1], k[1]), k[2]) for k in keys]
 
     bucket_total = np.bincount(row_bucket, minlength=nb).astype(np.int64)
-    bucket_training = np.bincount(row_bucket[in_training], minlength=nb).astype(
-        np.int64
-    )
+    bucket_training = np.bincount(row_bucket[in_training], minlength=nb).astype(np.int64)
     bucket_eligible = bucket_total - bucket_training
     bucket_extra = np.zeros(nb, dtype=np.int64)
     for k in pf_keys:
@@ -208,9 +195,7 @@ def build_problem(
         raise ValueError(
             f"Missing desk demand for {len(missing)} scheduled buckets, e.g. {missing[:3]}"
         )
-    bucket_demand = np.array(
-        [dem.get((dates[k[0]], k[1], k[2]), 0) for k in keys], dtype=np.int64
-    )
+    bucket_demand = np.array([dem.get((dates[k[0]], k[1], k[2]), 0) for k in keys], dtype=np.int64)
     bucket_slack = bucket_total - bucket_training + bucket_extra - bucket_demand
     bucket_free = np.minimum(bucket_eligible, np.maximum(0, bucket_slack))
 
@@ -233,7 +218,7 @@ def build_problem(
         flag[np.unique(row_tech[row_wc == wc])] = True  # always qualified for own desk
         quals[wc] = flag
 
-    busy = works | train_busy | preflex_busy
+    busy = works | train_busy | blocked_busy | preflex_busy
 
     return Problem(
         supply=sup, dates=list(dates), tech_ids=tech_ids,

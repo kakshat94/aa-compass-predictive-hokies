@@ -24,22 +24,14 @@ from vacation_allocation import AllocationConfig, data_io, run_allocation
 
 
 def main() -> None:
-    p = argparse.ArgumentParser(
-        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
-    )
+    p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--supply", required=True)
     p.add_argument("--demand", required=True)
     p.add_argument("--volume", required=True)
     p.add_argument("--training", default=None)
-    p.add_argument(
-        "--preassigned-flex",
-        default=None,
-        help="pre-assigned flex file (Flex_assignment_qualified.csv)",
-    )
+    p.add_argument("--preassigned-flex", default=None, help="pre-assigned flex file (Flex_assignment_qualified.csv)")
     p.add_argument("--out", default="fairness_tradeoff.csv")
-    p.add_argument(
-        "--slack", type=int, default=6, help="fairness_slack_days for the relaxed rows"
-    )
+    p.add_argument("--slack", type=int, default=6, help="fairness_slack_days for the relaxed rows")
     p.add_argument("--weights", type=int, nargs="+", default=[300, 200, 100, 60, 30, 10],
                    help="fairness_weight values to try (lower = uneven counts are cheaper)")  # fmt: skip
     a = p.parse_args()
@@ -52,11 +44,7 @@ def main() -> None:
     preflex = data_io.read_csv(a.preassigned_flex) if a.preassigned_flex else None
 
     runs = [("strict", AllocationConfig())] + [
-        (
-            f"weight={w}",
-            AllocationConfig(fairness_slack_days=a.slack, fairness_weight=w),
-        )
-        for w in a.weights
+        (f"weight={w}", AllocationConfig(fairness_slack_days=a.slack, fairness_weight=w)) for w in a.weights
     ]
     rows = []
     for label, cfg in runs:

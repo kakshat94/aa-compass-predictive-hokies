@@ -88,9 +88,7 @@ class FlexCapacity:
         cand_d = problem.bucket_day[cand_b]
         self.n_candidate_arcs = int(cand_t.size)
         self.cand_t, self.cand_b, self.cand_d = cand_t, cand_b, cand_d
-        self.budget = np.maximum(0, cfg.max_flex_days - problem.tech_preflex).astype(
-            np.int64
-        )
+        self.budget = np.maximum(0, cfg.max_flex_days - problem.tech_preflex).astype(np.int64)
 
         # Node ids:  0 = SRC, 1 = SNK, then dispatchers, buckets, [dispatcher,date] nodes
         self.SRC, self.SNK = 0, 1

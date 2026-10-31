@@ -71,13 +71,9 @@ def level_range(problem: Problem, cfg: AllocationConfig, day_lo, day_hi) -> rang
     return range(first, last + 1)
 
 
-def capacity_ok(
-    problem: Problem, cfg: AllocationConfig, day_lo, level: int
-) -> str | None:
+def capacity_ok(problem: Problem, cfg: AllocationConfig, day_lo, level: int) -> str | None:
     """Reason the candidate is impossible, or None."""
-    elig_day = np.bincount(
-        problem.row_day[problem.row_eligible], minlength=problem.n_day
-    )
+    elig_day = np.bincount(problem.row_day[problem.row_eligible], minlength=problem.n_day)
     bad = np.flatnonzero(elig_day < day_lo)
     if bad.size:
         d = bad[0]
@@ -148,12 +144,7 @@ def allocate(
     free = problem.bucket_free
     excess = problem.bucket_eligible - free
     b_free = np.flatnonzero(free > 0)
-    add(
-        BUCK0 + b_free,
-        DAY0 + problem.bucket_day[b_free],
-        free[b_free],
-        np.zeros(b_free.size),
-    )
+    add(BUCK0 + b_free, DAY0 + problem.bucket_day[b_free], free[b_free], np.zeros(b_free.size))
     b_exc = np.flatnonzero(excess > 0)
     add(
         BUCK0 + b_exc,
@@ -175,16 +166,10 @@ def allocate(
     n_inc = level + 1 + k - base_cnt
     v_old = base_cnt + np.arange(n_inc)
     centre = level + 0.5
-    fair = (
-        cfg.fairness_weight
-        * PRICE_SCALE
-        * ((v_old + 1 - centre) ** 2 - (v_old - centre) ** 2)
-    )
+    fair = cfg.fairness_weight * PRICE_SCALE * ((v_old + 1 - centre) ** 2 - (v_old - centre) ** 2)
     marg = np.rint(fair).astype(np.int64)[None, :].repeat(nt, axis=0) - VACATION_REWARD
     if cfg.workday_tie_break:
-        extra = np.minimum(
-            problem.tech_workdays - problem.tech_workdays.min(), TIE_BREAK_MAX
-        )
+        extra = np.minimum(problem.tech_workdays - problem.tech_workdays.min(), TIE_BREAK_MAX)
         marg = marg - extra[:, None]
     t_ix = np.repeat(np.arange(nt), n_inc)
     add(np.full(t_ix.size, SRC), TECH0 + t_ix, np.ones(t_ix.size), marg.ravel())
@@ -209,9 +194,7 @@ def allocate(
         supply[TOT] = -tot_min
         supply[SNK] += tot_min
     if supply[SNK] > 0:
-        raise InfeasibleAllocation(
-            "fairness level too low for the required daily totals"
-        )
+        raise InfeasibleAllocation("fairness level too low for the required daily totals")
     smcf.set_nodes_supplies(np.arange(n_nodes), supply)
 
     status = smcf.solve()

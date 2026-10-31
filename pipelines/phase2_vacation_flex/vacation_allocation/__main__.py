@@ -12,19 +12,11 @@ from .pipeline import run_from_files
 
 def main(argv=None) -> int:
     d = AllocationConfig()
-    p = argparse.ArgumentParser(
-        description="Allocate vacations out of scheduled dispatcher supply"
-    )
+    p = argparse.ArgumentParser(description="Allocate vacations out of scheduled dispatcher supply")
     p.add_argument("--supply", required=True, help="Supply_Regular_qualified.csv")
     p.add_argument("--demand", required=True, help="annual_desk_needs_reference.csv")
-    p.add_argument(
-        "--volume", required=True, help="demand_volume_per_day_reference.csv"
-    )
-    p.add_argument(
-        "--training",
-        default=None,
-        help="optional training calendar (TECH_ID, SHIFT_DATE)",
-    )
+    p.add_argument("--volume", required=True, help="demand_volume_per_day_reference.csv")
+    p.add_argument("--training", default=None, help="optional training calendar (TECH_ID, SHIFT_DATE)")
     p.add_argument("--out-dir", required=True)
     p.add_argument("--daily-min", type=int, default=d.daily_min)
     p.add_argument("--daily-max", type=int, default=d.daily_max)
@@ -33,28 +25,12 @@ def main(argv=None) -> int:
     p.add_argument("--fairness-weight", type=int, default=d.fairness_weight)
     p.add_argument("--proportionality-tolerance", type=float, default=d.proportionality_tolerance,
                    help="0 = only the best-fitting scale; 0.05 = fit may be up to 5%% worse")  # fmt: skip
-    p.add_argument(
-        "--base-daily",
-        type=int,
-        default=None,
-        help="average vacations per day, e.g. 27",
-    )
-    p.add_argument(
-        "--base-tolerance",
-        type=float,
-        default=0.0,
-        help="+- vacations per day around the base",
-    )
+    p.add_argument("--base-daily", type=int, default=None, help="average vacations per day, e.g. 27")
+    p.add_argument("--base-tolerance", type=float, default=0.0, help="+- vacations per day around the base")
     p.add_argument("--no-proportionality", action="store_true", help="switch R3 off")
     p.add_argument("--max-flex-days", type=int, default=d.max_flex_days)
-    p.add_argument(
-        "--flex-any-shift",
-        action="store_true",
-        help="flex candidates may come from any shift",
-    )
-    p.add_argument(
-        "--flex-pricing-iterations", type=int, default=d.flex_pricing_iterations
-    )
+    p.add_argument("--flex-any-shift", action="store_true", help="flex candidates may come from any shift")
+    p.add_argument("--flex-pricing-iterations", type=int, default=d.flex_pricing_iterations)
     p.add_argument("-v", "--verbose", action="store_true")
     a = p.parse_args(argv)
 
@@ -75,9 +51,7 @@ def main(argv=None) -> int:
         flex_same_shift_only=not a.flex_any_shift,
         flex_pricing_iterations=a.flex_pricing_iterations,
     )
-    result, paths = run_from_files(
-        a.supply, a.demand, a.volume, a.out_dir, a.training, cfg
-    )
+    result, paths = run_from_files(a.supply, a.demand, a.volume, a.out_dir, a.training, cfg)
     c = result.stats["coverage"]
     r = result.stats["requirements"]
     print(f"vacations: {r['total_vacations']:,}  daily [{r['daily_min']}, {r['daily_max']}]  "

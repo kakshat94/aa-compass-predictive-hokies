@@ -4,11 +4,23 @@
 `run_vacation(PHASE2_DIR, PHASE3_DIR, ROOT, FAIR_SECONDS, PHASE1_DIR=...)` followed by
 `run_flex(PHASE2_DIR, PHASE3_DIR, ROOT, PHASE1_DIR)`, or `run_vacation_and_flex(...)`. All three are in `executable.py`.
 
+## Vacation objective
+
+By default, vacations minimise the desk demand **they** leave uncovered. Flex days still to be assigned are not
+counted on. Vacations are taken only from workdays in `Supply_Regular_qualified.csv`; training days
+(`all_training_data.csv`) never become vacation. Pre-assigned flex days are existing supply and count as cover.
+
+Setting `solver: {flex_aware_vacations: true}` restores the earlier objective. The rules are unchanged, but
+unavoidable shortages are steered to desks and dates where flex can still cover them. On test data the two
+objectives left almost the same unmet demand after vacations (943 vs 943; 1,138 vs 1,153), but the flex-aware one left
+much less after flex (89 vs 378; 163 vs 567). Both steps read `all_training_data.csv` so they count cover the same way.
+
 ## Flex assignment (`flex_pipeline.py`, `flex_assignment.py`)
 
-A flex day turns an **off-day** into a workday. An off-day is a date the dispatcher is not scheduled for in
-`Supply_Regular_qualified.csv`, is not training (`all_training_data.csv`), and has no pre-assigned flex
-(`Flex_assignment_qualified.csv`). A dispatcher's remaining flex budget is 4 minus their pre-assigned flex days. By
+A flex day turns an **off-day** into a workday. An off-day is a date the dispatcher has no shift for in
+`PHASE1_DIR/Supply_Regular_Merged.csv` (all work and training days), is not a workday in
+`Supply_Regular_qualified.csv`, and has no pre-assigned flex (`Flex_assignment_qualified.csv`). The training file is no
+longer read: training days are covered by the merged file. A dispatcher's remaining flex budget is 4 minus their pre-assigned flex days. By
 default they may flex only onto their own `WORK_CENTER_ID` (never a secondary qualification), only on their own
 shift, and at most once per date. Set `flex.home_work_center_only: false` to also allow qualified secondary desks.
 
@@ -42,7 +54,7 @@ Outputs, in `flex_output_dir` (same names as the previous flex step): `flex_days
 | `flex` | `max_days_per_dispatcher`, `home_work_center_only`, `same_shift_only`, `*_cost` | flex rules and preferences |
 
 Input files and output folders are not in the YAML; `executable.py` sets them in the `run_*` functions:
-`PHASE2_DIR/Supply_Regular_qualified.csv`, `PHASE2_DIR/all_training_data.csv`,
+`PHASE2_DIR/Supply_Regular_qualified.csv`, `PHASE1_DIR/Supply_Regular_Merged.csv`,
 `PHASE1_DIR/Flex_assignment_qualified.csv`, `ROOT/inputs/annual_desk_needs_reference.csv`,
 `ROOT/inputs/demand_volume_per_day_reference.csv`; outputs go to `PHASE3_DIR` (vacations) and
 `PHASE3_DIR/flex_maxflow` (flex).
