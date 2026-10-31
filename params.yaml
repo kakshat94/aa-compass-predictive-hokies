@@ -85,7 +85,7 @@ vacation_lns:
   # vacations never add shortage, and rules are met by giving fewer vacations.
   shortage:
     allow_added: true
-    weight: 1000                  # price per unit of added shortage (rule weights are kept 10x above it)
+    weight: 100000                  # price per unit of added shortage (rule weights are kept 10x above it)
 
   # Rule 1: vacations per date within [min - tolerance_below, max + tolerance_above].
   # The maximum is hard. The minimum comes before shortage.
@@ -105,7 +105,7 @@ vacation_lns:
   # slack_days: k    -> every dispatcher gets L-k .. L+1+k days, L chosen by
   #                     the model (max - min <= 2k + 1). 0 = L or L+1 days.
   rule2_fairness:
-    slack_days: 1
+    slack_days: 2
     worst_weight: 100.0             # weight on the largest |days - mean days|
     average_weight: 10000.0           # weight on the average |days - mean days|
 
@@ -129,7 +129,7 @@ vacation_lns:
   base_per_day:
     enabled: true
     value: 27
-    tolerance: 0.95
+    tolerance: 1
     weight: 100
 
   # Local search (LNS) after the starting solution.
@@ -199,26 +199,26 @@ training:
   # so nobody with that primary is trained in it. Values must be in [0, 1].
   secondary_proportion_scales:
     ATC:
-      ROC: 0.25
-      CHF: 0.15
-      OC: 0.15
-      Latin: 0.25
-      Europe: 0.25
-      Pacific: 0.25
+      ROC: 0.1
+      CHF: 0.1
+      OC: 0.1
+      Latin: 0.1
+      Europe: 0.1
+      Pacific: 0.1
     ROC:
-      ATC: 0.25
-      CHF: 0.2
-      OC: 0.15
-      Latin: 0.25
-      Europe: 0.25
-      Pacific: 0.25
+      ATC: 0.1
+      CHF: 0.1
+      OC: 0.1
+      Latin: 0.1
+      Europe: 0.1
+      Pacific: 0.1
     CHF:
-      ATC: 0.25
-      ROC: 0.25
-      OC: 0.25
-      Latin: 0.25
-      Europe: 0.25
-      Pacific: 0.25
+      ATC: 0.1
+      ROC: 0.1
+      OC: 0.1
+      Latin: 0.1
+      Europe: 0.1
+      Pacific: 0.1
     OC:
       ATC: 0.1
       ROC: 0.1
@@ -251,7 +251,7 @@ training:
 Buffer_demand:
   # Domestic: 1
   ROC: 0
-  OC: 0
+  OC: 1
   ATC: 0
   CHF: 0
   # Pacific: 1
