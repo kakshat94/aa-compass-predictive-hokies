@@ -2290,11 +2290,12 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,1/23/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100202,1/24/2025 5:00,2025-01-23,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,1/23/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100205,1/24/2025 5:00,2025-01-23,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,1/23/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100210,1/24/2025 5:00,2025-01-23,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
-,All,1/23/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100211,1/24/2025 5:00,2025-01-23,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,1/23/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100212,1/24/2025 5:00,2025-01-23,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
+,All,1/23/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100213,1/24/2025 5:00,2025-01-23,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,1/23/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100214,1/24/2025 5:00,2025-01-23,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,1/23/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100215,1/24/2025 5:00,2025-01-23,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,1/23/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100216,1/24/2025 5:00,2025-01-23,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
+,All,1/23/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100220,1/24/2025 5:00,2025-01-23,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,1/23/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100222,1/24/2025 5:00,2025-01-23,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,1/23/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100223,1/24/2025 5:00,2025-01-23,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,1/23/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100224,1/24/2025 5:00,2025-01-23,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
@@ -2303,7 +2304,6 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,1/23/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100228,1/24/2025 5:00,2025-01-23,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,1/23/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100229,1/24/2025 5:00,2025-01-23,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,1/23/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100230,1/24/2025 5:00,2025-01-23,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
-,All,1/23/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100238,1/24/2025 5:00,2025-01-23,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,1/23/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100239,1/24/2025 5:00,2025-01-23,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,1/23/2025 5:00,Latin,LATIN,N,1,Latin,100241,1/23/2025 13:00,2025-01-23,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,1/23/2025 5:00,Latin,LATIN,N,1,Latin,100242,1/23/2025 13:00,2025-01-23,8,MORNING,['Latin' 'Domestic' 'OC' 'Pacific'],Latin,1,0,0,0,1,1,0,1,4,,Latin
@@ -5931,11 +5931,11 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,2/7/2025 21:00,Latin,LATIN,N,1,Latin,100330,2/8/2025 5:00,2025-02-07,8,MIDNIGHT,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,2/7/2025 21:00,Latin,LATIN,N,1,Latin,100331,2/8/2025 5:00,2025-02-07,8,MIDNIGHT,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,2/7/2025 21:00,Latin,LATIN,N,1,Latin,100332,2/8/2025 5:00,2025-02-07,8,MIDNIGHT,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
+,All,2/7/2025 5:00,Europe,EUROPE,N,1,Europe,100334,2/7/2025 13:00,2025-02-07,8,MORNING,['Europe' 'Domestic'],Europe,1,0,0,0,0,0,1,0,2,,Europe
 ,All,2/7/2025 5:00,Europe,EUROPE,N,1,Europe,100337,2/7/2025 13:00,2025-02-07,8,MORNING,['Europe' 'Domestic' 'OC' 'Pacific'],Europe,1,0,0,0,1,0,1,1,4,,Europe
 ,All,2/7/2025 5:00,Europe,EUROPE,N,1,Europe,100338,2/7/2025 13:00,2025-02-07,8,MORNING,['Europe' 'Domestic' 'Pacific'],Europe,1,0,0,0,0,0,1,1,3,,Europe
+,All,2/7/2025 5:00,Europe,EUROPE,N,1,Europe,100340,2/7/2025 13:00,2025-02-07,8,MORNING,['Europe' 'Domestic'],Europe,1,0,0,0,0,0,1,0,2,,Europe
 ,All,2/7/2025 5:00,Europe,EUROPE,N,1,Europe,100342,2/7/2025 13:00,2025-02-07,8,MORNING,['Europe' 'Domestic' 'Latin' 'Pacific'],Europe,1,0,0,0,0,1,1,1,4,,Europe
-,All,2/7/2025 5:00,Europe,EUROPE,N,1,Europe,100346,2/7/2025 13:00,2025-02-07,8,MORNING,['Europe' 'Domestic' 'Latin'],Europe,1,0,0,0,0,1,1,0,3,,Europe
-,All,2/7/2025 5:00,Europe,EUROPE,N,1,Europe,100347,2/7/2025 13:00,2025-02-07,8,MORNING,['Europe' 'Domestic' 'Latin' 'Pacific'],Europe,1,0,0,0,0,1,1,1,4,,Europe
 ,All,2/7/2025 13:00,Europe,EUROPE,N,1,Europe,100351,2/7/2025 21:00,2025-02-07,8,EVENING,['Europe' 'Domestic'],Europe,1,0,0,0,0,0,1,0,2,,Europe
 ,All,2/7/2025 13:00,Europe,EUROPE,N,1,Europe,100354,2/7/2025 21:00,2025-02-07,8,EVENING,['Europe' 'Domestic' 'ROC' 'OC'],Europe,1,0,1,0,1,0,1,0,4,,Europe
 ,All,2/7/2025 13:00,Europe,EUROPE,N,1,Europe,100355,2/7/2025 21:00,2025-02-07,8,EVENING,['Europe' 'Domestic' 'Pacific'],Europe,1,0,0,0,0,0,1,1,3,,Europe
@@ -7280,17 +7280,17 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,2/13/2025 13:00,Latin,LATIN,N,1,Latin,100277,2/13/2025 21:00,2025-02-13,8,EVENING,['Latin' 'Domestic' 'CHF' 'Pacific'],Latin,1,0,0,1,0,1,0,1,4,,Latin
 ,All,2/13/2025 13:00,Latin,LATIN,N,1,Latin,100281,2/13/2025 21:00,2025-02-13,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,2/13/2025 13:00,Latin,LATIN,N,1,Latin,100286,2/13/2025 21:00,2025-02-13,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
-,All,2/13/2025 13:00,Latin,LATIN,N,1,Latin,100287,2/13/2025 21:00,2025-02-13,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
 ,All,2/13/2025 13:00,Latin,LATIN,N,1,Latin,100289,2/13/2025 21:00,2025-02-13,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,2/13/2025 13:00,Latin,LATIN,N,1,Latin,100293,2/13/2025 21:00,2025-02-13,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
 ,All,2/13/2025 13:00,Latin,LATIN,N,1,Latin,100294,2/13/2025 21:00,2025-02-13,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,2/13/2025 13:00,Latin,LATIN,N,1,Latin,100295,2/13/2025 21:00,2025-02-13,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,2/13/2025 13:00,Latin,LATIN,N,1,Latin,100298,2/13/2025 21:00,2025-02-13,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
+,All,2/13/2025 13:00,Latin,LATIN,N,1,Latin,100299,2/13/2025 21:00,2025-02-13,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,2/13/2025 13:00,Latin,LATIN,N,1,Latin,100303,2/13/2025 21:00,2025-02-13,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,2/13/2025 13:00,Latin,LATIN,N,1,Latin,100304,2/13/2025 21:00,2025-02-13,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
 ,All,2/13/2025 13:00,Latin,LATIN,N,1,Latin,100306,2/13/2025 21:00,2025-02-13,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,2/13/2025 13:00,Latin,LATIN,N,1,Latin,100307,2/13/2025 21:00,2025-02-13,8,EVENING,['Latin' 'Domestic' 'OC'],Latin,1,0,0,0,1,1,0,0,3,,Latin
-,All,2/13/2025 13:00,Latin,LATIN,N,1,Latin,100309,2/13/2025 21:00,2025-02-13,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
+,All,2/13/2025 13:00,Latin,LATIN,N,1,Latin,100312,2/13/2025 21:00,2025-02-13,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,2/13/2025 21:00,Latin,LATIN,N,1,Latin,100315,2/14/2025 5:00,2025-02-13,8,MIDNIGHT,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,2/13/2025 21:00,Latin,LATIN,N,1,Latin,100316,2/14/2025 5:00,2025-02-13,8,MIDNIGHT,['Latin' 'Domestic' 'CHF'],Latin,1,0,0,1,0,1,0,0,3,,Latin
 ,All,2/13/2025 21:00,Latin,LATIN,N,1,Latin,100317,2/14/2025 5:00,2025-02-13,8,MIDNIGHT,['Latin' 'Domestic' 'ATC' 'Europe'],Latin,1,1,0,0,0,1,1,0,4,,Latin
@@ -19012,11 +19012,10 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,4/4/2025 5:00,Latin,LATIN,N,1,Latin,100273,4/4/2025 13:00,2025-04-04,8,MORNING,['Latin' 'Domestic' 'Europe' 'Pacific'],Latin,1,0,0,0,0,1,1,1,4,,Latin
 ,All,4/4/2025 5:00,Latin,LATIN,N,1,Latin,100274,4/4/2025 13:00,2025-04-04,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,4/4/2025 5:00,Latin,LATIN,N,1,Latin,100275,4/4/2025 13:00,2025-04-04,8,MORNING,['Latin' 'Domestic' 'OC'],Latin,1,0,0,0,1,1,0,0,3,,Latin
-,All,4/4/2025 13:00,Latin,LATIN,N,1,Latin,100277,4/4/2025 21:00,2025-04-04,8,EVENING,['Latin' 'Domestic' 'CHF' 'Pacific'],Latin,1,0,0,1,0,1,0,1,4,,Latin
 ,All,4/4/2025 13:00,Latin,LATIN,N,1,Latin,100279,4/4/2025 21:00,2025-04-04,8,EVENING,['Latin' 'Domestic' 'OC' 'Pacific'],Latin,1,0,0,0,1,1,0,1,4,,Latin
-,All,4/4/2025 13:00,Latin,LATIN,N,1,Latin,100280,4/4/2025 21:00,2025-04-04,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,4/4/2025 13:00,Latin,LATIN,N,1,Latin,100281,4/4/2025 21:00,2025-04-04,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,4/4/2025 13:00,Latin,LATIN,N,1,Latin,100285,4/4/2025 21:00,2025-04-04,8,EVENING,['Latin' 'Domestic' 'Europe' 'Pacific'],Latin,1,0,0,0,0,1,1,1,4,,Latin
+,All,4/4/2025 13:00,Latin,LATIN,N,1,Latin,100286,4/4/2025 21:00,2025-04-04,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,4/4/2025 13:00,Latin,LATIN,N,1,Latin,100292,4/4/2025 21:00,2025-04-04,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,4/4/2025 13:00,Latin,LATIN,N,1,Latin,100294,4/4/2025 21:00,2025-04-04,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,4/4/2025 13:00,Latin,LATIN,N,1,Latin,100297,4/4/2025 21:00,2025-04-04,8,EVENING,['Latin' 'Domestic' 'CHF'],Latin,1,0,0,1,0,1,0,0,3,,Latin
@@ -19026,6 +19025,7 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,4/4/2025 13:00,Latin,LATIN,N,1,Latin,100307,4/4/2025 21:00,2025-04-04,8,EVENING,['Latin' 'Domestic' 'OC'],Latin,1,0,0,0,1,1,0,0,3,,Latin
 ,All,4/4/2025 13:00,Latin,LATIN,N,1,Latin,100308,4/4/2025 21:00,2025-04-04,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,4/4/2025 13:00,Latin,LATIN,N,1,Latin,100310,4/4/2025 21:00,2025-04-04,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
+,All,4/4/2025 13:00,Latin,LATIN,N,1,Latin,100312,4/4/2025 21:00,2025-04-04,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,4/4/2025 21:00,Latin,LATIN,N,1,Latin,100314,4/5/2025 5:00,2025-04-04,8,MIDNIGHT,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,4/4/2025 21:00,Latin,LATIN,N,1,Latin,100318,4/5/2025 5:00,2025-04-04,8,MIDNIGHT,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,4/4/2025 21:00,Latin,LATIN,N,1,Latin,100319,4/5/2025 5:00,2025-04-04,8,MIDNIGHT,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
@@ -22643,26 +22643,26 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,4/19/2025 5:00,Latin,LATIN,N,1,Latin,100272,4/19/2025 13:00,2025-04-19,8,MORNING,['Latin' 'Domestic' 'CHF' 'Europe'],Latin,1,0,0,1,0,1,1,0,4,,Latin
 ,All,4/19/2025 5:00,Latin,LATIN,N,1,Latin,100275,4/19/2025 13:00,2025-04-19,8,MORNING,['Latin' 'Domestic' 'OC'],Latin,1,0,0,0,1,1,0,0,3,,Latin
 ,All,4/19/2025 13:00,Latin,LATIN,N,1,Latin,100277,4/19/2025 21:00,2025-04-19,8,EVENING,['Latin' 'Domestic' 'CHF' 'Pacific'],Latin,1,0,0,1,0,1,0,1,4,,Latin
-,All,4/19/2025 13:00,Latin,LATIN,N,1,Latin,100279,4/19/2025 21:00,2025-04-19,8,EVENING,['Latin' 'Domestic' 'OC' 'Pacific'],Latin,1,0,0,0,1,1,0,1,4,,Latin
 ,All,4/19/2025 13:00,Latin,LATIN,N,1,Latin,100280,4/19/2025 21:00,2025-04-19,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,4/19/2025 13:00,Latin,LATIN,N,1,Latin,100281,4/19/2025 21:00,2025-04-19,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
-,All,4/19/2025 13:00,Latin,LATIN,N,1,Latin,100285,4/19/2025 21:00,2025-04-19,8,EVENING,['Latin' 'Domestic' 'Europe' 'Pacific'],Latin,1,0,0,0,0,1,1,1,4,,Latin
 ,All,4/19/2025 13:00,Latin,LATIN,N,1,Latin,100290,4/19/2025 21:00,2025-04-19,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,4/19/2025 13:00,Latin,LATIN,N,1,Latin,100294,4/19/2025 21:00,2025-04-19,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
+,All,4/19/2025 13:00,Latin,LATIN,N,1,Latin,100297,4/19/2025 21:00,2025-04-19,8,EVENING,['Latin' 'Domestic' 'CHF'],Latin,1,0,0,1,0,1,0,0,3,,Latin
 ,All,4/19/2025 13:00,Latin,LATIN,N,1,Latin,100301,4/19/2025 21:00,2025-04-19,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
-,All,4/19/2025 13:00,Latin,LATIN,N,1,Latin,100302,4/19/2025 21:00,2025-04-19,8,EVENING,['Latin' 'Domestic' 'ATC' 'Pacific'],Latin,1,1,0,0,0,1,0,1,4,,Latin
 ,All,4/19/2025 13:00,Latin,LATIN,N,1,Latin,100304,4/19/2025 21:00,2025-04-19,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
 ,All,4/19/2025 13:00,Latin,LATIN,N,1,Latin,100306,4/19/2025 21:00,2025-04-19,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
+,All,4/19/2025 13:00,Latin,LATIN,N,1,Latin,100307,4/19/2025 21:00,2025-04-19,8,EVENING,['Latin' 'Domestic' 'OC'],Latin,1,0,0,0,1,1,0,0,3,,Latin
 ,All,4/19/2025 13:00,Latin,LATIN,N,1,Latin,100308,4/19/2025 21:00,2025-04-19,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,4/19/2025 13:00,Latin,LATIN,N,1,Latin,100310,4/19/2025 21:00,2025-04-19,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
 ,All,4/19/2025 13:00,Latin,LATIN,N,1,Latin,100311,4/19/2025 21:00,2025-04-19,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
+,All,4/19/2025 13:00,Latin,LATIN,N,1,Latin,100312,4/19/2025 21:00,2025-04-19,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,4/19/2025 21:00,Latin,LATIN,N,1,Latin,100314,4/20/2025 5:00,2025-04-19,8,MIDNIGHT,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,4/19/2025 21:00,Latin,LATIN,N,1,Latin,100318,4/20/2025 5:00,2025-04-19,8,MIDNIGHT,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,4/19/2025 21:00,Latin,LATIN,N,1,Latin,100319,4/20/2025 5:00,2025-04-19,8,MIDNIGHT,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,4/19/2025 21:00,Latin,LATIN,N,1,Latin,100320,4/20/2025 5:00,2025-04-19,8,MIDNIGHT,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
+,All,4/19/2025 21:00,Latin,LATIN,N,1,Latin,100322,4/20/2025 5:00,2025-04-19,8,MIDNIGHT,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
+,All,4/19/2025 21:00,Latin,LATIN,N,1,Latin,100323,4/20/2025 5:00,2025-04-19,8,MIDNIGHT,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,4/19/2025 21:00,Latin,LATIN,N,1,Latin,100326,4/20/2025 5:00,2025-04-19,8,MIDNIGHT,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
-,All,4/19/2025 21:00,Latin,LATIN,N,1,Latin,100328,4/20/2025 5:00,2025-04-19,8,MIDNIGHT,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
-,All,4/19/2025 21:00,Latin,LATIN,N,1,Latin,100332,4/20/2025 5:00,2025-04-19,8,MIDNIGHT,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,4/19/2025 5:00,Europe,EUROPE,N,1,Europe,100333,4/19/2025 13:00,2025-04-19,8,MORNING,['Europe' 'Domestic' 'Latin' 'Pacific'],Europe,1,0,0,0,0,1,1,1,4,,Europe
 ,All,4/19/2025 5:00,Europe,EUROPE,N,1,Europe,100336,4/19/2025 13:00,2025-04-19,8,MORNING,['Europe' 'Domestic'],Europe,1,0,0,0,0,0,1,0,2,,Europe
 ,All,4/19/2025 5:00,Europe,EUROPE,N,1,Europe,100339,4/19/2025 13:00,2025-04-19,8,MORNING,['Europe' 'Domestic'],Europe,1,0,0,0,0,0,1,0,2,,Europe
@@ -23580,10 +23580,12 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,4/23/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100239,4/24/2025 5:00,2025-04-23,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,4/23/2025 5:00,Latin,LATIN,N,1,Latin,100241,4/23/2025 13:00,2025-04-23,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,4/23/2025 5:00,Latin,LATIN,N,1,Latin,100242,4/23/2025 13:00,2025-04-23,8,MORNING,['Latin' 'Domestic' 'OC' 'Pacific'],Latin,1,0,0,0,1,1,0,1,4,,Latin
+,All,4/23/2025 5:00,Latin,LATIN,N,1,Latin,100245,4/23/2025 13:00,2025-04-23,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,4/23/2025 5:00,Latin,LATIN,N,1,Latin,100246,4/23/2025 13:00,2025-04-23,8,MORNING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,4/23/2025 5:00,Latin,LATIN,N,1,Latin,100247,4/23/2025 13:00,2025-04-23,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,4/23/2025 5:00,Latin,LATIN,N,1,Latin,100251,4/23/2025 13:00,2025-04-23,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
-,All,4/23/2025 5:00,Latin,LATIN,N,1,Latin,100254,4/23/2025 13:00,2025-04-23,8,MORNING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
+,All,4/23/2025 5:00,Latin,LATIN,N,1,Latin,100252,4/23/2025 13:00,2025-04-23,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
+,All,4/23/2025 5:00,Latin,LATIN,N,1,Latin,100256,4/23/2025 13:00,2025-04-23,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,4/23/2025 5:00,Latin,LATIN,N,1,Latin,100258,4/23/2025 13:00,2025-04-23,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,4/23/2025 5:00,Latin,LATIN,N,1,Latin,100259,4/23/2025 13:00,2025-04-23,8,MORNING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,4/23/2025 5:00,Latin,LATIN,N,1,Latin,100260,4/23/2025 13:00,2025-04-23,8,MORNING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
@@ -23592,22 +23594,20 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,4/23/2025 5:00,Latin,LATIN,N,1,Latin,100263,4/23/2025 13:00,2025-04-23,8,MORNING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
 ,All,4/23/2025 5:00,Latin,LATIN,N,1,Latin,100266,4/23/2025 13:00,2025-04-23,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,4/23/2025 5:00,Latin,LATIN,N,1,Latin,100268,4/23/2025 13:00,2025-04-23,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
-,All,4/23/2025 5:00,Latin,LATIN,N,1,Latin,100273,4/23/2025 13:00,2025-04-23,8,MORNING,['Latin' 'Domestic' 'Europe' 'Pacific'],Latin,1,0,0,0,0,1,1,1,4,,Latin
-,All,4/23/2025 5:00,Latin,LATIN,N,1,Latin,100276,4/23/2025 13:00,2025-04-23,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,4/23/2025 13:00,Latin,LATIN,N,1,Latin,100278,4/23/2025 21:00,2025-04-23,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
-,All,4/23/2025 13:00,Latin,LATIN,N,1,Latin,100279,4/23/2025 21:00,2025-04-23,8,EVENING,['Latin' 'Domestic' 'OC' 'Pacific'],Latin,1,0,0,0,1,1,0,1,4,,Latin
+,All,4/23/2025 13:00,Latin,LATIN,N,1,Latin,100282,4/23/2025 21:00,2025-04-23,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
+,All,4/23/2025 13:00,Latin,LATIN,N,1,Latin,100283,4/23/2025 21:00,2025-04-23,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,4/23/2025 13:00,Latin,LATIN,N,1,Latin,100284,4/23/2025 21:00,2025-04-23,8,EVENING,['Latin' 'Domestic' 'OC' 'Pacific'],Latin,1,0,0,0,1,1,0,1,4,,Latin
 ,All,4/23/2025 13:00,Latin,LATIN,N,1,Latin,100287,4/23/2025 21:00,2025-04-23,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
 ,All,4/23/2025 13:00,Latin,LATIN,N,1,Latin,100288,4/23/2025 21:00,2025-04-23,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
-,All,4/23/2025 13:00,Latin,LATIN,N,1,Latin,100289,4/23/2025 21:00,2025-04-23,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
-,All,4/23/2025 13:00,Latin,LATIN,N,1,Latin,100291,4/23/2025 21:00,2025-04-23,8,EVENING,['Latin' 'Domestic' 'OC'],Latin,1,0,0,0,1,1,0,0,3,,Latin
 ,All,4/23/2025 13:00,Latin,LATIN,N,1,Latin,100293,4/23/2025 21:00,2025-04-23,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
-,All,4/23/2025 13:00,Latin,LATIN,N,1,Latin,100296,4/23/2025 21:00,2025-04-23,8,EVENING,['Latin' 'Domestic' 'ROC'],Latin,1,0,1,0,0,1,0,0,3,,Latin
 ,All,4/23/2025 13:00,Latin,LATIN,N,1,Latin,100297,4/23/2025 21:00,2025-04-23,8,EVENING,['Latin' 'Domestic' 'CHF'],Latin,1,0,0,1,0,1,0,0,3,,Latin
 ,All,4/23/2025 13:00,Latin,LATIN,N,1,Latin,100298,4/23/2025 21:00,2025-04-23,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
 ,All,4/23/2025 13:00,Latin,LATIN,N,1,Latin,100300,4/23/2025 21:00,2025-04-23,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
+,All,4/23/2025 13:00,Latin,LATIN,N,1,Latin,100303,4/23/2025 21:00,2025-04-23,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,4/23/2025 13:00,Latin,LATIN,N,1,Latin,100305,4/23/2025 21:00,2025-04-23,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,4/23/2025 13:00,Latin,LATIN,N,1,Latin,100310,4/23/2025 21:00,2025-04-23,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
+,All,4/23/2025 13:00,Latin,LATIN,N,1,Latin,100313,4/23/2025 21:00,2025-04-23,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,4/23/2025 21:00,Latin,LATIN,N,1,Latin,100315,4/24/2025 5:00,2025-04-23,8,MIDNIGHT,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,4/23/2025 21:00,Latin,LATIN,N,1,Latin,100316,4/24/2025 5:00,2025-04-23,8,MIDNIGHT,['Latin' 'Domestic' 'CHF'],Latin,1,0,0,1,0,1,0,0,3,,Latin
 ,All,4/23/2025 21:00,Latin,LATIN,N,1,Latin,100321,4/24/2025 5:00,2025-04-23,8,MIDNIGHT,['Latin' 'Domestic' 'ATC'],Latin,1,1,0,0,0,1,0,0,3,,Latin
@@ -25306,8 +25306,8 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,4/30/2025 13:00,Latin,LATIN,N,1,Latin,100295,4/30/2025 21:00,2025-04-30,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,4/30/2025 13:00,Latin,LATIN,N,1,Latin,100296,4/30/2025 21:00,2025-04-30,8,EVENING,['Latin' 'Domestic' 'ROC'],Latin,1,0,1,0,0,1,0,0,3,,Latin
 ,All,4/30/2025 13:00,Latin,LATIN,N,1,Latin,100298,4/30/2025 21:00,2025-04-30,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
-,All,4/30/2025 13:00,Latin,LATIN,N,1,Latin,100299,4/30/2025 21:00,2025-04-30,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,4/30/2025 13:00,Latin,LATIN,N,1,Latin,100300,4/30/2025 21:00,2025-04-30,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
+,All,4/30/2025 13:00,Latin,LATIN,N,1,Latin,100312,4/30/2025 21:00,2025-04-30,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,4/30/2025 21:00,Latin,LATIN,N,1,Latin,100316,5/1/2025 5:00,2025-04-30,8,MIDNIGHT,['Latin' 'Domestic' 'CHF'],Latin,1,0,0,1,0,1,0,0,3,,Latin
 ,All,4/30/2025 21:00,Latin,LATIN,N,1,Latin,100317,5/1/2025 5:00,2025-04-30,8,MIDNIGHT,['Latin' 'Domestic' 'ATC' 'Europe'],Latin,1,1,0,0,0,1,1,0,4,,Latin
 ,All,4/30/2025 21:00,Latin,LATIN,N,1,Latin,100321,5/1/2025 5:00,2025-04-30,8,MIDNIGHT,['Latin' 'Domestic' 'ATC'],Latin,1,1,0,0,0,1,0,0,3,,Latin
@@ -26918,12 +26918,12 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,5/7/2025 5:00,Latin,LATIN,N,1,Latin,100252,5/7/2025 13:00,2025-05-07,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,5/7/2025 5:00,Latin,LATIN,N,1,Latin,100254,5/7/2025 13:00,2025-05-07,8,MORNING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,5/7/2025 5:00,Latin,LATIN,N,1,Latin,100256,5/7/2025 13:00,2025-05-07,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
+,All,5/7/2025 5:00,Latin,LATIN,N,1,Latin,100258,5/7/2025 13:00,2025-05-07,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,5/7/2025 5:00,Latin,LATIN,N,1,Latin,100259,5/7/2025 13:00,2025-05-07,8,MORNING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,5/7/2025 5:00,Latin,LATIN,N,1,Latin,100261,5/7/2025 13:00,2025-05-07,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,5/7/2025 5:00,Latin,LATIN,N,1,Latin,100263,5/7/2025 13:00,2025-05-07,8,MORNING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
-,All,5/7/2025 5:00,Latin,LATIN,N,1,Latin,100269,5/7/2025 13:00,2025-05-07,8,MORNING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
-,All,5/7/2025 5:00,Latin,LATIN,N,1,Latin,100272,5/7/2025 13:00,2025-05-07,8,MORNING,['Latin' 'Domestic' 'CHF' 'Europe'],Latin,1,0,0,1,0,1,1,0,4,,Latin
 ,All,5/7/2025 5:00,Latin,LATIN,N,1,Latin,100275,5/7/2025 13:00,2025-05-07,8,MORNING,['Latin' 'Domestic' 'OC'],Latin,1,0,0,0,1,1,0,0,3,,Latin
+,All,5/7/2025 5:00,Latin,LATIN,N,1,Latin,100276,5/7/2025 13:00,2025-05-07,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,5/7/2025 13:00,Latin,LATIN,N,1,Latin,100277,5/7/2025 21:00,2025-05-07,8,EVENING,['Latin' 'Domestic' 'CHF' 'Pacific'],Latin,1,0,0,1,0,1,0,1,4,,Latin
 ,All,5/7/2025 13:00,Latin,LATIN,N,1,Latin,100282,5/7/2025 21:00,2025-05-07,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,5/7/2025 13:00,Latin,LATIN,N,1,Latin,100283,5/7/2025 21:00,2025-05-07,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
@@ -27150,6 +27150,7 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,5/8/2025 5:00,Latin,LATIN,N,1,Latin,100247,5/8/2025 13:00,2025-05-08,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,5/8/2025 5:00,Latin,LATIN,N,1,Latin,100251,5/8/2025 13:00,2025-05-08,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,5/8/2025 5:00,Latin,LATIN,N,1,Latin,100252,5/8/2025 13:00,2025-05-08,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
+,All,5/8/2025 5:00,Latin,LATIN,N,1,Latin,100256,5/8/2025 13:00,2025-05-08,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,5/8/2025 5:00,Latin,LATIN,N,1,Latin,100258,5/8/2025 13:00,2025-05-08,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,5/8/2025 5:00,Latin,LATIN,N,1,Latin,100259,5/8/2025 13:00,2025-05-08,8,MORNING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,5/8/2025 5:00,Latin,LATIN,N,1,Latin,100260,5/8/2025 13:00,2025-05-08,8,MORNING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
@@ -27157,7 +27158,6 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,5/8/2025 5:00,Latin,LATIN,N,1,Latin,100262,5/8/2025 13:00,2025-05-08,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,5/8/2025 5:00,Latin,LATIN,N,1,Latin,100263,5/8/2025 13:00,2025-05-08,8,MORNING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
 ,All,5/8/2025 5:00,Latin,LATIN,N,1,Latin,100266,5/8/2025 13:00,2025-05-08,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
-,All,5/8/2025 5:00,Latin,LATIN,N,1,Latin,100268,5/8/2025 13:00,2025-05-08,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,5/8/2025 13:00,Latin,LATIN,N,1,Latin,100278,5/8/2025 21:00,2025-05-08,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,5/8/2025 13:00,Latin,LATIN,N,1,Latin,100282,5/8/2025 21:00,2025-05-08,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,5/8/2025 13:00,Latin,LATIN,N,1,Latin,100283,5/8/2025 21:00,2025-05-08,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
@@ -28103,14 +28103,14 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,5/12/2025 13:00,Latin,LATIN,N,1,Latin,100282,5/12/2025 21:00,2025-05-12,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,5/12/2025 13:00,Latin,LATIN,N,1,Latin,100285,5/12/2025 21:00,2025-05-12,8,EVENING,['Latin' 'Domestic' 'Europe' 'Pacific'],Latin,1,0,0,0,0,1,1,1,4,,Latin
 ,All,5/12/2025 13:00,Latin,LATIN,N,1,Latin,100286,5/12/2025 21:00,2025-05-12,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
+,All,5/12/2025 13:00,Latin,LATIN,N,1,Latin,100287,5/12/2025 21:00,2025-05-12,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
 ,All,5/12/2025 13:00,Latin,LATIN,N,1,Latin,100290,5/12/2025 21:00,2025-05-12,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,5/12/2025 13:00,Latin,LATIN,N,1,Latin,100292,5/12/2025 21:00,2025-05-12,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,5/12/2025 13:00,Latin,LATIN,N,1,Latin,100301,5/12/2025 21:00,2025-05-12,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
-,All,5/12/2025 13:00,Latin,LATIN,N,1,Latin,100302,5/12/2025 21:00,2025-05-12,8,EVENING,['Latin' 'Domestic' 'ATC' 'Pacific'],Latin,1,1,0,0,0,1,0,1,4,,Latin
 ,All,5/12/2025 13:00,Latin,LATIN,N,1,Latin,100304,5/12/2025 21:00,2025-05-12,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
-,All,5/12/2025 13:00,Latin,LATIN,N,1,Latin,100307,5/12/2025 21:00,2025-05-12,8,EVENING,['Latin' 'Domestic' 'OC'],Latin,1,0,0,0,1,1,0,0,3,,Latin
-,All,5/12/2025 13:00,Latin,LATIN,N,1,Latin,100308,5/12/2025 21:00,2025-05-12,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
+,All,5/12/2025 13:00,Latin,LATIN,N,1,Latin,100306,5/12/2025 21:00,2025-05-12,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,5/12/2025 13:00,Latin,LATIN,N,1,Latin,100311,5/12/2025 21:00,2025-05-12,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
+,All,5/12/2025 13:00,Latin,LATIN,N,1,Latin,100312,5/12/2025 21:00,2025-05-12,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,5/12/2025 21:00,Latin,LATIN,N,1,Latin,100318,5/13/2025 5:00,2025-05-12,8,MIDNIGHT,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,5/12/2025 21:00,Latin,LATIN,N,1,Latin,100319,5/13/2025 5:00,2025-05-12,8,MIDNIGHT,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,5/12/2025 21:00,Latin,LATIN,N,1,Latin,100320,5/13/2025 5:00,2025-05-12,8,MIDNIGHT,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
@@ -28335,18 +28335,18 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,5/13/2025 5:00,Latin,LATIN,N,1,Latin,100275,5/13/2025 13:00,2025-05-13,8,MORNING,['Latin' 'Domestic' 'OC'],Latin,1,0,0,0,1,1,0,0,3,,Latin
 ,All,5/13/2025 5:00,Latin,LATIN,N,1,Latin,100276,5/13/2025 13:00,2025-05-13,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,5/13/2025 13:00,Latin,LATIN,N,1,Latin,100277,5/13/2025 21:00,2025-05-13,8,EVENING,['Latin' 'Domestic' 'CHF' 'Pacific'],Latin,1,0,0,1,0,1,0,1,4,,Latin
-,All,5/13/2025 13:00,Latin,LATIN,N,1,Latin,100281,5/13/2025 21:00,2025-05-13,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
-,All,5/13/2025 13:00,Latin,LATIN,N,1,Latin,100285,5/13/2025 21:00,2025-05-13,8,EVENING,['Latin' 'Domestic' 'Europe' 'Pacific'],Latin,1,0,0,0,0,1,1,1,4,,Latin
+,All,5/13/2025 13:00,Latin,LATIN,N,1,Latin,100282,5/13/2025 21:00,2025-05-13,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,5/13/2025 13:00,Latin,LATIN,N,1,Latin,100287,5/13/2025 21:00,2025-05-13,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
-,All,5/13/2025 13:00,Latin,LATIN,N,1,Latin,100290,5/13/2025 21:00,2025-05-13,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,5/13/2025 13:00,Latin,LATIN,N,1,Latin,100292,5/13/2025 21:00,2025-05-13,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,5/13/2025 13:00,Latin,LATIN,N,1,Latin,100294,5/13/2025 21:00,2025-05-13,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
-,All,5/13/2025 13:00,Latin,LATIN,N,1,Latin,100298,5/13/2025 21:00,2025-05-13,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
+,All,5/13/2025 13:00,Latin,LATIN,N,1,Latin,100295,5/13/2025 21:00,2025-05-13,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,5/13/2025 13:00,Latin,LATIN,N,1,Latin,100299,5/13/2025 21:00,2025-05-13,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,5/13/2025 13:00,Latin,LATIN,N,1,Latin,100302,5/13/2025 21:00,2025-05-13,8,EVENING,['Latin' 'Domestic' 'ATC' 'Pacific'],Latin,1,1,0,0,0,1,0,1,4,,Latin
+,All,5/13/2025 13:00,Latin,LATIN,N,1,Latin,100303,5/13/2025 21:00,2025-05-13,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,5/13/2025 13:00,Latin,LATIN,N,1,Latin,100304,5/13/2025 21:00,2025-05-13,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
 ,All,5/13/2025 13:00,Latin,LATIN,N,1,Latin,100306,5/13/2025 21:00,2025-05-13,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,5/13/2025 13:00,Latin,LATIN,N,1,Latin,100307,5/13/2025 21:00,2025-05-13,8,EVENING,['Latin' 'Domestic' 'OC'],Latin,1,0,0,0,1,1,0,0,3,,Latin
+,All,5/13/2025 13:00,Latin,LATIN,N,1,Latin,100309,5/13/2025 21:00,2025-05-13,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,5/13/2025 13:00,Latin,LATIN,N,1,Latin,100312,5/13/2025 21:00,2025-05-13,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,5/13/2025 21:00,Latin,LATIN,N,1,Latin,100315,5/14/2025 5:00,2025-05-13,8,MIDNIGHT,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,5/13/2025 21:00,Latin,LATIN,N,1,Latin,100316,5/14/2025 5:00,2025-05-13,8,MIDNIGHT,['Latin' 'Domestic' 'CHF'],Latin,1,0,0,1,0,1,0,0,3,,Latin
@@ -28572,12 +28572,10 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,5/14/2025 5:00,Latin,LATIN,N,1,Latin,100275,5/14/2025 13:00,2025-05-14,8,MORNING,['Latin' 'Domestic' 'OC'],Latin,1,0,0,0,1,1,0,0,3,,Latin
 ,All,5/14/2025 5:00,Latin,LATIN,N,1,Latin,100276,5/14/2025 13:00,2025-05-14,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,5/14/2025 13:00,Latin,LATIN,N,1,Latin,100277,5/14/2025 21:00,2025-05-14,8,EVENING,['Latin' 'Domestic' 'CHF' 'Pacific'],Latin,1,0,0,1,0,1,0,1,4,,Latin
-,All,5/14/2025 13:00,Latin,LATIN,N,1,Latin,100281,5/14/2025 21:00,2025-05-14,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,5/14/2025 13:00,Latin,LATIN,N,1,Latin,100282,5/14/2025 21:00,2025-05-14,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,5/14/2025 13:00,Latin,LATIN,N,1,Latin,100283,5/14/2025 21:00,2025-05-14,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,5/14/2025 13:00,Latin,LATIN,N,1,Latin,100289,5/14/2025 21:00,2025-05-14,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,5/14/2025 13:00,Latin,LATIN,N,1,Latin,100292,5/14/2025 21:00,2025-05-14,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
-,All,5/14/2025 13:00,Latin,LATIN,N,1,Latin,100293,5/14/2025 21:00,2025-05-14,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
 ,All,5/14/2025 13:00,Latin,LATIN,N,1,Latin,100295,5/14/2025 21:00,2025-05-14,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,5/14/2025 13:00,Latin,LATIN,N,1,Latin,100298,5/14/2025 21:00,2025-05-14,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
 ,All,5/14/2025 13:00,Latin,LATIN,N,1,Latin,100299,5/14/2025 21:00,2025-05-14,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
@@ -28585,6 +28583,8 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,5/14/2025 13:00,Latin,LATIN,N,1,Latin,100304,5/14/2025 21:00,2025-05-14,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
 ,All,5/14/2025 13:00,Latin,LATIN,N,1,Latin,100306,5/14/2025 21:00,2025-05-14,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,5/14/2025 13:00,Latin,LATIN,N,1,Latin,100307,5/14/2025 21:00,2025-05-14,8,EVENING,['Latin' 'Domestic' 'OC'],Latin,1,0,0,0,1,1,0,0,3,,Latin
+,All,5/14/2025 13:00,Latin,LATIN,N,1,Latin,100309,5/14/2025 21:00,2025-05-14,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
+,All,5/14/2025 13:00,Latin,LATIN,N,1,Latin,100313,5/14/2025 21:00,2025-05-14,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,5/14/2025 21:00,Latin,LATIN,N,1,Latin,100317,5/15/2025 5:00,2025-05-14,8,MIDNIGHT,['Latin' 'Domestic' 'ATC' 'Europe'],Latin,1,1,0,0,0,1,1,0,4,,Latin
 ,All,5/14/2025 21:00,Latin,LATIN,N,1,Latin,100322,5/15/2025 5:00,2025-05-14,8,MIDNIGHT,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,5/14/2025 21:00,Latin,LATIN,N,1,Latin,100323,5/15/2025 5:00,2025-05-14,8,MIDNIGHT,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
@@ -29982,7 +29982,6 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,5/20/2025 13:00,Latin,LATIN,N,1,Latin,100282,5/20/2025 21:00,2025-05-20,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,5/20/2025 13:00,Latin,LATIN,N,1,Latin,100285,5/20/2025 21:00,2025-05-20,8,EVENING,['Latin' 'Domestic' 'Europe' 'Pacific'],Latin,1,0,0,0,0,1,1,1,4,,Latin
 ,All,5/20/2025 13:00,Latin,LATIN,N,1,Latin,100286,5/20/2025 21:00,2025-05-20,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
-,All,5/20/2025 13:00,Latin,LATIN,N,1,Latin,100287,5/20/2025 21:00,2025-05-20,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
 ,All,5/20/2025 13:00,Latin,LATIN,N,1,Latin,100290,5/20/2025 21:00,2025-05-20,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,5/20/2025 13:00,Latin,LATIN,N,1,Latin,100292,5/20/2025 21:00,2025-05-20,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,5/20/2025 13:00,Latin,LATIN,N,1,Latin,100294,5/20/2025 21:00,2025-05-20,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
@@ -29990,6 +29989,7 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,5/20/2025 13:00,Latin,LATIN,N,1,Latin,100298,5/20/2025 21:00,2025-05-20,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
 ,All,5/20/2025 13:00,Latin,LATIN,N,1,Latin,100302,5/20/2025 21:00,2025-05-20,8,EVENING,['Latin' 'Domestic' 'ATC' 'Pacific'],Latin,1,1,0,0,0,1,0,1,4,,Latin
 ,All,5/20/2025 13:00,Latin,LATIN,N,1,Latin,100304,5/20/2025 21:00,2025-05-20,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
+,All,5/20/2025 13:00,Latin,LATIN,N,1,Latin,100306,5/20/2025 21:00,2025-05-20,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,5/20/2025 13:00,Latin,LATIN,N,1,Latin,100307,5/20/2025 21:00,2025-05-20,8,EVENING,['Latin' 'Domestic' 'OC'],Latin,1,0,0,0,1,1,0,0,3,,Latin
 ,All,5/20/2025 21:00,Latin,LATIN,N,1,Latin,100315,5/21/2025 5:00,2025-05-20,8,MIDNIGHT,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,5/20/2025 21:00,Latin,LATIN,N,1,Latin,100318,5/21/2025 5:00,2025-05-20,8,MIDNIGHT,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
@@ -31633,7 +31633,7 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,5/27/2025 21:00,Latin,LATIN,N,1,Latin,100318,5/28/2025 5:00,2025-05-27,8,MIDNIGHT,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,5/27/2025 21:00,Latin,LATIN,N,1,Latin,100319,5/28/2025 5:00,2025-05-27,8,MIDNIGHT,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,5/27/2025 21:00,Latin,LATIN,N,1,Latin,100320,5/28/2025 5:00,2025-05-27,8,MIDNIGHT,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
-,All,5/27/2025 21:00,Latin,LATIN,N,1,Latin,100323,5/28/2025 5:00,2025-05-27,8,MIDNIGHT,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
+,All,5/27/2025 21:00,Latin,LATIN,N,1,Latin,100322,5/28/2025 5:00,2025-05-27,8,MIDNIGHT,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,5/27/2025 21:00,Latin,LATIN,N,1,Latin,100326,5/28/2025 5:00,2025-05-27,8,MIDNIGHT,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,5/27/2025 21:00,Latin,LATIN,N,1,Latin,100328,5/28/2025 5:00,2025-05-27,8,MIDNIGHT,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
 ,All,5/27/2025 5:00,Europe,EUROPE,N,1,Europe,100333,5/27/2025 13:00,2025-05-27,8,MORNING,['Europe' 'Domestic' 'Latin' 'Pacific'],Europe,1,0,0,0,0,1,1,1,4,,Europe
@@ -31853,18 +31853,18 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,5/28/2025 5:00,Latin,LATIN,N,1,Latin,100276,5/28/2025 13:00,2025-05-28,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,5/28/2025 13:00,Latin,LATIN,N,1,Latin,100277,5/28/2025 21:00,2025-05-28,8,EVENING,['Latin' 'Domestic' 'CHF' 'Pacific'],Latin,1,0,0,1,0,1,0,1,4,,Latin
 ,All,5/28/2025 13:00,Latin,LATIN,N,1,Latin,100281,5/28/2025 21:00,2025-05-28,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
+,All,5/28/2025 13:00,Latin,LATIN,N,1,Latin,100282,5/28/2025 21:00,2025-05-28,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,5/28/2025 13:00,Latin,LATIN,N,1,Latin,100285,5/28/2025 21:00,2025-05-28,8,EVENING,['Latin' 'Domestic' 'Europe' 'Pacific'],Latin,1,0,0,0,0,1,1,1,4,,Latin
-,All,5/28/2025 13:00,Latin,LATIN,N,1,Latin,100286,5/28/2025 21:00,2025-05-28,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,5/28/2025 13:00,Latin,LATIN,N,1,Latin,100287,5/28/2025 21:00,2025-05-28,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
 ,All,5/28/2025 13:00,Latin,LATIN,N,1,Latin,100290,5/28/2025 21:00,2025-05-28,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,5/28/2025 13:00,Latin,LATIN,N,1,Latin,100292,5/28/2025 21:00,2025-05-28,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,5/28/2025 13:00,Latin,LATIN,N,1,Latin,100294,5/28/2025 21:00,2025-05-28,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,5/28/2025 13:00,Latin,LATIN,N,1,Latin,100298,5/28/2025 21:00,2025-05-28,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
+,All,5/28/2025 13:00,Latin,LATIN,N,1,Latin,100299,5/28/2025 21:00,2025-05-28,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,5/28/2025 13:00,Latin,LATIN,N,1,Latin,100302,5/28/2025 21:00,2025-05-28,8,EVENING,['Latin' 'Domestic' 'ATC' 'Pacific'],Latin,1,1,0,0,0,1,0,1,4,,Latin
-,All,5/28/2025 13:00,Latin,LATIN,N,1,Latin,100304,5/28/2025 21:00,2025-05-28,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
+,All,5/28/2025 13:00,Latin,LATIN,N,1,Latin,100303,5/28/2025 21:00,2025-05-28,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,5/28/2025 13:00,Latin,LATIN,N,1,Latin,100306,5/28/2025 21:00,2025-05-28,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
-,All,5/28/2025 13:00,Latin,LATIN,N,1,Latin,100307,5/28/2025 21:00,2025-05-28,8,EVENING,['Latin' 'Domestic' 'OC'],Latin,1,0,0,0,1,1,0,0,3,,Latin
-,All,5/28/2025 13:00,Latin,LATIN,N,1,Latin,100313,5/28/2025 21:00,2025-05-28,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
+,All,5/28/2025 13:00,Latin,LATIN,N,1,Latin,100309,5/28/2025 21:00,2025-05-28,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,5/28/2025 21:00,Latin,LATIN,N,1,Latin,100319,5/29/2025 5:00,2025-05-28,8,MIDNIGHT,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,5/28/2025 21:00,Latin,LATIN,N,1,Latin,100321,5/29/2025 5:00,2025-05-28,8,MIDNIGHT,['Latin' 'Domestic' 'ATC'],Latin,1,1,0,0,0,1,0,0,3,,Latin
 ,All,5/28/2025 21:00,Latin,LATIN,N,1,Latin,100322,5/29/2025 5:00,2025-05-28,8,MIDNIGHT,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
@@ -32327,14 +32327,14 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,5/30/2025 13:00,Latin,LATIN,N,1,Latin,100278,5/30/2025 21:00,2025-05-30,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,5/30/2025 13:00,Latin,LATIN,N,1,Latin,100282,5/30/2025 21:00,2025-05-30,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,5/30/2025 13:00,Latin,LATIN,N,1,Latin,100283,5/30/2025 21:00,2025-05-30,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
-,All,5/30/2025 13:00,Latin,LATIN,N,1,Latin,100284,5/30/2025 21:00,2025-05-30,8,EVENING,['Latin' 'Domestic' 'OC' 'Pacific'],Latin,1,0,0,0,1,1,0,1,4,,Latin
 ,All,5/30/2025 13:00,Latin,LATIN,N,1,Latin,100286,5/30/2025 21:00,2025-05-30,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,5/30/2025 13:00,Latin,LATIN,N,1,Latin,100287,5/30/2025 21:00,2025-05-30,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
 ,All,5/30/2025 13:00,Latin,LATIN,N,1,Latin,100288,5/30/2025 21:00,2025-05-30,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,5/30/2025 13:00,Latin,LATIN,N,1,Latin,100289,5/30/2025 21:00,2025-05-30,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,5/30/2025 13:00,Latin,LATIN,N,1,Latin,100293,5/30/2025 21:00,2025-05-30,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
-,All,5/30/2025 13:00,Latin,LATIN,N,1,Latin,100296,5/30/2025 21:00,2025-05-30,8,EVENING,['Latin' 'Domestic' 'ROC'],Latin,1,0,1,0,0,1,0,0,3,,Latin
 ,All,5/30/2025 13:00,Latin,LATIN,N,1,Latin,100298,5/30/2025 21:00,2025-05-30,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
+,All,5/30/2025 13:00,Latin,LATIN,N,1,Latin,100299,5/30/2025 21:00,2025-05-30,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
+,All,5/30/2025 13:00,Latin,LATIN,N,1,Latin,100303,5/30/2025 21:00,2025-05-30,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,5/30/2025 13:00,Latin,LATIN,N,1,Latin,100305,5/30/2025 21:00,2025-05-30,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,5/30/2025 13:00,Latin,LATIN,N,1,Latin,100306,5/30/2025 21:00,2025-05-30,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,5/30/2025 13:00,Latin,LATIN,N,1,Latin,100313,5/30/2025 21:00,2025-05-30,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
@@ -32804,8 +32804,8 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,6/1/2025 13:00,Latin,LATIN,N,1,Latin,100290,6/1/2025 21:00,2025-06-01,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,6/1/2025 13:00,Latin,LATIN,N,1,Latin,100291,6/1/2025 21:00,2025-06-01,8,EVENING,['Latin' 'Domestic' 'OC'],Latin,1,0,0,0,1,1,0,0,3,,Latin
 ,All,6/1/2025 13:00,Latin,LATIN,N,1,Latin,100293,6/1/2025 21:00,2025-06-01,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
-,All,6/1/2025 13:00,Latin,LATIN,N,1,Latin,100296,6/1/2025 21:00,2025-06-01,8,EVENING,['Latin' 'Domestic' 'ROC'],Latin,1,0,1,0,0,1,0,0,3,,Latin
 ,All,6/1/2025 13:00,Latin,LATIN,N,1,Latin,100297,6/1/2025 21:00,2025-06-01,8,EVENING,['Latin' 'Domestic' 'CHF'],Latin,1,0,0,1,0,1,0,0,3,,Latin
+,All,6/1/2025 13:00,Latin,LATIN,N,1,Latin,100300,6/1/2025 21:00,2025-06-01,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,6/1/2025 13:00,Latin,LATIN,N,1,Latin,100301,6/1/2025 21:00,2025-06-01,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,6/1/2025 13:00,Latin,LATIN,N,1,Latin,100305,6/1/2025 21:00,2025-06-01,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,6/1/2025 13:00,Latin,LATIN,N,1,Latin,100308,6/1/2025 21:00,2025-06-01,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
@@ -33492,9 +33492,10 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,6/4/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100197,6/5/2025 5:00,2025-06-04,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,6/4/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100198,6/5/2025 5:00,2025-06-04,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,6/4/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100199,6/5/2025 5:00,2025-06-04,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
+,All,6/4/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100200,6/5/2025 5:00,2025-06-04,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,6/4/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100205,6/5/2025 5:00,2025-06-04,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
-,All,6/4/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100206,6/5/2025 5:00,2025-06-04,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,6/4/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100208,6/5/2025 5:00,2025-06-04,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
+,All,6/4/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100209,6/5/2025 5:00,2025-06-04,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,6/4/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100210,6/5/2025 5:00,2025-06-04,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,6/4/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100211,6/5/2025 5:00,2025-06-04,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,6/4/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100215,6/5/2025 5:00,2025-06-04,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
@@ -33503,12 +33504,11 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,6/4/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100219,6/5/2025 5:00,2025-06-04,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,6/4/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100221,6/5/2025 5:00,2025-06-04,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,6/4/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100226,6/5/2025 5:00,2025-06-04,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
+,All,6/4/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100229,6/5/2025 5:00,2025-06-04,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,6/4/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100230,6/5/2025 5:00,2025-06-04,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,6/4/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100231,6/5/2025 5:00,2025-06-04,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,6/4/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100232,6/5/2025 5:00,2025-06-04,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,6/4/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100233,6/5/2025 5:00,2025-06-04,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
-,All,6/4/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100234,6/5/2025 5:00,2025-06-04,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
-,All,6/4/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100235,6/5/2025 5:00,2025-06-04,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,6/4/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100237,6/5/2025 5:00,2025-06-04,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,6/4/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100239,6/5/2025 5:00,2025-06-04,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,6/4/2025 5:00,Latin,LATIN,N,1,Latin,100240,6/4/2025 13:00,2025-06-04,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
@@ -34011,16 +34011,16 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,6/6/2025 5:00,Latin,LATIN,N,1,Latin,100275,6/6/2025 13:00,2025-06-06,8,MORNING,['Latin' 'Domestic' 'OC'],Latin,1,0,0,0,1,1,0,0,3,,Latin
 ,All,6/6/2025 5:00,Latin,LATIN,N,1,Latin,100276,6/6/2025 13:00,2025-06-06,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,6/6/2025 13:00,Latin,LATIN,N,1,Latin,100277,6/6/2025 21:00,2025-06-06,8,EVENING,['Latin' 'Domestic' 'CHF' 'Pacific'],Latin,1,0,0,1,0,1,0,1,4,,Latin
+,All,6/6/2025 13:00,Latin,LATIN,N,1,Latin,100283,6/6/2025 21:00,2025-06-06,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,6/6/2025 13:00,Latin,LATIN,N,1,Latin,100286,6/6/2025 21:00,2025-06-06,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,6/6/2025 13:00,Latin,LATIN,N,1,Latin,100287,6/6/2025 21:00,2025-06-06,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
-,All,6/6/2025 13:00,Latin,LATIN,N,1,Latin,100291,6/6/2025 21:00,2025-06-06,8,EVENING,['Latin' 'Domestic' 'OC'],Latin,1,0,0,0,1,1,0,0,3,,Latin
+,All,6/6/2025 13:00,Latin,LATIN,N,1,Latin,100289,6/6/2025 21:00,2025-06-06,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,6/6/2025 13:00,Latin,LATIN,N,1,Latin,100292,6/6/2025 21:00,2025-06-06,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,6/6/2025 13:00,Latin,LATIN,N,1,Latin,100293,6/6/2025 21:00,2025-06-06,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
-,All,6/6/2025 13:00,Latin,LATIN,N,1,Latin,100295,6/6/2025 21:00,2025-06-06,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,6/6/2025 13:00,Latin,LATIN,N,1,Latin,100296,6/6/2025 21:00,2025-06-06,8,EVENING,['Latin' 'Domestic' 'ROC'],Latin,1,0,1,0,0,1,0,0,3,,Latin
 ,All,6/6/2025 13:00,Latin,LATIN,N,1,Latin,100298,6/6/2025 21:00,2025-06-06,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
 ,All,6/6/2025 13:00,Latin,LATIN,N,1,Latin,100300,6/6/2025 21:00,2025-06-06,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
-,All,6/6/2025 13:00,Latin,LATIN,N,1,Latin,100306,6/6/2025 21:00,2025-06-06,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
+,All,6/6/2025 13:00,Latin,LATIN,N,1,Latin,100303,6/6/2025 21:00,2025-06-06,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,6/6/2025 13:00,Latin,LATIN,N,1,Latin,100307,6/6/2025 21:00,2025-06-06,8,EVENING,['Latin' 'Domestic' 'OC'],Latin,1,0,0,0,1,1,0,0,3,,Latin
 ,All,6/6/2025 13:00,Latin,LATIN,N,1,Latin,100309,6/6/2025 21:00,2025-06-06,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,6/6/2025 13:00,Latin,LATIN,N,1,Latin,100313,6/6/2025 21:00,2025-06-06,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
@@ -37410,6 +37410,7 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,6/20/2025 13:00,Domestic,DOMESTIC,N,1,Domestic,100189,6/20/2025 21:00,2025-06-20,8,EVENING,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,6/20/2025 13:00,Domestic,DOMESTIC,N,1,Domestic,100191,6/20/2025 21:00,2025-06-20,8,EVENING,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,6/20/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100193,6/21/2025 5:00,2025-06-20,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
+,All,6/20/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100194,6/21/2025 5:00,2025-06-20,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,6/20/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100195,6/21/2025 5:00,2025-06-20,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,6/20/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100197,6/21/2025 5:00,2025-06-20,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,6/20/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100198,6/21/2025 5:00,2025-06-20,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
@@ -37428,7 +37429,6 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,6/20/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100226,6/21/2025 5:00,2025-06-20,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,6/20/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100227,6/21/2025 5:00,2025-06-20,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,6/20/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100228,6/21/2025 5:00,2025-06-20,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
-,All,6/20/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100229,6/21/2025 5:00,2025-06-20,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,6/20/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100230,6/21/2025 5:00,2025-06-20,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,6/20/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100233,6/21/2025 5:00,2025-06-20,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,6/20/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100237,6/21/2025 5:00,2025-06-20,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
@@ -37439,16 +37439,17 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,6/20/2025 5:00,Latin,LATIN,N,1,Latin,100249,6/20/2025 13:00,2025-06-20,8,MORNING,['Latin' 'Domestic' 'OC'],Latin,1,0,0,0,1,1,0,0,3,,Latin
 ,All,6/20/2025 5:00,Latin,LATIN,N,1,Latin,100250,6/20/2025 13:00,2025-06-20,8,MORNING,['Latin' 'Domestic' 'ROC' 'Pacific'],Latin,1,0,1,0,0,1,0,1,4,,Latin
 ,All,6/20/2025 5:00,Latin,LATIN,N,1,Latin,100255,6/20/2025 13:00,2025-06-20,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
-,All,6/20/2025 5:00,Latin,LATIN,N,1,Latin,100257,6/20/2025 13:00,2025-06-20,8,MORNING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
+,All,6/20/2025 5:00,Latin,LATIN,N,1,Latin,100258,6/20/2025 13:00,2025-06-20,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
+,All,6/20/2025 5:00,Latin,LATIN,N,1,Latin,100261,6/20/2025 13:00,2025-06-20,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,6/20/2025 5:00,Latin,LATIN,N,1,Latin,100262,6/20/2025 13:00,2025-06-20,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
+,All,6/20/2025 5:00,Latin,LATIN,N,1,Latin,100265,6/20/2025 13:00,2025-06-20,8,MORNING,['Latin' 'Domestic' 'OC' 'Europe'],Latin,1,0,0,0,1,1,1,0,4,,Latin
 ,All,6/20/2025 5:00,Latin,LATIN,N,1,Latin,100266,6/20/2025 13:00,2025-06-20,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
-,All,6/20/2025 5:00,Latin,LATIN,N,1,Latin,100267,6/20/2025 13:00,2025-06-20,8,MORNING,['Latin' 'Domestic' 'ATC'],Latin,1,1,0,0,0,1,0,0,3,,Latin
 ,All,6/20/2025 5:00,Latin,LATIN,N,1,Latin,100269,6/20/2025 13:00,2025-06-20,8,MORNING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
-,All,6/20/2025 5:00,Latin,LATIN,N,1,Latin,100270,6/20/2025 13:00,2025-06-20,8,MORNING,['Latin' 'Domestic' 'CHF' 'Europe'],Latin,1,0,0,1,0,1,1,0,4,,Latin
 ,All,6/20/2025 5:00,Latin,LATIN,N,1,Latin,100272,6/20/2025 13:00,2025-06-20,8,MORNING,['Latin' 'Domestic' 'CHF' 'Europe'],Latin,1,0,0,1,0,1,1,0,4,,Latin
 ,All,6/20/2025 5:00,Latin,LATIN,N,1,Latin,100275,6/20/2025 13:00,2025-06-20,8,MORNING,['Latin' 'Domestic' 'OC'],Latin,1,0,0,0,1,1,0,0,3,,Latin
 ,All,6/20/2025 13:00,Latin,LATIN,N,1,Latin,100277,6/20/2025 21:00,2025-06-20,8,EVENING,['Latin' 'Domestic' 'CHF' 'Pacific'],Latin,1,0,0,1,0,1,0,1,4,,Latin
 ,All,6/20/2025 13:00,Latin,LATIN,N,1,Latin,100281,6/20/2025 21:00,2025-06-20,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
+,All,6/20/2025 13:00,Latin,LATIN,N,1,Latin,100282,6/20/2025 21:00,2025-06-20,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,6/20/2025 13:00,Latin,LATIN,N,1,Latin,100286,6/20/2025 21:00,2025-06-20,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,6/20/2025 13:00,Latin,LATIN,N,1,Latin,100287,6/20/2025 21:00,2025-06-20,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
 ,All,6/20/2025 13:00,Latin,LATIN,N,1,Latin,100292,6/20/2025 21:00,2025-06-20,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
@@ -37456,11 +37457,10 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,6/20/2025 13:00,Latin,LATIN,N,1,Latin,100295,6/20/2025 21:00,2025-06-20,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,6/20/2025 13:00,Latin,LATIN,N,1,Latin,100298,6/20/2025 21:00,2025-06-20,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
 ,All,6/20/2025 13:00,Latin,LATIN,N,1,Latin,100299,6/20/2025 21:00,2025-06-20,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
-,All,6/20/2025 13:00,Latin,LATIN,N,1,Latin,100302,6/20/2025 21:00,2025-06-20,8,EVENING,['Latin' 'Domestic' 'ATC' 'Pacific'],Latin,1,1,0,0,0,1,0,1,4,,Latin
-,All,6/20/2025 13:00,Latin,LATIN,N,1,Latin,100303,6/20/2025 21:00,2025-06-20,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,6/20/2025 13:00,Latin,LATIN,N,1,Latin,100304,6/20/2025 21:00,2025-06-20,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
 ,All,6/20/2025 13:00,Latin,LATIN,N,1,Latin,100306,6/20/2025 21:00,2025-06-20,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,6/20/2025 13:00,Latin,LATIN,N,1,Latin,100307,6/20/2025 21:00,2025-06-20,8,EVENING,['Latin' 'Domestic' 'OC'],Latin,1,0,0,0,1,1,0,0,3,,Latin
+,All,6/20/2025 13:00,Latin,LATIN,N,1,Latin,100313,6/20/2025 21:00,2025-06-20,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,6/20/2025 21:00,Latin,LATIN,N,1,Latin,100315,6/21/2025 5:00,2025-06-20,8,MIDNIGHT,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,6/20/2025 21:00,Latin,LATIN,N,1,Latin,100316,6/21/2025 5:00,2025-06-20,8,MIDNIGHT,['Latin' 'Domestic' 'CHF'],Latin,1,0,0,1,0,1,0,0,3,,Latin
 ,All,6/20/2025 21:00,Latin,LATIN,N,1,Latin,100321,6/21/2025 5:00,2025-06-20,8,MIDNIGHT,['Latin' 'Domestic' 'ATC'],Latin,1,1,0,0,0,1,0,0,3,,Latin
@@ -37928,20 +37928,20 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,6/22/2025 5:00,Latin,LATIN,N,1,Latin,100276,6/22/2025 13:00,2025-06-22,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,6/22/2025 13:00,Latin,LATIN,N,1,Latin,100278,6/22/2025 21:00,2025-06-22,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,6/22/2025 13:00,Latin,LATIN,N,1,Latin,100279,6/22/2025 21:00,2025-06-22,8,EVENING,['Latin' 'Domestic' 'OC' 'Pacific'],Latin,1,0,0,0,1,1,0,1,4,,Latin
-,All,6/22/2025 13:00,Latin,LATIN,N,1,Latin,100282,6/22/2025 21:00,2025-06-22,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,6/22/2025 13:00,Latin,LATIN,N,1,Latin,100283,6/22/2025 21:00,2025-06-22,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,6/22/2025 13:00,Latin,LATIN,N,1,Latin,100284,6/22/2025 21:00,2025-06-22,8,EVENING,['Latin' 'Domestic' 'OC' 'Pacific'],Latin,1,0,0,0,1,1,0,1,4,,Latin
 ,All,6/22/2025 13:00,Latin,LATIN,N,1,Latin,100288,6/22/2025 21:00,2025-06-22,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
+,All,6/22/2025 13:00,Latin,LATIN,N,1,Latin,100289,6/22/2025 21:00,2025-06-22,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,6/22/2025 13:00,Latin,LATIN,N,1,Latin,100291,6/22/2025 21:00,2025-06-22,8,EVENING,['Latin' 'Domestic' 'OC'],Latin,1,0,0,0,1,1,0,0,3,,Latin
 ,All,6/22/2025 13:00,Latin,LATIN,N,1,Latin,100293,6/22/2025 21:00,2025-06-22,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
 ,All,6/22/2025 13:00,Latin,LATIN,N,1,Latin,100296,6/22/2025 21:00,2025-06-22,8,EVENING,['Latin' 'Domestic' 'ROC'],Latin,1,0,1,0,0,1,0,0,3,,Latin
 ,All,6/22/2025 13:00,Latin,LATIN,N,1,Latin,100297,6/22/2025 21:00,2025-06-22,8,EVENING,['Latin' 'Domestic' 'CHF'],Latin,1,0,0,1,0,1,0,0,3,,Latin
-,All,6/22/2025 13:00,Latin,LATIN,N,1,Latin,100298,6/22/2025 21:00,2025-06-22,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
 ,All,6/22/2025 13:00,Latin,LATIN,N,1,Latin,100299,6/22/2025 21:00,2025-06-22,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,6/22/2025 13:00,Latin,LATIN,N,1,Latin,100300,6/22/2025 21:00,2025-06-22,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,6/22/2025 13:00,Latin,LATIN,N,1,Latin,100303,6/22/2025 21:00,2025-06-22,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,6/22/2025 13:00,Latin,LATIN,N,1,Latin,100305,6/22/2025 21:00,2025-06-22,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,6/22/2025 13:00,Latin,LATIN,N,1,Latin,100310,6/22/2025 21:00,2025-06-22,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
+,All,6/22/2025 13:00,Latin,LATIN,N,1,Latin,100313,6/22/2025 21:00,2025-06-22,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,6/22/2025 21:00,Latin,LATIN,N,1,Latin,100316,6/23/2025 5:00,2025-06-22,8,MIDNIGHT,['Latin' 'Domestic' 'CHF'],Latin,1,0,0,1,0,1,0,0,3,,Latin
 ,All,6/22/2025 21:00,Latin,LATIN,N,1,Latin,100317,6/23/2025 5:00,2025-06-22,8,MIDNIGHT,['Latin' 'Domestic' 'ATC' 'Europe'],Latin,1,1,0,0,0,1,1,0,4,,Latin
 ,All,6/22/2025 21:00,Latin,LATIN,N,1,Latin,100325,6/23/2025 5:00,2025-06-22,8,MIDNIGHT,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
@@ -39411,8 +39411,8 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,6/28/2025 13:00,Latin,LATIN,N,1,Latin,100299,6/28/2025 21:00,2025-06-28,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,6/28/2025 13:00,Latin,LATIN,N,1,Latin,100303,6/28/2025 21:00,2025-06-28,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,6/28/2025 13:00,Latin,LATIN,N,1,Latin,100304,6/28/2025 21:00,2025-06-28,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
-,All,6/28/2025 13:00,Latin,LATIN,N,1,Latin,100306,6/28/2025 21:00,2025-06-28,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,6/28/2025 13:00,Latin,LATIN,N,1,Latin,100307,6/28/2025 21:00,2025-06-28,8,EVENING,['Latin' 'Domestic' 'OC'],Latin,1,0,0,0,1,1,0,0,3,,Latin
+,All,6/28/2025 13:00,Latin,LATIN,N,1,Latin,100309,6/28/2025 21:00,2025-06-28,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,6/28/2025 13:00,Latin,LATIN,N,1,Latin,100313,6/28/2025 21:00,2025-06-28,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,6/28/2025 21:00,Latin,LATIN,N,1,Latin,100315,6/29/2025 5:00,2025-06-28,8,MIDNIGHT,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,6/28/2025 21:00,Latin,LATIN,N,1,Latin,100317,6/29/2025 5:00,2025-06-28,8,MIDNIGHT,['Latin' 'Domestic' 'ATC' 'Europe'],Latin,1,1,0,0,0,1,1,0,4,,Latin
@@ -42072,19 +42072,19 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,7/9/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100238,7/10/2025 5:00,2025-07-09,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,7/9/2025 5:00,Latin,LATIN,N,1,Latin,100241,7/9/2025 13:00,2025-07-09,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,7/9/2025 5:00,Latin,LATIN,N,1,Latin,100242,7/9/2025 13:00,2025-07-09,8,MORNING,['Latin' 'Domestic' 'OC' 'Pacific'],Latin,1,0,0,0,1,1,0,1,4,,Latin
+,All,7/9/2025 5:00,Latin,LATIN,N,1,Latin,100243,7/9/2025 13:00,2025-07-09,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,7/9/2025 5:00,Latin,LATIN,N,1,Latin,100246,7/9/2025 13:00,2025-07-09,8,MORNING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,7/9/2025 5:00,Latin,LATIN,N,1,Latin,100247,7/9/2025 13:00,2025-07-09,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,7/9/2025 5:00,Latin,LATIN,N,1,Latin,100248,7/9/2025 13:00,2025-07-09,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,7/9/2025 5:00,Latin,LATIN,N,1,Latin,100251,7/9/2025 13:00,2025-07-09,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,7/9/2025 5:00,Latin,LATIN,N,1,Latin,100252,7/9/2025 13:00,2025-07-09,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
-,All,7/9/2025 5:00,Latin,LATIN,N,1,Latin,100256,7/9/2025 13:00,2025-07-09,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
+,All,7/9/2025 5:00,Latin,LATIN,N,1,Latin,100253,7/9/2025 13:00,2025-07-09,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
+,All,7/9/2025 5:00,Latin,LATIN,N,1,Latin,100254,7/9/2025 13:00,2025-07-09,8,MORNING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,7/9/2025 5:00,Latin,LATIN,N,1,Latin,100259,7/9/2025 13:00,2025-07-09,8,MORNING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,7/9/2025 5:00,Latin,LATIN,N,1,Latin,100260,7/9/2025 13:00,2025-07-09,8,MORNING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,7/9/2025 5:00,Latin,LATIN,N,1,Latin,100263,7/9/2025 13:00,2025-07-09,8,MORNING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
 ,All,7/9/2025 5:00,Latin,LATIN,N,1,Latin,100264,7/9/2025 13:00,2025-07-09,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
-,All,7/9/2025 5:00,Latin,LATIN,N,1,Latin,100265,7/9/2025 13:00,2025-07-09,8,MORNING,['Latin' 'Domestic' 'OC' 'Europe'],Latin,1,0,0,0,1,1,1,0,4,,Latin
 ,All,7/9/2025 5:00,Latin,LATIN,N,1,Latin,100268,7/9/2025 13:00,2025-07-09,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
-,All,7/9/2025 5:00,Latin,LATIN,N,1,Latin,100271,7/9/2025 13:00,2025-07-09,8,MORNING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
 ,All,7/9/2025 5:00,Latin,LATIN,N,1,Latin,100273,7/9/2025 13:00,2025-07-09,8,MORNING,['Latin' 'Domestic' 'Europe' 'Pacific'],Latin,1,0,0,0,0,1,1,1,4,,Latin
 ,All,7/9/2025 5:00,Latin,LATIN,N,1,Latin,100274,7/9/2025 13:00,2025-07-09,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,7/9/2025 13:00,Latin,LATIN,N,1,Latin,100278,7/9/2025 21:00,2025-07-09,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
@@ -44309,17 +44309,17 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,7/18/2025 5:00,Latin,LATIN,N,1,Latin,100274,7/18/2025 13:00,2025-07-18,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,7/18/2025 5:00,Latin,LATIN,N,1,Latin,100275,7/18/2025 13:00,2025-07-18,8,MORNING,['Latin' 'Domestic' 'OC'],Latin,1,0,0,0,1,1,0,0,3,,Latin
 ,All,7/18/2025 13:00,Latin,LATIN,N,1,Latin,100277,7/18/2025 21:00,2025-07-18,8,EVENING,['Latin' 'Domestic' 'CHF' 'Pacific'],Latin,1,0,0,1,0,1,0,1,4,,Latin
-,All,7/18/2025 13:00,Latin,LATIN,N,1,Latin,100279,7/18/2025 21:00,2025-07-18,8,EVENING,['Latin' 'Domestic' 'OC' 'Pacific'],Latin,1,0,0,0,1,1,0,1,4,,Latin
 ,All,7/18/2025 13:00,Latin,LATIN,N,1,Latin,100280,7/18/2025 21:00,2025-07-18,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
-,All,7/18/2025 13:00,Latin,LATIN,N,1,Latin,100285,7/18/2025 21:00,2025-07-18,8,EVENING,['Latin' 'Domestic' 'Europe' 'Pacific'],Latin,1,0,0,0,0,1,1,1,4,,Latin
+,All,7/18/2025 13:00,Latin,LATIN,N,1,Latin,100281,7/18/2025 21:00,2025-07-18,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,7/18/2025 13:00,Latin,LATIN,N,1,Latin,100286,7/18/2025 21:00,2025-07-18,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
+,All,7/18/2025 13:00,Latin,LATIN,N,1,Latin,100290,7/18/2025 21:00,2025-07-18,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,7/18/2025 13:00,Latin,LATIN,N,1,Latin,100292,7/18/2025 21:00,2025-07-18,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,7/18/2025 13:00,Latin,LATIN,N,1,Latin,100294,7/18/2025 21:00,2025-07-18,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
-,All,7/18/2025 13:00,Latin,LATIN,N,1,Latin,100297,7/18/2025 21:00,2025-07-18,8,EVENING,['Latin' 'Domestic' 'CHF'],Latin,1,0,0,1,0,1,0,0,3,,Latin
 ,All,7/18/2025 13:00,Latin,LATIN,N,1,Latin,100301,7/18/2025 21:00,2025-07-18,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,7/18/2025 13:00,Latin,LATIN,N,1,Latin,100302,7/18/2025 21:00,2025-07-18,8,EVENING,['Latin' 'Domestic' 'ATC' 'Pacific'],Latin,1,1,0,0,0,1,0,1,4,,Latin
 ,All,7/18/2025 13:00,Latin,LATIN,N,1,Latin,100306,7/18/2025 21:00,2025-07-18,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,7/18/2025 13:00,Latin,LATIN,N,1,Latin,100308,7/18/2025 21:00,2025-07-18,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
+,All,7/18/2025 13:00,Latin,LATIN,N,1,Latin,100309,7/18/2025 21:00,2025-07-18,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,7/18/2025 13:00,Latin,LATIN,N,1,Latin,100310,7/18/2025 21:00,2025-07-18,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
 ,All,7/18/2025 13:00,Latin,LATIN,N,1,Latin,100311,7/18/2025 21:00,2025-07-18,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,7/18/2025 21:00,Latin,LATIN,N,1,Latin,100314,7/19/2025 5:00,2025-07-18,8,MIDNIGHT,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
@@ -44553,18 +44553,18 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,7/19/2025 13:00,Latin,LATIN,N,1,Latin,100277,7/19/2025 21:00,2025-07-19,8,EVENING,['Latin' 'Domestic' 'CHF' 'Pacific'],Latin,1,0,0,1,0,1,0,1,4,,Latin
 ,All,7/19/2025 13:00,Latin,LATIN,N,1,Latin,100281,7/19/2025 21:00,2025-07-19,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,7/19/2025 13:00,Latin,LATIN,N,1,Latin,100282,7/19/2025 21:00,2025-07-19,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
-,All,7/19/2025 13:00,Latin,LATIN,N,1,Latin,100285,7/19/2025 21:00,2025-07-19,8,EVENING,['Latin' 'Domestic' 'Europe' 'Pacific'],Latin,1,0,0,0,0,1,1,1,4,,Latin
 ,All,7/19/2025 13:00,Latin,LATIN,N,1,Latin,100286,7/19/2025 21:00,2025-07-19,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,7/19/2025 13:00,Latin,LATIN,N,1,Latin,100287,7/19/2025 21:00,2025-07-19,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
 ,All,7/19/2025 13:00,Latin,LATIN,N,1,Latin,100290,7/19/2025 21:00,2025-07-19,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,7/19/2025 13:00,Latin,LATIN,N,1,Latin,100292,7/19/2025 21:00,2025-07-19,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,7/19/2025 13:00,Latin,LATIN,N,1,Latin,100294,7/19/2025 21:00,2025-07-19,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
-,All,7/19/2025 13:00,Latin,LATIN,N,1,Latin,100295,7/19/2025 21:00,2025-07-19,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
+,All,7/19/2025 13:00,Latin,LATIN,N,1,Latin,100298,7/19/2025 21:00,2025-07-19,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
 ,All,7/19/2025 13:00,Latin,LATIN,N,1,Latin,100299,7/19/2025 21:00,2025-07-19,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
-,All,7/19/2025 13:00,Latin,LATIN,N,1,Latin,100302,7/19/2025 21:00,2025-07-19,8,EVENING,['Latin' 'Domestic' 'ATC' 'Pacific'],Latin,1,1,0,0,0,1,0,1,4,,Latin
 ,All,7/19/2025 13:00,Latin,LATIN,N,1,Latin,100304,7/19/2025 21:00,2025-07-19,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
+,All,7/19/2025 13:00,Latin,LATIN,N,1,Latin,100306,7/19/2025 21:00,2025-07-19,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,7/19/2025 13:00,Latin,LATIN,N,1,Latin,100307,7/19/2025 21:00,2025-07-19,8,EVENING,['Latin' 'Domestic' 'OC'],Latin,1,0,0,0,1,1,0,0,3,,Latin
 ,All,7/19/2025 13:00,Latin,LATIN,N,1,Latin,100309,7/19/2025 21:00,2025-07-19,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
+,All,7/19/2025 13:00,Latin,LATIN,N,1,Latin,100313,7/19/2025 21:00,2025-07-19,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,7/19/2025 21:00,Latin,LATIN,N,1,Latin,100314,7/20/2025 5:00,2025-07-19,8,MIDNIGHT,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,7/19/2025 21:00,Latin,LATIN,N,1,Latin,100315,7/20/2025 5:00,2025-07-19,8,MIDNIGHT,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,7/19/2025 21:00,Latin,LATIN,N,1,Latin,100318,7/20/2025 5:00,2025-07-19,8,MIDNIGHT,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
@@ -45763,7 +45763,6 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,7/24/2025 5:00,Latin,LATIN,N,1,Latin,100271,7/24/2025 13:00,2025-07-24,8,MORNING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
 ,All,7/24/2025 5:00,Latin,LATIN,N,1,Latin,100274,7/24/2025 13:00,2025-07-24,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,7/24/2025 13:00,Latin,LATIN,N,1,Latin,100278,7/24/2025 21:00,2025-07-24,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
-,All,7/24/2025 13:00,Latin,LATIN,N,1,Latin,100279,7/24/2025 21:00,2025-07-24,8,EVENING,['Latin' 'Domestic' 'OC' 'Pacific'],Latin,1,0,0,0,1,1,0,1,4,,Latin
 ,All,7/24/2025 13:00,Latin,LATIN,N,1,Latin,100280,7/24/2025 21:00,2025-07-24,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,7/24/2025 13:00,Latin,LATIN,N,1,Latin,100284,7/24/2025 21:00,2025-07-24,8,EVENING,['Latin' 'Domestic' 'OC' 'Pacific'],Latin,1,0,0,0,1,1,0,1,4,,Latin
 ,All,7/24/2025 13:00,Latin,LATIN,N,1,Latin,100288,7/24/2025 21:00,2025-07-24,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
@@ -45772,6 +45771,7 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,7/24/2025 13:00,Latin,LATIN,N,1,Latin,100293,7/24/2025 21:00,2025-07-24,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
 ,All,7/24/2025 13:00,Latin,LATIN,N,1,Latin,100296,7/24/2025 21:00,2025-07-24,8,EVENING,['Latin' 'Domestic' 'ROC'],Latin,1,0,1,0,0,1,0,0,3,,Latin
 ,All,7/24/2025 13:00,Latin,LATIN,N,1,Latin,100297,7/24/2025 21:00,2025-07-24,8,EVENING,['Latin' 'Domestic' 'CHF'],Latin,1,0,0,1,0,1,0,0,3,,Latin
+,All,7/24/2025 13:00,Latin,LATIN,N,1,Latin,100300,7/24/2025 21:00,2025-07-24,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,7/24/2025 13:00,Latin,LATIN,N,1,Latin,100301,7/24/2025 21:00,2025-07-24,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,7/24/2025 13:00,Latin,LATIN,N,1,Latin,100302,7/24/2025 21:00,2025-07-24,8,EVENING,['Latin' 'Domestic' 'ATC' 'Pacific'],Latin,1,1,0,0,0,1,0,1,4,,Latin
 ,All,7/24/2025 13:00,Latin,LATIN,N,1,Latin,100305,7/24/2025 21:00,2025-07-24,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
@@ -46273,12 +46273,12 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,7/26/2025 13:00,Latin,LATIN,N,1,Latin,100312,7/26/2025 21:00,2025-07-26,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,7/26/2025 21:00,Latin,LATIN,N,1,Latin,100314,7/27/2025 5:00,2025-07-26,8,MIDNIGHT,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,7/26/2025 21:00,Latin,LATIN,N,1,Latin,100315,7/27/2025 5:00,2025-07-26,8,MIDNIGHT,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
-,All,7/26/2025 21:00,Latin,LATIN,N,1,Latin,100318,7/27/2025 5:00,2025-07-26,8,MIDNIGHT,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,7/26/2025 21:00,Latin,LATIN,N,1,Latin,100319,7/27/2025 5:00,2025-07-26,8,MIDNIGHT,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,7/26/2025 21:00,Latin,LATIN,N,1,Latin,100320,7/27/2025 5:00,2025-07-26,8,MIDNIGHT,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
-,All,7/26/2025 21:00,Latin,LATIN,N,1,Latin,100322,7/27/2025 5:00,2025-07-26,8,MIDNIGHT,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,7/26/2025 21:00,Latin,LATIN,N,1,Latin,100323,7/27/2025 5:00,2025-07-26,8,MIDNIGHT,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
+,All,7/26/2025 21:00,Latin,LATIN,N,1,Latin,100324,7/27/2025 5:00,2025-07-26,8,MIDNIGHT,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
 ,All,7/26/2025 21:00,Latin,LATIN,N,1,Latin,100326,7/27/2025 5:00,2025-07-26,8,MIDNIGHT,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
+,All,7/26/2025 21:00,Latin,LATIN,N,1,Latin,100327,7/27/2025 5:00,2025-07-26,8,MIDNIGHT,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,7/26/2025 5:00,Europe,EUROPE,N,1,Europe,100333,7/26/2025 13:00,2025-07-26,8,MORNING,['Europe' 'Domestic' 'Latin' 'Pacific'],Europe,1,0,0,0,0,1,1,1,4,,Europe
 ,All,7/26/2025 5:00,Europe,EUROPE,N,1,Europe,100335,7/26/2025 13:00,2025-07-26,8,MORNING,['Europe' 'Domestic'],Europe,1,0,0,0,0,0,1,0,2,,Europe
 ,All,7/26/2025 5:00,Europe,EUROPE,N,1,Europe,100336,7/26/2025 13:00,2025-07-26,8,MORNING,['Europe' 'Domestic'],Europe,1,0,0,0,0,0,1,0,2,,Europe
@@ -47984,17 +47984,17 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,8/2/2025 5:00,Latin,LATIN,N,1,Latin,100271,8/2/2025 13:00,2025-08-02,8,MORNING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
 ,All,8/2/2025 5:00,Latin,LATIN,N,1,Latin,100272,8/2/2025 13:00,2025-08-02,8,MORNING,['Latin' 'Domestic' 'CHF' 'Europe'],Latin,1,0,0,1,0,1,1,0,4,,Latin
 ,All,8/2/2025 13:00,Latin,LATIN,N,1,Latin,100277,8/2/2025 21:00,2025-08-02,8,EVENING,['Latin' 'Domestic' 'CHF' 'Pacific'],Latin,1,0,0,1,0,1,0,1,4,,Latin
-,All,8/2/2025 13:00,Latin,LATIN,N,1,Latin,100279,8/2/2025 21:00,2025-08-02,8,EVENING,['Latin' 'Domestic' 'OC' 'Pacific'],Latin,1,0,0,0,1,1,0,1,4,,Latin
 ,All,8/2/2025 13:00,Latin,LATIN,N,1,Latin,100280,8/2/2025 21:00,2025-08-02,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,8/2/2025 13:00,Latin,LATIN,N,1,Latin,100281,8/2/2025 21:00,2025-08-02,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,8/2/2025 13:00,Latin,LATIN,N,1,Latin,100285,8/2/2025 21:00,2025-08-02,8,EVENING,['Latin' 'Domestic' 'Europe' 'Pacific'],Latin,1,0,0,0,0,1,1,1,4,,Latin
-,All,8/2/2025 13:00,Latin,LATIN,N,1,Latin,100286,8/2/2025 21:00,2025-08-02,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,8/2/2025 13:00,Latin,LATIN,N,1,Latin,100292,8/2/2025 21:00,2025-08-02,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,8/2/2025 13:00,Latin,LATIN,N,1,Latin,100294,8/2/2025 21:00,2025-08-02,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,8/2/2025 13:00,Latin,LATIN,N,1,Latin,100297,8/2/2025 21:00,2025-08-02,8,EVENING,['Latin' 'Domestic' 'CHF'],Latin,1,0,0,1,0,1,0,0,3,,Latin
 ,All,8/2/2025 13:00,Latin,LATIN,N,1,Latin,100301,8/2/2025 21:00,2025-08-02,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
-,All,8/2/2025 13:00,Latin,LATIN,N,1,Latin,100302,8/2/2025 21:00,2025-08-02,8,EVENING,['Latin' 'Domestic' 'ATC' 'Pacific'],Latin,1,1,0,0,0,1,0,1,4,,Latin
-,All,8/2/2025 13:00,Latin,LATIN,N,1,Latin,100308,8/2/2025 21:00,2025-08-02,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
+,All,8/2/2025 13:00,Latin,LATIN,N,1,Latin,100304,8/2/2025 21:00,2025-08-02,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
+,All,8/2/2025 13:00,Latin,LATIN,N,1,Latin,100306,8/2/2025 21:00,2025-08-02,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
+,All,8/2/2025 13:00,Latin,LATIN,N,1,Latin,100307,8/2/2025 21:00,2025-08-02,8,EVENING,['Latin' 'Domestic' 'OC'],Latin,1,0,0,0,1,1,0,0,3,,Latin
+,All,8/2/2025 13:00,Latin,LATIN,N,1,Latin,100309,8/2/2025 21:00,2025-08-02,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,8/2/2025 13:00,Latin,LATIN,N,1,Latin,100310,8/2/2025 21:00,2025-08-02,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
 ,All,8/2/2025 13:00,Latin,LATIN,N,1,Latin,100311,8/2/2025 21:00,2025-08-02,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,8/2/2025 21:00,Latin,LATIN,N,1,Latin,100319,8/3/2025 5:00,2025-08-02,8,MIDNIGHT,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
@@ -49421,19 +49421,18 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,8/8/2025 5:00,Latin,LATIN,N,1,Latin,100242,8/8/2025 13:00,2025-08-08,8,MORNING,['Latin' 'Domestic' 'OC' 'Pacific'],Latin,1,0,0,0,1,1,0,1,4,,Latin
 ,All,8/8/2025 5:00,Latin,LATIN,N,1,Latin,100243,8/8/2025 13:00,2025-08-08,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,8/8/2025 5:00,Latin,LATIN,N,1,Latin,100246,8/8/2025 13:00,2025-08-08,8,MORNING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
+,All,8/8/2025 5:00,Latin,LATIN,N,1,Latin,100247,8/8/2025 13:00,2025-08-08,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,8/8/2025 5:00,Latin,LATIN,N,1,Latin,100248,8/8/2025 13:00,2025-08-08,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
-,All,8/8/2025 5:00,Latin,LATIN,N,1,Latin,100253,8/8/2025 13:00,2025-08-08,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
+,All,8/8/2025 5:00,Latin,LATIN,N,1,Latin,100251,8/8/2025 13:00,2025-08-08,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
+,All,8/8/2025 5:00,Latin,LATIN,N,1,Latin,100252,8/8/2025 13:00,2025-08-08,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,8/8/2025 5:00,Latin,LATIN,N,1,Latin,100254,8/8/2025 13:00,2025-08-08,8,MORNING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,8/8/2025 5:00,Latin,LATIN,N,1,Latin,100256,8/8/2025 13:00,2025-08-08,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,8/8/2025 5:00,Latin,LATIN,N,1,Latin,100259,8/8/2025 13:00,2025-08-08,8,MORNING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,8/8/2025 5:00,Latin,LATIN,N,1,Latin,100260,8/8/2025 13:00,2025-08-08,8,MORNING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,8/8/2025 5:00,Latin,LATIN,N,1,Latin,100263,8/8/2025 13:00,2025-08-08,8,MORNING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
 ,All,8/8/2025 5:00,Latin,LATIN,N,1,Latin,100264,8/8/2025 13:00,2025-08-08,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
-,All,8/8/2025 5:00,Latin,LATIN,N,1,Latin,100265,8/8/2025 13:00,2025-08-08,8,MORNING,['Latin' 'Domestic' 'OC' 'Europe'],Latin,1,0,0,0,1,1,1,0,4,,Latin
-,All,8/8/2025 5:00,Latin,LATIN,N,1,Latin,100271,8/8/2025 13:00,2025-08-08,8,MORNING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
 ,All,8/8/2025 5:00,Latin,LATIN,N,1,Latin,100273,8/8/2025 13:00,2025-08-08,8,MORNING,['Latin' 'Domestic' 'Europe' 'Pacific'],Latin,1,0,0,0,0,1,1,1,4,,Latin
 ,All,8/8/2025 5:00,Latin,LATIN,N,1,Latin,100274,8/8/2025 13:00,2025-08-08,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
-,All,8/8/2025 13:00,Latin,LATIN,N,1,Latin,100278,8/8/2025 21:00,2025-08-08,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,8/8/2025 13:00,Latin,LATIN,N,1,Latin,100279,8/8/2025 21:00,2025-08-08,8,EVENING,['Latin' 'Domestic' 'OC' 'Pacific'],Latin,1,0,0,0,1,1,0,1,4,,Latin
 ,All,8/8/2025 13:00,Latin,LATIN,N,1,Latin,100280,8/8/2025 21:00,2025-08-08,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,8/8/2025 13:00,Latin,LATIN,N,1,Latin,100284,8/8/2025 21:00,2025-08-08,8,EVENING,['Latin' 'Domestic' 'OC' 'Pacific'],Latin,1,0,0,0,1,1,0,1,4,,Latin
@@ -49445,6 +49444,7 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,8/8/2025 13:00,Latin,LATIN,N,1,Latin,100293,8/8/2025 21:00,2025-08-08,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
 ,All,8/8/2025 13:00,Latin,LATIN,N,1,Latin,100296,8/8/2025 21:00,2025-08-08,8,EVENING,['Latin' 'Domestic' 'ROC'],Latin,1,0,1,0,0,1,0,0,3,,Latin
 ,All,8/8/2025 13:00,Latin,LATIN,N,1,Latin,100297,8/8/2025 21:00,2025-08-08,8,EVENING,['Latin' 'Domestic' 'CHF'],Latin,1,0,0,1,0,1,0,0,3,,Latin
+,All,8/8/2025 13:00,Latin,LATIN,N,1,Latin,100300,8/8/2025 21:00,2025-08-08,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,8/8/2025 13:00,Latin,LATIN,N,1,Latin,100301,8/8/2025 21:00,2025-08-08,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,8/8/2025 13:00,Latin,LATIN,N,1,Latin,100302,8/8/2025 21:00,2025-08-08,8,EVENING,['Latin' 'Domestic' 'ATC' 'Pacific'],Latin,1,1,0,0,0,1,0,1,4,,Latin
 ,All,8/8/2025 13:00,Latin,LATIN,N,1,Latin,100305,8/8/2025 21:00,2025-08-08,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
@@ -50916,9 +50916,9 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,8/14/2025 5:00,Latin,LATIN,N,1,Latin,100264,8/14/2025 13:00,2025-08-14,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,8/14/2025 5:00,Latin,LATIN,N,1,Latin,100266,8/14/2025 13:00,2025-08-14,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,8/14/2025 5:00,Latin,LATIN,N,1,Latin,100268,8/14/2025 13:00,2025-08-14,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
-,All,8/14/2025 5:00,Latin,LATIN,N,1,Latin,100271,8/14/2025 13:00,2025-08-14,8,MORNING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
 ,All,8/14/2025 5:00,Latin,LATIN,N,1,Latin,100273,8/14/2025 13:00,2025-08-14,8,MORNING,['Latin' 'Domestic' 'Europe' 'Pacific'],Latin,1,0,0,0,0,1,1,1,4,,Latin
 ,All,8/14/2025 5:00,Latin,LATIN,N,1,Latin,100274,8/14/2025 13:00,2025-08-14,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
+,All,8/14/2025 5:00,Latin,LATIN,N,1,Latin,100276,8/14/2025 13:00,2025-08-14,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,8/14/2025 13:00,Latin,LATIN,N,1,Latin,100278,8/14/2025 21:00,2025-08-14,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,8/14/2025 13:00,Latin,LATIN,N,1,Latin,100279,8/14/2025 21:00,2025-08-14,8,EVENING,['Latin' 'Domestic' 'OC' 'Pacific'],Latin,1,0,0,0,1,1,0,1,4,,Latin
 ,All,8/14/2025 13:00,Latin,LATIN,N,1,Latin,100280,8/14/2025 21:00,2025-08-14,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
@@ -52143,7 +52143,6 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,8/19/2025 5:00,Latin,LATIN,N,1,Latin,100275,8/19/2025 13:00,2025-08-19,8,MORNING,['Latin' 'Domestic' 'OC'],Latin,1,0,0,0,1,1,0,0,3,,Latin
 ,All,8/19/2025 13:00,Latin,LATIN,N,1,Latin,100277,8/19/2025 21:00,2025-08-19,8,EVENING,['Latin' 'Domestic' 'CHF' 'Pacific'],Latin,1,0,0,1,0,1,0,1,4,,Latin
 ,All,8/19/2025 13:00,Latin,LATIN,N,1,Latin,100281,8/19/2025 21:00,2025-08-19,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
-,All,8/19/2025 13:00,Latin,LATIN,N,1,Latin,100282,8/19/2025 21:00,2025-08-19,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,8/19/2025 13:00,Latin,LATIN,N,1,Latin,100286,8/19/2025 21:00,2025-08-19,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,8/19/2025 13:00,Latin,LATIN,N,1,Latin,100287,8/19/2025 21:00,2025-08-19,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
 ,All,8/19/2025 13:00,Latin,LATIN,N,1,Latin,100292,8/19/2025 21:00,2025-08-19,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
@@ -52153,6 +52152,7 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,8/19/2025 13:00,Latin,LATIN,N,1,Latin,100302,8/19/2025 21:00,2025-08-19,8,EVENING,['Latin' 'Domestic' 'ATC' 'Pacific'],Latin,1,1,0,0,0,1,0,1,4,,Latin
 ,All,8/19/2025 13:00,Latin,LATIN,N,1,Latin,100303,8/19/2025 21:00,2025-08-19,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,8/19/2025 13:00,Latin,LATIN,N,1,Latin,100304,8/19/2025 21:00,2025-08-19,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
+,All,8/19/2025 13:00,Latin,LATIN,N,1,Latin,100306,8/19/2025 21:00,2025-08-19,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,8/19/2025 13:00,Latin,LATIN,N,1,Latin,100307,8/19/2025 21:00,2025-08-19,8,EVENING,['Latin' 'Domestic' 'OC'],Latin,1,0,0,0,1,1,0,0,3,,Latin
 ,All,8/19/2025 13:00,Latin,LATIN,N,1,Latin,100309,8/19/2025 21:00,2025-08-19,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,8/19/2025 13:00,Latin,LATIN,N,1,Latin,100313,8/19/2025 21:00,2025-08-19,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
@@ -52932,7 +52932,7 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,8/22/2025 13:00,ATC,ATC,N,1,ATC,9100014,8/22/2025 21:00,2025-08-22,8,EVENING,['ATC' 'Domestic' 'CHF' 'OC'],ATC,1,1,0,1,1,0,0,0,4,,ATC
 ,All,8/22/2025 13:00,ATC,ATC,N,1,ATC,9100015,8/22/2025 21:00,2025-08-22,8,EVENING,['ATC' 'Domestic' 'ROC' 'CHF' 'Pacific'],ATC,1,1,1,1,0,0,0,1,5,,ATC
 ,All,8/22/2025 13:00,ATC,ATC,N,1,ATC,9100016,8/22/2025 21:00,2025-08-22,8,EVENING,['ATC' 'Domestic' 'CHF' 'Europe'],ATC,1,1,0,1,0,0,1,0,4,,ATC
-,All,8/22/2025 13:00,ATC,ATC,N,1,ATC,9100019,8/22/2025 21:00,2025-08-22,8,EVENING,['ATC' 'Domestic' 'CHF' 'OC'],ATC,1,1,0,1,1,0,0,0,4,,ATC
+,All,8/22/2025 13:00,ATC,ATC,N,1,ATC,9100022,8/22/2025 21:00,2025-08-22,8,EVENING,['ATC' 'Domestic' 'Latin' 'Pacific'],ATC,1,1,0,0,0,1,0,1,4,,ATC
 ,All,8/22/2025 21:00,ATC,ATC,N,1,ATC,9100024,8/23/2025 5:00,2025-08-22,8,MIDNIGHT,['ATC' 'Domestic' 'OC' 'Pacific'],ATC,1,1,0,0,1,0,0,1,4,,ATC
 ,All,8/22/2025 5:00,ROC,ROC,N,1,ROC,9100028,8/22/2025 13:00,2025-08-22,8,MORNING,['ROC' 'Domestic' 'ATC'],ROC,1,1,1,0,0,0,0,0,3,,ROC
 ,All,8/22/2025 5:00,ROC,ROC,N,1,ROC,9100029,8/22/2025 13:00,2025-08-22,8,MORNING,['ROC' 'Domestic' 'OC'],ROC,1,0,1,0,1,0,0,0,3,,ROC
@@ -53602,20 +53602,20 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,8/25/2025 5:00,Latin,LATIN,N,1,Latin,100275,8/25/2025 13:00,2025-08-25,8,MORNING,['Latin' 'Domestic' 'OC'],Latin,1,0,0,0,1,1,0,0,3,,Latin
 ,All,8/25/2025 13:00,Latin,LATIN,N,1,Latin,100277,8/25/2025 21:00,2025-08-25,8,EVENING,['Latin' 'Domestic' 'CHF' 'Pacific'],Latin,1,0,0,1,0,1,0,1,4,,Latin
 ,All,8/25/2025 13:00,Latin,LATIN,N,1,Latin,100280,8/25/2025 21:00,2025-08-25,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
-,All,8/25/2025 13:00,Latin,LATIN,N,1,Latin,100281,8/25/2025 21:00,2025-08-25,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
-,All,8/25/2025 13:00,Latin,LATIN,N,1,Latin,100282,8/25/2025 21:00,2025-08-25,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,8/25/2025 13:00,Latin,LATIN,N,1,Latin,100285,8/25/2025 21:00,2025-08-25,8,EVENING,['Latin' 'Domestic' 'Europe' 'Pacific'],Latin,1,0,0,0,0,1,1,1,4,,Latin
-,All,8/25/2025 13:00,Latin,LATIN,N,1,Latin,100286,8/25/2025 21:00,2025-08-25,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,8/25/2025 13:00,Latin,LATIN,N,1,Latin,100287,8/25/2025 21:00,2025-08-25,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
 ,All,8/25/2025 13:00,Latin,LATIN,N,1,Latin,100290,8/25/2025 21:00,2025-08-25,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,8/25/2025 13:00,Latin,LATIN,N,1,Latin,100292,8/25/2025 21:00,2025-08-25,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
-,All,8/25/2025 13:00,Latin,LATIN,N,1,Latin,100294,8/25/2025 21:00,2025-08-25,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
+,All,8/25/2025 13:00,Latin,LATIN,N,1,Latin,100298,8/25/2025 21:00,2025-08-25,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
 ,All,8/25/2025 13:00,Latin,LATIN,N,1,Latin,100301,8/25/2025 21:00,2025-08-25,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,8/25/2025 13:00,Latin,LATIN,N,1,Latin,100302,8/25/2025 21:00,2025-08-25,8,EVENING,['Latin' 'Domestic' 'ATC' 'Pacific'],Latin,1,1,0,0,0,1,0,1,4,,Latin
 ,All,8/25/2025 13:00,Latin,LATIN,N,1,Latin,100304,8/25/2025 21:00,2025-08-25,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
 ,All,8/25/2025 13:00,Latin,LATIN,N,1,Latin,100306,8/25/2025 21:00,2025-08-25,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,8/25/2025 13:00,Latin,LATIN,N,1,Latin,100307,8/25/2025 21:00,2025-08-25,8,EVENING,['Latin' 'Domestic' 'OC'],Latin,1,0,0,0,1,1,0,0,3,,Latin
 ,All,8/25/2025 13:00,Latin,LATIN,N,1,Latin,100308,8/25/2025 21:00,2025-08-25,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
+,All,8/25/2025 13:00,Latin,LATIN,N,1,Latin,100309,8/25/2025 21:00,2025-08-25,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
+,All,8/25/2025 13:00,Latin,LATIN,N,1,Latin,100311,8/25/2025 21:00,2025-08-25,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
+,All,8/25/2025 13:00,Latin,LATIN,N,1,Latin,100312,8/25/2025 21:00,2025-08-25,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,8/25/2025 21:00,Latin,LATIN,N,1,Latin,100314,8/26/2025 5:00,2025-08-25,8,MIDNIGHT,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,8/25/2025 21:00,Latin,LATIN,N,1,Latin,100318,8/26/2025 5:00,2025-08-25,8,MIDNIGHT,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,8/25/2025 21:00,Latin,LATIN,N,1,Latin,100319,8/26/2025 5:00,2025-08-25,8,MIDNIGHT,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
@@ -54330,6 +54330,7 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,8/28/2025 5:00,Latin,LATIN,N,1,Latin,100249,8/28/2025 13:00,2025-08-28,8,MORNING,['Latin' 'Domestic' 'OC'],Latin,1,0,0,0,1,1,0,0,3,,Latin
 ,All,8/28/2025 5:00,Latin,LATIN,N,1,Latin,100250,8/28/2025 13:00,2025-08-28,8,MORNING,['Latin' 'Domestic' 'ROC' 'Pacific'],Latin,1,0,1,0,0,1,0,1,4,,Latin
 ,All,8/28/2025 5:00,Latin,LATIN,N,1,Latin,100252,8/28/2025 13:00,2025-08-28,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
+,All,8/28/2025 5:00,Latin,LATIN,N,1,Latin,100254,8/28/2025 13:00,2025-08-28,8,MORNING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,8/28/2025 5:00,Latin,LATIN,N,1,Latin,100256,8/28/2025 13:00,2025-08-28,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,8/28/2025 5:00,Latin,LATIN,N,1,Latin,100258,8/28/2025 13:00,2025-08-28,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,8/28/2025 5:00,Latin,LATIN,N,1,Latin,100259,8/28/2025 13:00,2025-08-28,8,MORNING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
@@ -54339,7 +54340,6 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,8/28/2025 5:00,Latin,LATIN,N,1,Latin,100266,8/28/2025 13:00,2025-08-28,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,8/28/2025 5:00,Latin,LATIN,N,1,Latin,100269,8/28/2025 13:00,2025-08-28,8,MORNING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,8/28/2025 5:00,Latin,LATIN,N,1,Latin,100272,8/28/2025 13:00,2025-08-28,8,MORNING,['Latin' 'Domestic' 'CHF' 'Europe'],Latin,1,0,0,1,0,1,1,0,4,,Latin
-,All,8/28/2025 5:00,Latin,LATIN,N,1,Latin,100275,8/28/2025 13:00,2025-08-28,8,MORNING,['Latin' 'Domestic' 'OC'],Latin,1,0,0,0,1,1,0,0,3,,Latin
 ,All,8/28/2025 5:00,Latin,LATIN,N,1,Latin,100276,8/28/2025 13:00,2025-08-28,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,8/28/2025 13:00,Latin,LATIN,N,1,Latin,100278,8/28/2025 21:00,2025-08-28,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,8/28/2025 13:00,Latin,LATIN,N,1,Latin,100282,8/28/2025 21:00,2025-08-28,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
@@ -54599,18 +54599,18 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,8/29/2025 13:00,Latin,LATIN,N,1,Latin,100283,8/29/2025 21:00,2025-08-29,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,8/29/2025 13:00,Latin,LATIN,N,1,Latin,100284,8/29/2025 21:00,2025-08-29,8,EVENING,['Latin' 'Domestic' 'OC' 'Pacific'],Latin,1,0,0,0,1,1,0,1,4,,Latin
 ,All,8/29/2025 13:00,Latin,LATIN,N,1,Latin,100288,8/29/2025 21:00,2025-08-29,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
+,All,8/29/2025 13:00,Latin,LATIN,N,1,Latin,100289,8/29/2025 21:00,2025-08-29,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,8/29/2025 13:00,Latin,LATIN,N,1,Latin,100291,8/29/2025 21:00,2025-08-29,8,EVENING,['Latin' 'Domestic' 'OC'],Latin,1,0,0,0,1,1,0,0,3,,Latin
 ,All,8/29/2025 13:00,Latin,LATIN,N,1,Latin,100293,8/29/2025 21:00,2025-08-29,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
+,All,8/29/2025 13:00,Latin,LATIN,N,1,Latin,100295,8/29/2025 21:00,2025-08-29,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,8/29/2025 13:00,Latin,LATIN,N,1,Latin,100296,8/29/2025 21:00,2025-08-29,8,EVENING,['Latin' 'Domestic' 'ROC'],Latin,1,0,1,0,0,1,0,0,3,,Latin
 ,All,8/29/2025 13:00,Latin,LATIN,N,1,Latin,100297,8/29/2025 21:00,2025-08-29,8,EVENING,['Latin' 'Domestic' 'CHF'],Latin,1,0,0,1,0,1,0,0,3,,Latin
 ,All,8/29/2025 13:00,Latin,LATIN,N,1,Latin,100300,8/29/2025 21:00,2025-08-29,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,8/29/2025 13:00,Latin,LATIN,N,1,Latin,100301,8/29/2025 21:00,2025-08-29,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
-,All,8/29/2025 13:00,Latin,LATIN,N,1,Latin,100303,8/29/2025 21:00,2025-08-29,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,8/29/2025 13:00,Latin,LATIN,N,1,Latin,100305,8/29/2025 21:00,2025-08-29,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,8/29/2025 13:00,Latin,LATIN,N,1,Latin,100308,8/29/2025 21:00,2025-08-29,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,8/29/2025 13:00,Latin,LATIN,N,1,Latin,100310,8/29/2025 21:00,2025-08-29,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
 ,All,8/29/2025 13:00,Latin,LATIN,N,1,Latin,100311,8/29/2025 21:00,2025-08-29,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
-,All,8/29/2025 13:00,Latin,LATIN,N,1,Latin,100313,8/29/2025 21:00,2025-08-29,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,8/29/2025 21:00,Latin,LATIN,N,1,Latin,100316,8/30/2025 5:00,2025-08-29,8,MIDNIGHT,['Latin' 'Domestic' 'CHF'],Latin,1,0,0,1,0,1,0,0,3,,Latin
 ,All,8/29/2025 21:00,Latin,LATIN,N,1,Latin,100317,8/30/2025 5:00,2025-08-29,8,MIDNIGHT,['Latin' 'Domestic' 'ATC' 'Europe'],Latin,1,1,0,0,0,1,1,0,4,,Latin
 ,All,8/29/2025 21:00,Latin,LATIN,N,1,Latin,100325,8/30/2025 5:00,2025-08-29,8,MIDNIGHT,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
@@ -55549,18 +55549,18 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,9/2/2025 5:00,Latin,LATIN,N,1,Latin,100272,9/2/2025 13:00,2025-09-02,8,MORNING,['Latin' 'Domestic' 'CHF' 'Europe'],Latin,1,0,0,1,0,1,1,0,4,,Latin
 ,All,9/2/2025 5:00,Latin,LATIN,N,1,Latin,100275,9/2/2025 13:00,2025-09-02,8,MORNING,['Latin' 'Domestic' 'OC'],Latin,1,0,0,0,1,1,0,0,3,,Latin
 ,All,9/2/2025 5:00,Latin,LATIN,N,1,Latin,100276,9/2/2025 13:00,2025-09-02,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
-,All,9/2/2025 13:00,Latin,LATIN,N,1,Latin,100277,9/2/2025 21:00,2025-09-02,8,EVENING,['Latin' 'Domestic' 'CHF' 'Pacific'],Latin,1,0,0,1,0,1,0,1,4,,Latin
-,All,9/2/2025 13:00,Latin,LATIN,N,1,Latin,100285,9/2/2025 21:00,2025-09-02,8,EVENING,['Latin' 'Domestic' 'Europe' 'Pacific'],Latin,1,0,0,0,0,1,1,1,4,,Latin
+,All,9/2/2025 13:00,Latin,LATIN,N,1,Latin,100281,9/2/2025 21:00,2025-09-02,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
+,All,9/2/2025 13:00,Latin,LATIN,N,1,Latin,100286,9/2/2025 21:00,2025-09-02,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,9/2/2025 13:00,Latin,LATIN,N,1,Latin,100287,9/2/2025 21:00,2025-09-02,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
-,All,9/2/2025 13:00,Latin,LATIN,N,1,Latin,100290,9/2/2025 21:00,2025-09-02,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,9/2/2025 13:00,Latin,LATIN,N,1,Latin,100292,9/2/2025 21:00,2025-09-02,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,9/2/2025 13:00,Latin,LATIN,N,1,Latin,100294,9/2/2025 21:00,2025-09-02,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
+,All,9/2/2025 13:00,Latin,LATIN,N,1,Latin,100298,9/2/2025 21:00,2025-09-02,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
+,All,9/2/2025 13:00,Latin,LATIN,N,1,Latin,100299,9/2/2025 21:00,2025-09-02,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,9/2/2025 13:00,Latin,LATIN,N,1,Latin,100302,9/2/2025 21:00,2025-09-02,8,EVENING,['Latin' 'Domestic' 'ATC' 'Pacific'],Latin,1,1,0,0,0,1,0,1,4,,Latin
 ,All,9/2/2025 13:00,Latin,LATIN,N,1,Latin,100304,9/2/2025 21:00,2025-09-02,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
 ,All,9/2/2025 13:00,Latin,LATIN,N,1,Latin,100306,9/2/2025 21:00,2025-09-02,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
-,All,9/2/2025 13:00,Latin,LATIN,N,1,Latin,100307,9/2/2025 21:00,2025-09-02,8,EVENING,['Latin' 'Domestic' 'OC'],Latin,1,0,0,0,1,1,0,0,3,,Latin
-,All,9/2/2025 13:00,Latin,LATIN,N,1,Latin,100309,9/2/2025 21:00,2025-09-02,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,9/2/2025 13:00,Latin,LATIN,N,1,Latin,100312,9/2/2025 21:00,2025-09-02,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
+,All,9/2/2025 13:00,Latin,LATIN,N,1,Latin,100313,9/2/2025 21:00,2025-09-02,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,9/2/2025 21:00,Latin,LATIN,N,1,Latin,100315,9/3/2025 5:00,2025-09-02,8,MIDNIGHT,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,9/2/2025 21:00,Latin,LATIN,N,1,Latin,100319,9/3/2025 5:00,2025-09-02,8,MIDNIGHT,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,9/2/2025 21:00,Latin,LATIN,N,1,Latin,100320,9/3/2025 5:00,2025-09-02,8,MIDNIGHT,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
@@ -55768,7 +55768,7 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,9/3/2025 13:00,Latin,LATIN,N,1,Latin,100281,9/3/2025 21:00,2025-09-03,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,9/3/2025 13:00,Latin,LATIN,N,1,Latin,100282,9/3/2025 21:00,2025-09-03,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,9/3/2025 13:00,Latin,LATIN,N,1,Latin,100286,9/3/2025 21:00,2025-09-03,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
-,All,9/3/2025 13:00,Latin,LATIN,N,1,Latin,100302,9/3/2025 21:00,2025-09-03,8,EVENING,['Latin' 'Domestic' 'ATC' 'Pacific'],Latin,1,1,0,0,0,1,0,1,4,,Latin
+,All,9/3/2025 13:00,Latin,LATIN,N,1,Latin,100295,9/3/2025 21:00,2025-09-03,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,9/3/2025 13:00,Latin,LATIN,N,1,Latin,100304,9/3/2025 21:00,2025-09-03,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
 ,All,9/3/2025 13:00,Latin,LATIN,N,1,Latin,100306,9/3/2025 21:00,2025-09-03,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,9/3/2025 13:00,Latin,LATIN,N,1,Latin,100307,9/3/2025 21:00,2025-09-03,8,EVENING,['Latin' 'Domestic' 'OC'],Latin,1,0,0,0,1,1,0,0,3,,Latin
@@ -57376,8 +57376,8 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,9/10/2025 5:00,Latin,LATIN,N,1,Latin,100275,9/10/2025 13:00,2025-09-10,8,MORNING,['Latin' 'Domestic' 'OC'],Latin,1,0,0,0,1,1,0,0,3,,Latin
 ,All,9/10/2025 5:00,Latin,LATIN,N,1,Latin,100276,9/10/2025 13:00,2025-09-10,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,9/10/2025 13:00,Latin,LATIN,N,1,Latin,100277,9/10/2025 21:00,2025-09-10,8,EVENING,['Latin' 'Domestic' 'CHF' 'Pacific'],Latin,1,0,0,1,0,1,0,1,4,,Latin
-,All,9/10/2025 13:00,Latin,LATIN,N,1,Latin,100281,9/10/2025 21:00,2025-09-10,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
-,All,9/10/2025 13:00,Latin,LATIN,N,1,Latin,100285,9/10/2025 21:00,2025-09-10,8,EVENING,['Latin' 'Domestic' 'Europe' 'Pacific'],Latin,1,0,0,0,0,1,1,1,4,,Latin
+,All,9/10/2025 13:00,Latin,LATIN,N,1,Latin,100286,9/10/2025 21:00,2025-09-10,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
+,All,9/10/2025 13:00,Latin,LATIN,N,1,Latin,100287,9/10/2025 21:00,2025-09-10,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
 ,All,9/10/2025 13:00,Latin,LATIN,N,1,Latin,100290,9/10/2025 21:00,2025-09-10,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,9/10/2025 13:00,Latin,LATIN,N,1,Latin,100294,9/10/2025 21:00,2025-09-10,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,9/10/2025 13:00,Latin,LATIN,N,1,Latin,100295,9/10/2025 21:00,2025-09-10,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
@@ -57601,16 +57601,16 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,9/11/2025 5:00,Latin,LATIN,N,1,Latin,100272,9/11/2025 13:00,2025-09-11,8,MORNING,['Latin' 'Domestic' 'CHF' 'Europe'],Latin,1,0,0,1,0,1,1,0,4,,Latin
 ,All,9/11/2025 5:00,Latin,LATIN,N,1,Latin,100276,9/11/2025 13:00,2025-09-11,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,9/11/2025 13:00,Latin,LATIN,N,1,Latin,100277,9/11/2025 21:00,2025-09-11,8,EVENING,['Latin' 'Domestic' 'CHF' 'Pacific'],Latin,1,0,0,1,0,1,0,1,4,,Latin
+,All,9/11/2025 13:00,Latin,LATIN,N,1,Latin,100281,9/11/2025 21:00,2025-09-11,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,9/11/2025 13:00,Latin,LATIN,N,1,Latin,100287,9/11/2025 21:00,2025-09-11,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
+,All,9/11/2025 13:00,Latin,LATIN,N,1,Latin,100289,9/11/2025 21:00,2025-09-11,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,9/11/2025 13:00,Latin,LATIN,N,1,Latin,100292,9/11/2025 21:00,2025-09-11,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,9/11/2025 13:00,Latin,LATIN,N,1,Latin,100293,9/11/2025 21:00,2025-09-11,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
-,All,9/11/2025 13:00,Latin,LATIN,N,1,Latin,100295,9/11/2025 21:00,2025-09-11,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,9/11/2025 13:00,Latin,LATIN,N,1,Latin,100298,9/11/2025 21:00,2025-09-11,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
+,All,9/11/2025 13:00,Latin,LATIN,N,1,Latin,100299,9/11/2025 21:00,2025-09-11,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
+,All,9/11/2025 13:00,Latin,LATIN,N,1,Latin,100303,9/11/2025 21:00,2025-09-11,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,9/11/2025 13:00,Latin,LATIN,N,1,Latin,100304,9/11/2025 21:00,2025-09-11,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
-,All,9/11/2025 13:00,Latin,LATIN,N,1,Latin,100306,9/11/2025 21:00,2025-09-11,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,9/11/2025 13:00,Latin,LATIN,N,1,Latin,100307,9/11/2025 21:00,2025-09-11,8,EVENING,['Latin' 'Domestic' 'OC'],Latin,1,0,0,0,1,1,0,0,3,,Latin
-,All,9/11/2025 13:00,Latin,LATIN,N,1,Latin,100312,9/11/2025 21:00,2025-09-11,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
-,All,9/11/2025 13:00,Latin,LATIN,N,1,Latin,100313,9/11/2025 21:00,2025-09-11,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,9/11/2025 21:00,Latin,LATIN,N,1,Latin,100316,9/12/2025 5:00,2025-09-11,8,MIDNIGHT,['Latin' 'Domestic' 'CHF'],Latin,1,0,0,1,0,1,0,0,3,,Latin
 ,All,9/11/2025 21:00,Latin,LATIN,N,1,Latin,100317,9/12/2025 5:00,2025-09-11,8,MIDNIGHT,['Latin' 'Domestic' 'ATC' 'Europe'],Latin,1,1,0,0,0,1,1,0,4,,Latin
 ,All,9/11/2025 21:00,Latin,LATIN,N,1,Latin,100321,9/12/2025 5:00,2025-09-11,8,MIDNIGHT,['Latin' 'Domestic' 'ATC'],Latin,1,1,0,0,0,1,0,0,3,,Latin
@@ -58052,19 +58052,19 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,9/13/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100236,9/14/2025 5:00,2025-09-13,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,9/13/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100238,9/14/2025 5:00,2025-09-13,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,9/13/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100239,9/14/2025 5:00,2025-09-13,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
-,All,9/13/2025 5:00,Latin,LATIN,N,1,Latin,100241,9/13/2025 13:00,2025-09-13,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,9/13/2025 5:00,Latin,LATIN,N,1,Latin,100242,9/13/2025 13:00,2025-09-13,8,MORNING,['Latin' 'Domestic' 'OC' 'Pacific'],Latin,1,0,0,0,1,1,0,1,4,,Latin
-,All,9/13/2025 5:00,Latin,LATIN,N,1,Latin,100246,9/13/2025 13:00,2025-09-13,8,MORNING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
+,All,9/13/2025 5:00,Latin,LATIN,N,1,Latin,100247,9/13/2025 13:00,2025-09-13,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,9/13/2025 5:00,Latin,LATIN,N,1,Latin,100251,9/13/2025 13:00,2025-09-13,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,9/13/2025 5:00,Latin,LATIN,N,1,Latin,100252,9/13/2025 13:00,2025-09-13,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,9/13/2025 5:00,Latin,LATIN,N,1,Latin,100254,9/13/2025 13:00,2025-09-13,8,MORNING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,9/13/2025 5:00,Latin,LATIN,N,1,Latin,100256,9/13/2025 13:00,2025-09-13,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,9/13/2025 5:00,Latin,LATIN,N,1,Latin,100258,9/13/2025 13:00,2025-09-13,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
+,All,9/13/2025 5:00,Latin,LATIN,N,1,Latin,100259,9/13/2025 13:00,2025-09-13,8,MORNING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,9/13/2025 5:00,Latin,LATIN,N,1,Latin,100260,9/13/2025 13:00,2025-09-13,8,MORNING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,9/13/2025 5:00,Latin,LATIN,N,1,Latin,100262,9/13/2025 13:00,2025-09-13,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,9/13/2025 5:00,Latin,LATIN,N,1,Latin,100266,9/13/2025 13:00,2025-09-13,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,9/13/2025 5:00,Latin,LATIN,N,1,Latin,100273,9/13/2025 13:00,2025-09-13,8,MORNING,['Latin' 'Domestic' 'Europe' 'Pacific'],Latin,1,0,0,0,0,1,1,1,4,,Latin
-,All,9/13/2025 5:00,Latin,LATIN,N,1,Latin,100276,9/13/2025 13:00,2025-09-13,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
+,All,9/13/2025 5:00,Latin,LATIN,N,1,Latin,100274,9/13/2025 13:00,2025-09-13,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,9/13/2025 13:00,Latin,LATIN,N,1,Latin,100279,9/13/2025 21:00,2025-09-13,8,EVENING,['Latin' 'Domestic' 'OC' 'Pacific'],Latin,1,0,0,0,1,1,0,1,4,,Latin
 ,All,9/13/2025 13:00,Latin,LATIN,N,1,Latin,100283,9/13/2025 21:00,2025-09-13,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,9/13/2025 13:00,Latin,LATIN,N,1,Latin,100289,9/13/2025 21:00,2025-09-13,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
@@ -58755,13 +58755,13 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,9/16/2025 5:00,Latin,LATIN,N,1,Latin,100273,9/16/2025 13:00,2025-09-16,8,MORNING,['Latin' 'Domestic' 'Europe' 'Pacific'],Latin,1,0,0,0,0,1,1,1,4,,Latin
 ,All,9/16/2025 5:00,Latin,LATIN,N,1,Latin,100274,9/16/2025 13:00,2025-09-16,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,9/16/2025 13:00,Latin,LATIN,N,1,Latin,100279,9/16/2025 21:00,2025-09-16,8,EVENING,['Latin' 'Domestic' 'OC' 'Pacific'],Latin,1,0,0,0,1,1,0,1,4,,Latin
+,All,9/16/2025 13:00,Latin,LATIN,N,1,Latin,100280,9/16/2025 21:00,2025-09-16,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
+,All,9/16/2025 13:00,Latin,LATIN,N,1,Latin,100281,9/16/2025 21:00,2025-09-16,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,9/16/2025 13:00,Latin,LATIN,N,1,Latin,100285,9/16/2025 21:00,2025-09-16,8,EVENING,['Latin' 'Domestic' 'Europe' 'Pacific'],Latin,1,0,0,0,0,1,1,1,4,,Latin
 ,All,9/16/2025 13:00,Latin,LATIN,N,1,Latin,100290,9/16/2025 21:00,2025-09-16,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,9/16/2025 13:00,Latin,LATIN,N,1,Latin,100297,9/16/2025 21:00,2025-09-16,8,EVENING,['Latin' 'Domestic' 'CHF'],Latin,1,0,0,1,0,1,0,0,3,,Latin
 ,All,9/16/2025 13:00,Latin,LATIN,N,1,Latin,100301,9/16/2025 21:00,2025-09-16,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,9/16/2025 13:00,Latin,LATIN,N,1,Latin,100302,9/16/2025 21:00,2025-09-16,8,EVENING,['Latin' 'Domestic' 'ATC' 'Pacific'],Latin,1,1,0,0,0,1,0,1,4,,Latin
-,All,9/16/2025 13:00,Latin,LATIN,N,1,Latin,100304,9/16/2025 21:00,2025-09-16,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
-,All,9/16/2025 13:00,Latin,LATIN,N,1,Latin,100307,9/16/2025 21:00,2025-09-16,8,EVENING,['Latin' 'Domestic' 'OC'],Latin,1,0,0,0,1,1,0,0,3,,Latin
 ,All,9/16/2025 13:00,Latin,LATIN,N,1,Latin,100308,9/16/2025 21:00,2025-09-16,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,9/16/2025 13:00,Latin,LATIN,N,1,Latin,100310,9/16/2025 21:00,2025-09-16,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
 ,All,9/16/2025 13:00,Latin,LATIN,N,1,Latin,100311,9/16/2025 21:00,2025-09-16,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
@@ -59210,7 +59210,7 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,9/18/2025 5:00,Latin,LATIN,N,1,Latin,100267,9/18/2025 13:00,2025-09-18,8,MORNING,['Latin' 'Domestic' 'ATC'],Latin,1,1,0,0,0,1,0,0,3,,Latin
 ,All,9/18/2025 5:00,Latin,LATIN,N,1,Latin,100270,9/18/2025 13:00,2025-09-18,8,MORNING,['Latin' 'Domestic' 'CHF' 'Europe'],Latin,1,0,0,1,0,1,1,0,4,,Latin
 ,All,9/18/2025 13:00,Latin,LATIN,N,1,Latin,100277,9/18/2025 21:00,2025-09-18,8,EVENING,['Latin' 'Domestic' 'CHF' 'Pacific'],Latin,1,0,0,1,0,1,0,1,4,,Latin
-,All,9/18/2025 13:00,Latin,LATIN,N,1,Latin,100281,9/18/2025 21:00,2025-09-18,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
+,All,9/18/2025 13:00,Latin,LATIN,N,1,Latin,100282,9/18/2025 21:00,2025-09-18,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,9/18/2025 13:00,Latin,LATIN,N,1,Latin,100287,9/18/2025 21:00,2025-09-18,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
 ,All,9/18/2025 13:00,Latin,LATIN,N,1,Latin,100292,9/18/2025 21:00,2025-09-18,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,9/18/2025 13:00,Latin,LATIN,N,1,Latin,100302,9/18/2025 21:00,2025-09-18,8,EVENING,['Latin' 'Domestic' 'ATC' 'Pacific'],Latin,1,1,0,0,0,1,0,1,4,,Latin
@@ -59435,15 +59435,15 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,9/19/2025 5:00,Latin,LATIN,N,1,Latin,100272,9/19/2025 13:00,2025-09-19,8,MORNING,['Latin' 'Domestic' 'CHF' 'Europe'],Latin,1,0,0,1,0,1,1,0,4,,Latin
 ,All,9/19/2025 5:00,Latin,LATIN,N,1,Latin,100275,9/19/2025 13:00,2025-09-19,8,MORNING,['Latin' 'Domestic' 'OC'],Latin,1,0,0,0,1,1,0,0,3,,Latin
 ,All,9/19/2025 13:00,Latin,LATIN,N,1,Latin,100282,9/19/2025 21:00,2025-09-19,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
+,All,9/19/2025 13:00,Latin,LATIN,N,1,Latin,100283,9/19/2025 21:00,2025-09-19,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,9/19/2025 13:00,Latin,LATIN,N,1,Latin,100286,9/19/2025 21:00,2025-09-19,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,9/19/2025 13:00,Latin,LATIN,N,1,Latin,100287,9/19/2025 21:00,2025-09-19,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
+,All,9/19/2025 13:00,Latin,LATIN,N,1,Latin,100289,9/19/2025 21:00,2025-09-19,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,9/19/2025 13:00,Latin,LATIN,N,1,Latin,100291,9/19/2025 21:00,2025-09-19,8,EVENING,['Latin' 'Domestic' 'OC'],Latin,1,0,0,0,1,1,0,0,3,,Latin
 ,All,9/19/2025 13:00,Latin,LATIN,N,1,Latin,100292,9/19/2025 21:00,2025-09-19,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,9/19/2025 13:00,Latin,LATIN,N,1,Latin,100296,9/19/2025 21:00,2025-09-19,8,EVENING,['Latin' 'Domestic' 'ROC'],Latin,1,0,1,0,0,1,0,0,3,,Latin
 ,All,9/19/2025 13:00,Latin,LATIN,N,1,Latin,100298,9/19/2025 21:00,2025-09-19,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
-,All,9/19/2025 13:00,Latin,LATIN,N,1,Latin,100299,9/19/2025 21:00,2025-09-19,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,9/19/2025 13:00,Latin,LATIN,N,1,Latin,100300,9/19/2025 21:00,2025-09-19,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
-,All,9/19/2025 13:00,Latin,LATIN,N,1,Latin,100303,9/19/2025 21:00,2025-09-19,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,9/19/2025 13:00,Latin,LATIN,N,1,Latin,100306,9/19/2025 21:00,2025-09-19,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,9/19/2025 13:00,Latin,LATIN,N,1,Latin,100309,9/19/2025 21:00,2025-09-19,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,9/19/2025 21:00,Latin,LATIN,N,1,Latin,100315,9/20/2025 5:00,2025-09-19,8,MIDNIGHT,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
@@ -59883,16 +59883,16 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,9/21/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100234,9/22/2025 5:00,2025-09-21,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,9/21/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100235,9/22/2025 5:00,2025-09-21,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,9/21/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100238,9/22/2025 5:00,2025-09-21,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
+,All,9/21/2025 5:00,Latin,LATIN,N,1,Latin,100241,9/21/2025 13:00,2025-09-21,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,9/21/2025 5:00,Latin,LATIN,N,1,Latin,100242,9/21/2025 13:00,2025-09-21,8,MORNING,['Latin' 'Domestic' 'OC' 'Pacific'],Latin,1,0,0,0,1,1,0,1,4,,Latin
 ,All,9/21/2025 5:00,Latin,LATIN,N,1,Latin,100243,9/21/2025 13:00,2025-09-21,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,9/21/2025 5:00,Latin,LATIN,N,1,Latin,100247,9/21/2025 13:00,2025-09-21,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
+,All,9/21/2025 5:00,Latin,LATIN,N,1,Latin,100252,9/21/2025 13:00,2025-09-21,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,9/21/2025 5:00,Latin,LATIN,N,1,Latin,100254,9/21/2025 13:00,2025-09-21,8,MORNING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,9/21/2025 5:00,Latin,LATIN,N,1,Latin,100256,9/21/2025 13:00,2025-09-21,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
-,All,9/21/2025 5:00,Latin,LATIN,N,1,Latin,100260,9/21/2025 13:00,2025-09-21,8,MORNING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,9/21/2025 5:00,Latin,LATIN,N,1,Latin,100264,9/21/2025 13:00,2025-09-21,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,9/21/2025 5:00,Latin,LATIN,N,1,Latin,100268,9/21/2025 13:00,2025-09-21,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,9/21/2025 5:00,Latin,LATIN,N,1,Latin,100271,9/21/2025 13:00,2025-09-21,8,MORNING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
-,All,9/21/2025 5:00,Latin,LATIN,N,1,Latin,100273,9/21/2025 13:00,2025-09-21,8,MORNING,['Latin' 'Domestic' 'Europe' 'Pacific'],Latin,1,0,0,0,0,1,1,1,4,,Latin
 ,All,9/21/2025 13:00,Latin,LATIN,N,1,Latin,100278,9/21/2025 21:00,2025-09-21,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,9/21/2025 13:00,Latin,LATIN,N,1,Latin,100279,9/21/2025 21:00,2025-09-21,8,EVENING,['Latin' 'Domestic' 'OC' 'Pacific'],Latin,1,0,0,0,1,1,0,1,4,,Latin
 ,All,9/21/2025 13:00,Latin,LATIN,N,1,Latin,100280,9/21/2025 21:00,2025-09-21,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
@@ -60590,13 +60590,13 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,9/24/2025 13:00,Latin,LATIN,N,1,Latin,100309,9/24/2025 21:00,2025-09-24,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,9/24/2025 13:00,Latin,LATIN,N,1,Latin,100311,9/24/2025 21:00,2025-09-24,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,9/24/2025 13:00,Latin,LATIN,N,1,Latin,100312,9/24/2025 21:00,2025-09-24,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
-,All,9/24/2025 21:00,Latin,LATIN,N,1,Latin,100314,9/25/2025 5:00,2025-09-24,8,MIDNIGHT,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,9/24/2025 21:00,Latin,LATIN,N,1,Latin,100315,9/25/2025 5:00,2025-09-24,8,MIDNIGHT,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,9/24/2025 21:00,Latin,LATIN,N,1,Latin,100318,9/25/2025 5:00,2025-09-24,8,MIDNIGHT,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,9/24/2025 21:00,Latin,LATIN,N,1,Latin,100319,9/25/2025 5:00,2025-09-24,8,MIDNIGHT,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,9/24/2025 21:00,Latin,LATIN,N,1,Latin,100320,9/25/2025 5:00,2025-09-24,8,MIDNIGHT,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,9/24/2025 21:00,Latin,LATIN,N,1,Latin,100324,9/25/2025 5:00,2025-09-24,8,MIDNIGHT,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
 ,All,9/24/2025 21:00,Latin,LATIN,N,1,Latin,100326,9/25/2025 5:00,2025-09-24,8,MIDNIGHT,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
+,All,9/24/2025 21:00,Latin,LATIN,N,1,Latin,100327,9/25/2025 5:00,2025-09-24,8,MIDNIGHT,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,9/24/2025 5:00,Europe,EUROPE,N,1,Europe,100333,9/24/2025 13:00,2025-09-24,8,MORNING,['Europe' 'Domestic' 'Latin' 'Pacific'],Europe,1,0,0,0,0,1,1,1,4,,Europe
 ,All,9/24/2025 5:00,Europe,EUROPE,N,1,Europe,100335,9/24/2025 13:00,2025-09-24,8,MORNING,['Europe' 'Domestic'],Europe,1,0,0,0,0,0,1,0,2,,Europe
 ,All,9/24/2025 5:00,Europe,EUROPE,N,1,Europe,100336,9/24/2025 13:00,2025-09-24,8,MORNING,['Europe' 'Domestic'],Europe,1,0,0,0,0,0,1,0,2,,Europe
@@ -61257,18 +61257,18 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,9/27/2025 5:00,Latin,LATIN,N,1,Latin,100245,9/27/2025 13:00,2025-09-27,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,9/27/2025 5:00,Latin,LATIN,N,1,Latin,100246,9/27/2025 13:00,2025-09-27,8,MORNING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,9/27/2025 5:00,Latin,LATIN,N,1,Latin,100249,9/27/2025 13:00,2025-09-27,8,MORNING,['Latin' 'Domestic' 'OC'],Latin,1,0,0,0,1,1,0,0,3,,Latin
+,All,9/27/2025 5:00,Latin,LATIN,N,1,Latin,100250,9/27/2025 13:00,2025-09-27,8,MORNING,['Latin' 'Domestic' 'ROC' 'Pacific'],Latin,1,0,1,0,0,1,0,1,4,,Latin
 ,All,9/27/2025 5:00,Latin,LATIN,N,1,Latin,100251,9/27/2025 13:00,2025-09-27,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,9/27/2025 5:00,Latin,LATIN,N,1,Latin,100254,9/27/2025 13:00,2025-09-27,8,MORNING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,9/27/2025 5:00,Latin,LATIN,N,1,Latin,100256,9/27/2025 13:00,2025-09-27,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,9/27/2025 5:00,Latin,LATIN,N,1,Latin,100258,9/27/2025 13:00,2025-09-27,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
-,All,9/27/2025 5:00,Latin,LATIN,N,1,Latin,100261,9/27/2025 13:00,2025-09-27,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
+,All,9/27/2025 5:00,Latin,LATIN,N,1,Latin,100259,9/27/2025 13:00,2025-09-27,8,MORNING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,9/27/2025 5:00,Latin,LATIN,N,1,Latin,100263,9/27/2025 13:00,2025-09-27,8,MORNING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
-,All,9/27/2025 5:00,Latin,LATIN,N,1,Latin,100269,9/27/2025 13:00,2025-09-27,8,MORNING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,9/27/2025 5:00,Latin,LATIN,N,1,Latin,100272,9/27/2025 13:00,2025-09-27,8,MORNING,['Latin' 'Domestic' 'CHF' 'Europe'],Latin,1,0,0,1,0,1,1,0,4,,Latin
-,All,9/27/2025 5:00,Latin,LATIN,N,1,Latin,100275,9/27/2025 13:00,2025-09-27,8,MORNING,['Latin' 'Domestic' 'OC'],Latin,1,0,0,0,1,1,0,0,3,,Latin
+,All,9/27/2025 5:00,Latin,LATIN,N,1,Latin,100276,9/27/2025 13:00,2025-09-27,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,9/27/2025 13:00,Latin,LATIN,N,1,Latin,100282,9/27/2025 21:00,2025-09-27,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,9/27/2025 13:00,Latin,LATIN,N,1,Latin,100286,9/27/2025 21:00,2025-09-27,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
-,All,9/27/2025 13:00,Latin,LATIN,N,1,Latin,100288,9/27/2025 21:00,2025-09-27,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
+,All,9/27/2025 13:00,Latin,LATIN,N,1,Latin,100295,9/27/2025 21:00,2025-09-27,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,9/27/2025 13:00,Latin,LATIN,N,1,Latin,100296,9/27/2025 21:00,2025-09-27,8,EVENING,['Latin' 'Domestic' 'ROC'],Latin,1,0,1,0,0,1,0,0,3,,Latin
 ,All,9/27/2025 13:00,Latin,LATIN,N,1,Latin,100298,9/27/2025 21:00,2025-09-27,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
 ,All,9/27/2025 13:00,Latin,LATIN,N,1,Latin,100299,9/27/2025 21:00,2025-09-27,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
@@ -64551,17 +64551,17 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,10/11/2025 13:00,Latin,LATIN,N,1,Latin,100277,10/11/2025 21:00,2025-10-11,8,EVENING,['Latin' 'Domestic' 'CHF' 'Pacific'],Latin,1,0,0,1,0,1,0,1,4,,Latin
 ,All,10/11/2025 13:00,Latin,LATIN,N,1,Latin,100281,10/11/2025 21:00,2025-10-11,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,10/11/2025 13:00,Latin,LATIN,N,1,Latin,100282,10/11/2025 21:00,2025-10-11,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
+,All,10/11/2025 13:00,Latin,LATIN,N,1,Latin,100283,10/11/2025 21:00,2025-10-11,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,10/11/2025 13:00,Latin,LATIN,N,1,Latin,100286,10/11/2025 21:00,2025-10-11,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
-,All,10/11/2025 13:00,Latin,LATIN,N,1,Latin,100287,10/11/2025 21:00,2025-10-11,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
 ,All,10/11/2025 13:00,Latin,LATIN,N,1,Latin,100289,10/11/2025 21:00,2025-10-11,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,10/11/2025 13:00,Latin,LATIN,N,1,Latin,100292,10/11/2025 21:00,2025-10-11,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
-,All,10/11/2025 13:00,Latin,LATIN,N,1,Latin,100293,10/11/2025 21:00,2025-10-11,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
 ,All,10/11/2025 13:00,Latin,LATIN,N,1,Latin,100294,10/11/2025 21:00,2025-10-11,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
+,All,10/11/2025 13:00,Latin,LATIN,N,1,Latin,100295,10/11/2025 21:00,2025-10-11,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,10/11/2025 13:00,Latin,LATIN,N,1,Latin,100298,10/11/2025 21:00,2025-10-11,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
+,All,10/11/2025 13:00,Latin,LATIN,N,1,Latin,100303,10/11/2025 21:00,2025-10-11,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,10/11/2025 13:00,Latin,LATIN,N,1,Latin,100304,10/11/2025 21:00,2025-10-11,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
 ,All,10/11/2025 13:00,Latin,LATIN,N,1,Latin,100306,10/11/2025 21:00,2025-10-11,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,10/11/2025 13:00,Latin,LATIN,N,1,Latin,100307,10/11/2025 21:00,2025-10-11,8,EVENING,['Latin' 'Domestic' 'OC'],Latin,1,0,0,0,1,1,0,0,3,,Latin
-,All,10/11/2025 13:00,Latin,LATIN,N,1,Latin,100309,10/11/2025 21:00,2025-10-11,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,10/11/2025 13:00,Latin,LATIN,N,1,Latin,100312,10/11/2025 21:00,2025-10-11,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,10/11/2025 13:00,Latin,LATIN,N,1,Latin,100313,10/11/2025 21:00,2025-10-11,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,10/11/2025 21:00,Latin,LATIN,N,1,Latin,100315,10/12/2025 5:00,2025-10-11,8,MIDNIGHT,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
@@ -65762,16 +65762,16 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,10/16/2025 5:00,Latin,LATIN,N,1,Latin,100272,10/16/2025 13:00,2025-10-16,8,MORNING,['Latin' 'Domestic' 'CHF' 'Europe'],Latin,1,0,0,1,0,1,1,0,4,,Latin
 ,All,10/16/2025 5:00,Latin,LATIN,N,1,Latin,100274,10/16/2025 13:00,2025-10-16,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,10/16/2025 13:00,Latin,LATIN,N,1,Latin,100277,10/16/2025 21:00,2025-10-16,8,EVENING,['Latin' 'Domestic' 'CHF' 'Pacific'],Latin,1,0,0,1,0,1,0,1,4,,Latin
-,All,10/16/2025 13:00,Latin,LATIN,N,1,Latin,100279,10/16/2025 21:00,2025-10-16,8,EVENING,['Latin' 'Domestic' 'OC' 'Pacific'],Latin,1,0,0,0,1,1,0,1,4,,Latin
 ,All,10/16/2025 13:00,Latin,LATIN,N,1,Latin,100280,10/16/2025 21:00,2025-10-16,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,10/16/2025 13:00,Latin,LATIN,N,1,Latin,100281,10/16/2025 21:00,2025-10-16,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
-,All,10/16/2025 13:00,Latin,LATIN,N,1,Latin,100285,10/16/2025 21:00,2025-10-16,8,EVENING,['Latin' 'Domestic' 'Europe' 'Pacific'],Latin,1,0,0,0,0,1,1,1,4,,Latin
-,All,10/16/2025 13:00,Latin,LATIN,N,1,Latin,100286,10/16/2025 21:00,2025-10-16,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,10/16/2025 13:00,Latin,LATIN,N,1,Latin,100290,10/16/2025 21:00,2025-10-16,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
+,All,10/16/2025 13:00,Latin,LATIN,N,1,Latin,100292,10/16/2025 21:00,2025-10-16,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,10/16/2025 13:00,Latin,LATIN,N,1,Latin,100297,10/16/2025 21:00,2025-10-16,8,EVENING,['Latin' 'Domestic' 'CHF'],Latin,1,0,0,1,0,1,0,0,3,,Latin
-,All,10/16/2025 13:00,Latin,LATIN,N,1,Latin,100302,10/16/2025 21:00,2025-10-16,8,EVENING,['Latin' 'Domestic' 'ATC' 'Pacific'],Latin,1,1,0,0,0,1,0,1,4,,Latin
-,All,10/16/2025 13:00,Latin,LATIN,N,1,Latin,100306,10/16/2025 21:00,2025-10-16,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
+,All,10/16/2025 13:00,Latin,LATIN,N,1,Latin,100301,10/16/2025 21:00,2025-10-16,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
+,All,10/16/2025 13:00,Latin,LATIN,N,1,Latin,100304,10/16/2025 21:00,2025-10-16,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
 ,All,10/16/2025 13:00,Latin,LATIN,N,1,Latin,100307,10/16/2025 21:00,2025-10-16,8,EVENING,['Latin' 'Domestic' 'OC'],Latin,1,0,0,0,1,1,0,0,3,,Latin
+,All,10/16/2025 13:00,Latin,LATIN,N,1,Latin,100308,10/16/2025 21:00,2025-10-16,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
+,All,10/16/2025 13:00,Latin,LATIN,N,1,Latin,100310,10/16/2025 21:00,2025-10-16,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
 ,All,10/16/2025 13:00,Latin,LATIN,N,1,Latin,100311,10/16/2025 21:00,2025-10-16,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,10/16/2025 21:00,Latin,LATIN,N,1,Latin,100314,10/17/2025 5:00,2025-10-16,8,MIDNIGHT,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,10/16/2025 21:00,Latin,LATIN,N,1,Latin,100318,10/17/2025 5:00,2025-10-16,8,MIDNIGHT,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
@@ -67676,12 +67676,12 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,10/24/2025 13:00,Latin,LATIN,N,1,Latin,100311,10/24/2025 21:00,2025-10-24,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,10/24/2025 13:00,Latin,LATIN,N,1,Latin,100312,10/24/2025 21:00,2025-10-24,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,10/24/2025 21:00,Latin,LATIN,N,1,Latin,100314,10/25/2025 5:00,2025-10-24,8,MIDNIGHT,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
+,All,10/24/2025 21:00,Latin,LATIN,N,1,Latin,100315,10/25/2025 5:00,2025-10-24,8,MIDNIGHT,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,10/24/2025 21:00,Latin,LATIN,N,1,Latin,100318,10/25/2025 5:00,2025-10-24,8,MIDNIGHT,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,10/24/2025 21:00,Latin,LATIN,N,1,Latin,100319,10/25/2025 5:00,2025-10-24,8,MIDNIGHT,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
-,All,10/24/2025 21:00,Latin,LATIN,N,1,Latin,100320,10/25/2025 5:00,2025-10-24,8,MIDNIGHT,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
+,All,10/24/2025 21:00,Latin,LATIN,N,1,Latin,100322,10/25/2025 5:00,2025-10-24,8,MIDNIGHT,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,10/24/2025 21:00,Latin,LATIN,N,1,Latin,100323,10/25/2025 5:00,2025-10-24,8,MIDNIGHT,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,10/24/2025 21:00,Latin,LATIN,N,1,Latin,100324,10/25/2025 5:00,2025-10-24,8,MIDNIGHT,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
-,All,10/24/2025 21:00,Latin,LATIN,N,1,Latin,100328,10/25/2025 5:00,2025-10-24,8,MIDNIGHT,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
 ,All,10/24/2025 5:00,Europe,EUROPE,N,1,Europe,100333,10/24/2025 13:00,2025-10-24,8,MORNING,['Europe' 'Domestic' 'Latin' 'Pacific'],Europe,1,0,0,0,0,1,1,1,4,,Europe
 ,All,10/24/2025 5:00,Europe,EUROPE,N,1,Europe,100335,10/24/2025 13:00,2025-10-24,8,MORNING,['Europe' 'Domestic'],Europe,1,0,0,0,0,0,1,0,2,,Europe
 ,All,10/24/2025 5:00,Europe,EUROPE,N,1,Europe,100336,10/24/2025 13:00,2025-10-24,8,MORNING,['Europe' 'Domestic'],Europe,1,0,0,0,0,0,1,0,2,,Europe
@@ -69578,22 +69578,22 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,11/1/2025 13:00,Latin,LATIN,N,1,Latin,100286,11/1/2025 21:00,2025-11-01,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,11/1/2025 13:00,Latin,LATIN,N,1,Latin,100290,11/1/2025 21:00,2025-11-01,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,11/1/2025 13:00,Latin,LATIN,N,1,Latin,100292,11/1/2025 21:00,2025-11-01,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
-,All,11/1/2025 13:00,Latin,LATIN,N,1,Latin,100294,11/1/2025 21:00,2025-11-01,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
+,All,11/1/2025 13:00,Latin,LATIN,N,1,Latin,100295,11/1/2025 21:00,2025-11-01,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,11/1/2025 13:00,Latin,LATIN,N,1,Latin,100298,11/1/2025 21:00,2025-11-01,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
+,All,11/1/2025 13:00,Latin,LATIN,N,1,Latin,100299,11/1/2025 21:00,2025-11-01,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,11/1/2025 13:00,Latin,LATIN,N,1,Latin,100302,11/1/2025 21:00,2025-11-01,8,EVENING,['Latin' 'Domestic' 'ATC' 'Pacific'],Latin,1,1,0,0,0,1,0,1,4,,Latin
+,All,11/1/2025 13:00,Latin,LATIN,N,1,Latin,100304,11/1/2025 21:00,2025-11-01,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
 ,All,11/1/2025 13:00,Latin,LATIN,N,1,Latin,100306,11/1/2025 21:00,2025-11-01,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,11/1/2025 13:00,Latin,LATIN,N,1,Latin,100307,11/1/2025 21:00,2025-11-01,8,EVENING,['Latin' 'Domestic' 'OC'],Latin,1,0,0,0,1,1,0,0,3,,Latin
-,All,11/1/2025 13:00,Latin,LATIN,N,1,Latin,100309,11/1/2025 21:00,2025-11-01,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
-,All,11/1/2025 13:00,Latin,LATIN,N,1,Latin,100312,11/1/2025 21:00,2025-11-01,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,11/1/2025 13:00,Latin,LATIN,N,1,Latin,100313,11/1/2025 21:00,2025-11-01,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,11/1/2025 21:00,Latin,LATIN,N,1,Latin,100314,11/2/2025 5:00,2025-11-01,8,MIDNIGHT,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,11/1/2025 21:00,Latin,LATIN,N,1,Latin,100315,11/2/2025 5:00,2025-11-01,8,MIDNIGHT,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,11/1/2025 21:00,Latin,LATIN,N,1,Latin,100318,11/2/2025 5:00,2025-11-01,8,MIDNIGHT,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,11/1/2025 21:00,Latin,LATIN,N,1,Latin,100319,11/2/2025 5:00,2025-11-01,8,MIDNIGHT,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,11/1/2025 21:00,Latin,LATIN,N,1,Latin,100320,11/2/2025 5:00,2025-11-01,8,MIDNIGHT,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
+,All,11/1/2025 21:00,Latin,LATIN,N,1,Latin,100322,11/2/2025 5:00,2025-11-01,8,MIDNIGHT,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,11/1/2025 21:00,Latin,LATIN,N,1,Latin,100323,11/2/2025 5:00,2025-11-01,8,MIDNIGHT,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,11/1/2025 21:00,Latin,LATIN,N,1,Latin,100324,11/2/2025 5:00,2025-11-01,8,MIDNIGHT,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
-,All,11/1/2025 21:00,Latin,LATIN,N,1,Latin,100327,11/2/2025 5:00,2025-11-01,8,MIDNIGHT,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,11/1/2025 21:00,Latin,LATIN,N,1,Latin,100329,11/2/2025 5:00,2025-11-01,8,MIDNIGHT,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,11/1/2025 5:00,Europe,EUROPE,N,1,Europe,100333,11/1/2025 13:00,2025-11-01,8,MORNING,['Europe' 'Domestic' 'Latin' 'Pacific'],Europe,1,0,0,0,0,1,1,1,4,,Europe
 ,All,11/1/2025 5:00,Europe,EUROPE,N,1,Europe,100334,11/1/2025 13:00,2025-11-01,8,MORNING,['Europe' 'Domestic'],Europe,1,0,0,0,0,0,1,0,2,,Europe
@@ -71476,9 +71476,9 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,11/9/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100218,11/10/2025 5:00,2025-11-09,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,11/9/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100221,11/10/2025 5:00,2025-11-09,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,11/9/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100223,11/10/2025 5:00,2025-11-09,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
+,All,11/9/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100226,11/10/2025 5:00,2025-11-09,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,11/9/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100229,11/10/2025 5:00,2025-11-09,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,11/9/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100230,11/10/2025 5:00,2025-11-09,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
-,All,11/9/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100232,11/10/2025 5:00,2025-11-09,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,11/9/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100233,11/10/2025 5:00,2025-11-09,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,11/9/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100237,11/10/2025 5:00,2025-11-09,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,11/9/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100239,11/10/2025 5:00,2025-11-09,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
@@ -71520,7 +71520,7 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,11/9/2025 13:00,Latin,LATIN,N,1,Latin,100306,11/9/2025 21:00,2025-11-09,8,EVENING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,11/9/2025 13:00,Latin,LATIN,N,1,Latin,100307,11/9/2025 21:00,2025-11-09,8,EVENING,['Latin' 'Domestic' 'OC'],Latin,1,0,0,0,1,1,0,0,3,,Latin
 ,All,11/9/2025 13:00,Latin,LATIN,N,1,Latin,100309,11/9/2025 21:00,2025-11-09,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
-,All,11/9/2025 13:00,Latin,LATIN,N,1,Latin,100312,11/9/2025 21:00,2025-11-09,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
+,All,11/9/2025 13:00,Latin,LATIN,N,1,Latin,100313,11/9/2025 21:00,2025-11-09,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,11/9/2025 21:00,Latin,LATIN,N,1,Latin,100315,11/10/2025 5:00,2025-11-09,8,MIDNIGHT,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,11/9/2025 21:00,Latin,LATIN,N,1,Latin,100316,11/10/2025 5:00,2025-11-09,8,MIDNIGHT,['Latin' 'Domestic' 'CHF'],Latin,1,0,0,1,0,1,0,0,3,,Latin
 ,All,11/9/2025 21:00,Latin,LATIN,N,1,Latin,100318,11/10/2025 5:00,2025-11-09,8,MIDNIGHT,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
@@ -74496,6 +74496,7 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,11/21/2025 5:00,ROC,ROC,N,1,ROC,9100029,11/21/2025 13:00,2025-11-21,8,MORNING,['ROC' 'Domestic' 'OC'],ROC,1,0,1,0,1,0,0,0,3,,ROC
 ,All,11/21/2025 13:00,ROC,ROC,N,1,ROC,9100030,11/21/2025 21:00,2025-11-21,8,EVENING,['ROC' 'Domestic' 'OC' 'Latin' 'Europe'],ROC,1,0,1,0,1,1,1,0,5,,ROC
 ,All,11/21/2025 13:00,ROC,ROC,N,1,ROC,9100032,11/21/2025 21:00,2025-11-21,8,EVENING,['ROC' 'Domestic'],ROC,1,0,1,0,0,0,0,0,2,,ROC
+,All,11/21/2025 13:00,ROC,ROC,N,1,ROC,9100033,11/21/2025 21:00,2025-11-21,8,EVENING,['ROC' 'Domestic' 'OC' 'Latin' 'Europe' 'Pacific'],ROC,1,0,1,0,1,1,1,1,6,,ROC
 ,All,11/21/2025 21:00,ROC,ROC,N,1,ROC,9100035,11/22/2025 5:00,2025-11-21,8,MIDNIGHT,['ROC' 'Domestic' 'ATC' 'CHF' 'OC'],ROC,1,1,1,1,1,0,0,0,5,,ROC
 ,All,11/21/2025 5:00,CHF,CHF,N,1,CHF,9100036,11/21/2025 13:00,2025-11-21,8,MORNING,['CHF' 'Domestic' 'ATC' 'ROC' 'OC' 'Latin' 'Pacific'],CHF,1,1,1,1,1,1,0,1,7,,CHF
 ,All,11/21/2025 13:00,CHF,CHF,N,1,CHF,9100038,11/21/2025 21:00,2025-11-21,8,EVENING,['CHF' 'Domestic' 'ATC' 'Latin'],CHF,1,1,0,1,0,1,0,0,4,,CHF
@@ -75878,6 +75879,7 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,11/27/2025 5:00,Latin,LATIN,N,1,Latin,100252,11/27/2025 13:00,2025-11-27,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,11/27/2025 5:00,Latin,LATIN,N,1,Latin,100254,11/27/2025 13:00,2025-11-27,8,MORNING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,11/27/2025 5:00,Latin,LATIN,N,1,Latin,100256,11/27/2025 13:00,2025-11-27,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
+,All,11/27/2025 5:00,Latin,LATIN,N,1,Latin,100258,11/27/2025 13:00,2025-11-27,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,11/27/2025 5:00,Latin,LATIN,N,1,Latin,100259,11/27/2025 13:00,2025-11-27,8,MORNING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,11/27/2025 5:00,Latin,LATIN,N,1,Latin,100260,11/27/2025 13:00,2025-11-27,8,MORNING,['Latin' 'Domestic' 'Pacific'],Latin,1,0,0,0,0,1,0,1,3,,Latin
 ,All,11/27/2025 5:00,Latin,LATIN,N,1,Latin,100262,11/27/2025 13:00,2025-11-27,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
@@ -75885,7 +75887,6 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,11/27/2025 5:00,Latin,LATIN,N,1,Latin,100264,11/27/2025 13:00,2025-11-27,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,11/27/2025 5:00,Latin,LATIN,N,1,Latin,100266,11/27/2025 13:00,2025-11-27,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,11/27/2025 5:00,Latin,LATIN,N,1,Latin,100268,11/27/2025 13:00,2025-11-27,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
-,All,11/27/2025 5:00,Latin,LATIN,N,1,Latin,100271,11/27/2025 13:00,2025-11-27,8,MORNING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
 ,All,11/27/2025 5:00,Latin,LATIN,N,1,Latin,100273,11/27/2025 13:00,2025-11-27,8,MORNING,['Latin' 'Domestic' 'Europe' 'Pacific'],Latin,1,0,0,0,0,1,1,1,4,,Latin
 ,All,11/27/2025 5:00,Latin,LATIN,N,1,Latin,100274,11/27/2025 13:00,2025-11-27,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,11/27/2025 5:00,Latin,LATIN,N,1,Latin,100276,11/27/2025 13:00,2025-11-27,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
@@ -77585,7 +77586,6 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,12/4/2025 13:00,Latin,LATIN,N,1,Latin,100278,12/4/2025 21:00,2025-12-04,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,12/4/2025 13:00,Latin,LATIN,N,1,Latin,100282,12/4/2025 21:00,2025-12-04,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,12/4/2025 13:00,Latin,LATIN,N,1,Latin,100283,12/4/2025 21:00,2025-12-04,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
-,All,12/4/2025 13:00,Latin,LATIN,N,1,Latin,100284,12/4/2025 21:00,2025-12-04,8,EVENING,['Latin' 'Domestic' 'OC' 'Pacific'],Latin,1,0,0,0,1,1,0,1,4,,Latin
 ,All,12/4/2025 13:00,Latin,LATIN,N,1,Latin,100287,12/4/2025 21:00,2025-12-04,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
 ,All,12/4/2025 13:00,Latin,LATIN,N,1,Latin,100288,12/4/2025 21:00,2025-12-04,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,12/4/2025 13:00,Latin,LATIN,N,1,Latin,100289,12/4/2025 21:00,2025-12-04,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
@@ -77594,6 +77594,7 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,12/4/2025 13:00,Latin,LATIN,N,1,Latin,100295,12/4/2025 21:00,2025-12-04,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,12/4/2025 13:00,Latin,LATIN,N,1,Latin,100296,12/4/2025 21:00,2025-12-04,8,EVENING,['Latin' 'Domestic' 'ROC'],Latin,1,0,1,0,0,1,0,0,3,,Latin
 ,All,12/4/2025 13:00,Latin,LATIN,N,1,Latin,100297,12/4/2025 21:00,2025-12-04,8,EVENING,['Latin' 'Domestic' 'CHF'],Latin,1,0,0,1,0,1,0,0,3,,Latin
+,All,12/4/2025 13:00,Latin,LATIN,N,1,Latin,100298,12/4/2025 21:00,2025-12-04,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
 ,All,12/4/2025 13:00,Latin,LATIN,N,1,Latin,100300,12/4/2025 21:00,2025-12-04,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,12/4/2025 13:00,Latin,LATIN,N,1,Latin,100303,12/4/2025 21:00,2025-12-04,8,EVENING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,12/4/2025 13:00,Latin,LATIN,N,1,Latin,100310,12/4/2025 21:00,2025-12-04,8,EVENING,['Latin' 'Domestic' 'Europe'],Latin,1,0,0,0,0,1,1,0,3,,Latin
@@ -80484,12 +80485,11 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,12/16/2025 13:00,Domestic,DOMESTIC,N,1,Domestic,100191,12/16/2025 21:00,2025-12-16,8,EVENING,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,12/16/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100193,12/17/2025 5:00,2025-12-16,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,12/16/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100194,12/17/2025 5:00,2025-12-16,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
-,All,12/16/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100197,12/17/2025 5:00,2025-12-16,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,12/16/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100198,12/17/2025 5:00,2025-12-16,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,12/16/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100199,12/17/2025 5:00,2025-12-16,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,12/16/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100200,12/17/2025 5:00,2025-12-16,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,12/16/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100205,12/17/2025 5:00,2025-12-16,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
-,All,12/16/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100208,12/17/2025 5:00,2025-12-16,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
+,All,12/16/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100206,12/17/2025 5:00,2025-12-16,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,12/16/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100210,12/17/2025 5:00,2025-12-16,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,12/16/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100211,12/17/2025 5:00,2025-12-16,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,12/16/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100215,12/17/2025 5:00,2025-12-16,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
@@ -80497,13 +80497,14 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,12/16/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100218,12/17/2025 5:00,2025-12-16,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,12/16/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100221,12/17/2025 5:00,2025-12-16,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,12/16/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100225,12/17/2025 5:00,2025-12-16,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
-,All,12/16/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100226,12/17/2025 5:00,2025-12-16,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,12/16/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100229,12/17/2025 5:00,2025-12-16,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,12/16/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100230,12/17/2025 5:00,2025-12-16,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,12/16/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100231,12/17/2025 5:00,2025-12-16,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
+,All,12/16/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100232,12/17/2025 5:00,2025-12-16,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,12/16/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100233,12/17/2025 5:00,2025-12-16,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
+,All,12/16/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100234,12/17/2025 5:00,2025-12-16,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
+,All,12/16/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100235,12/17/2025 5:00,2025-12-16,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,12/16/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100237,12/17/2025 5:00,2025-12-16,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
-,All,12/16/2025 21:00,Domestic,DOMESTIC,N,1,Domestic,100239,12/17/2025 5:00,2025-12-16,8,MIDNIGHT,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,12/16/2025 5:00,Latin,LATIN,N,1,Latin,100240,12/16/2025 13:00,2025-12-16,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
 ,All,12/16/2025 5:00,Latin,LATIN,N,1,Latin,100244,12/16/2025 13:00,2025-12-16,8,MORNING,['Latin' 'Domestic' 'CHF'],Latin,1,0,0,1,0,1,0,0,3,,Latin
 ,All,12/16/2025 5:00,Latin,LATIN,N,1,Latin,100245,12/16/2025 13:00,2025-12-16,8,MORNING,['Latin' 'Domestic'],Latin,1,0,0,0,0,1,0,0,2,,Latin
@@ -85764,10 +85765,10 @@ INDEX,MAJOR_WORK_TYPE,START_TIME,EMPLOYEE_TITLE,WORK_CENTER_ID,CONTRACTOR_FLAG,C
 ,All,1/6/2026 13:00,OC,OC,N,1,OC,9100085,1/6/2026 21:00,2026-01-06,8,EVENING,['OC' 'Domestic' 'Latin'],OC,1,0,0,0,1,1,0,0,3,,OC
 ,All,1/6/2026 21:00,OC,OC,N,1,OC,9100087,1/7/2026 5:00,2026-01-06,8,MIDNIGHT,['OC' 'Domestic' 'ATC' 'Latin'],OC,1,1,0,0,1,1,0,0,4,,OC
 ,All,1/6/2026 21:00,OC,OC,N,1,OC,9100088,1/7/2026 5:00,2026-01-06,8,MIDNIGHT,['OC' 'Domestic' 'Europe'],OC,1,0,0,0,1,0,1,0,3,,OC
-,All,1/6/2026 21:00,OC,OC,N,1,OC,9100089,1/7/2026 5:00,2026-01-06,8,MIDNIGHT,['OC' 'Domestic' 'ROC'],OC,1,0,1,0,1,0,0,0,3,,OC
 ,All,1/6/2026 21:00,OC,OC,N,1,OC,9100091,1/7/2026 5:00,2026-01-06,8,MIDNIGHT,['OC' 'Domestic' 'ATC'],OC,1,1,0,0,1,0,0,0,3,,OC
 ,All,1/6/2026 21:00,OC,OC,N,1,OC,9100093,1/7/2026 5:00,2026-01-06,8,MIDNIGHT,['OC' 'Domestic'],OC,1,0,0,0,1,0,0,0,2,,OC
 ,All,1/6/2026 21:00,OC,OC,N,1,OC,9100095,1/7/2026 5:00,2026-01-06,8,MIDNIGHT,['OC' 'Domestic' 'Latin'],OC,1,0,0,0,1,1,0,0,3,,OC
+,All,1/6/2026 21:00,OC,OC,N,1,OC,9100096,1/7/2026 5:00,2026-01-06,8,MIDNIGHT,['OC' 'Domestic' 'ATC' 'Pacific'],OC,1,1,0,0,1,0,0,1,4,,OC
 ,All,1/7/2026 5:00,Domestic,DOMESTIC,N,1,Domestic,100000,1/7/2026 13:00,2026-01-07,8,MORNING,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,1/7/2026 5:00,Domestic,DOMESTIC,N,1,Domestic,100001,1/7/2026 13:00,2026-01-07,8,MORNING,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
 ,All,1/7/2026 5:00,Domestic,DOMESTIC,N,1,Domestic,100004,1/7/2026 13:00,2026-01-07,8,MORNING,['Domestic'],Domestic,1,0,0,0,0,0,0,0,1,,Domestic
