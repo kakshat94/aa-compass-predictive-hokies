@@ -77,7 +77,7 @@ class WorkforceOptimizer:
 
         signal.signal(signal.SIGINT, handle_ctrl_c)
 
-        self.model.controls.miprelstop = 0.015
+        # self.model.controls.miprelstop = 0.015
 
         self.X = {
             idx: self.model.addVariable(vartype=xp.binary, name=f"X_{idx}")

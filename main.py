@@ -186,7 +186,7 @@ if __name__ == "__main__":
 
     # ── Phase 2 — Qualification + Training ───────────────────────────────────
     _section("PHASE 2 — Qualification + Training")
-    # phase2.main(PHASE1_DIR, PHASE2_DIR, ROOT, PARAMS_PATH, SOLVER)
+    phase2.main(PHASE1_DIR, PHASE2_DIR, ROOT, PARAMS_PATH, SOLVER)
     timings["phase2"] = time.time() - t0
     logging.info(f"  elapsed: {_hms(timings['phase2'])}")
 
