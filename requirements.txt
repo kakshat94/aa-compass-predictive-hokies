@@ -1,7 +1,6 @@
 pandas
 numpy
 xpress==9.9
-gurobipy
 pyyaml
 plotly
 ortools

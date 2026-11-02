@@ -136,7 +136,7 @@ if __name__ == "__main__":
     # ── Phase 1 — Bidline Creation ────────────────────────────────────────────
     _section("PHASE 1 — Bidline Creation")
     t0 = time.time()
-    # bidlines = phase1.main(PHASE1_DIR, ROOT)
+    bidlines = phase1.main(PHASE1_DIR, ROOT)
     timings["phase1"] = time.time() - t0
     logging.info(f"  elapsed: {_hms(timings['phase1'])}")
 
