@@ -1,11 +1,11 @@
 {
-    "Runtime": "526.514886379242",
-    "Number of bidlines": "493",
-    "Total supply (not including workcenter-shift combination with no demand)": "84646",
-    "Total Shortages": "752",
-    "Total Surplus (not including workcenter-shift combination with no demand)": "3146",
-    "Total Vacation days assigned": "9457",
-    "Total Flex days assigned": "1108",
-    "Total supply (including workcenter-shift combination with no demand)": "85263",
-    "Total surplus (including workcenter-shift combination with no demand)": "3763"
+    "Runtime": "677.2682008743286",
+    "Number of bidlines": "492",
+    "Total supply (not including workcenter-shift combination with no demand)": "84380",
+    "Total Shortages": "7",
+    "Total Surplus (not including workcenter-shift combination with no demand)": "2135",
+    "Total Vacation days assigned": "9420",
+    "Total Flex days assigned": "1083",
+    "Total supply (including workcenter-shift combination with no demand)": "84983",
+    "Total surplus (including workcenter-shift combination with no demand)": "2738"
 }

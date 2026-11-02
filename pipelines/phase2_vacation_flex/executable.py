@@ -144,7 +144,9 @@ def _settings(config_path):
     flex = raw.get("flex_maxflow") or {}
     unknown = set(flex) - FLEX_KEYS
     if unknown:
-        raise ValueError(f"unknown key(s) in 'flex_maxflow': {sorted(unknown)}; allowed: {sorted(FLEX_KEYS)}")
+        raise ValueError(
+            f"unknown key(s) in 'flex_maxflow': {sorted(unknown)}; allowed: {sorted(FLEX_KEYS)}"
+        )
     return vacation, flex
 
 
@@ -153,13 +155,17 @@ def _training(PHASE2_DIR: Path):
     path = PHASE2_DIR / "all_training_data.csv"
     if path.is_file():
         return path
-    logging.warning(f"training calendar not found at {path}; training days are NOT protected")
+    logging.warning(
+        f"training calendar not found at {path}; training days are NOT protected"
+    )
     return None
 
 
 def _preassigned_flex(PHASE1_DIR: Path):
     if PHASE1_DIR is None:
-        logging.warning("PHASE1_DIR not given: no pre-assigned flex days are taken into account")
+        logging.warning(
+            "PHASE1_DIR not given: no pre-assigned flex days are taken into account"
+        )
         return None
     for name in ("Flex_assignment_qualified.csv", "Flex_assignment.csv"):
         if (PHASE1_DIR / name).is_file():
@@ -171,7 +177,9 @@ def _preassigned_flex(PHASE1_DIR: Path):
 def _blocked_schedule(PHASE1_DIR: Path):
     """All work and training days per dispatcher; no flex day goes on these."""
     if PHASE1_DIR is None or not (PHASE1_DIR / "Supply_Regular_Merged.csv").is_file():
-        logging.warning("Supply_Regular_Merged.csv not found: flex days are only checked against the supply and training files")
+        logging.warning(
+            "Supply_Regular_Merged.csv not found: flex days are only checked against the supply and training files"
+        )
         return None
     return PHASE1_DIR / "Supply_Regular_Merged.csv"
 
@@ -198,7 +206,10 @@ def run_vacation(
 
     FAIR_SECONDS and PHASE1_DIR are accepted for compatibility and not used.
     """
-    from pipelines.phase2_vacation_flex.vacation_Final_model_day_fairness_FIXED import args_from_settings, run
+    from pipelines.phase2_vacation_flex.vacation_Final_model_day_fairness_FIXED import (
+        args_from_settings,
+        run,
+    )
 
     vacation, _ = _settings(config_path)
     PHASE3_DIR.mkdir(parents=True, exist_ok=True)
@@ -212,7 +223,9 @@ def run_vacation(
     )
     summary = run(args)
     after = summary["after"]
-    logging.info(f"vacation assigned      : {after['total_vacations']:,} rows -> {PHASE3_DIR / 'vacation_initial.csv'}")
+    logging.info(
+        f"vacation assigned      : {after['total_vacations']:,} rows -> {PHASE3_DIR / 'vacation_initial.csv'}"
+    )
     logging.info(
         f"vacation fairness      : {after['dispatcher_annual_vacation_day_min']}-"
         f"{after['dispatcher_annual_vacation_day_max']} days per dispatcher; "
@@ -225,7 +238,13 @@ def run_vacation(
     return summary
 
 
-def run_flex(PHASE2_DIR: Path, PHASE3_DIR: Path, ROOT: Path, PHASE1_DIR: Path, config_path: Path = None):
+def run_flex(
+    PHASE2_DIR: Path,
+    PHASE3_DIR: Path,
+    ROOT: Path,
+    PHASE1_DIR: Path,
+    config_path: Path = None,
+):
     """Assign flex days after vacations (teammate's max-flow model).
 
     Inputs:
@@ -243,7 +262,9 @@ def run_flex(PHASE2_DIR: Path, PHASE3_DIR: Path, ROOT: Path, PHASE1_DIR: Path, c
         flex_by_dispatcher.csv, preassigned_flex_conflicts.csv, flex_summary.json
     """
     from pipelines.phase2_vacation_flex.flex_day_exclude_jan11 import run_from_files
-    from pipelines.phase2_vacation_flex.vacation_Final_model_day_fairness_FIXED import exclusion_from_settings
+    from pipelines.phase2_vacation_flex.vacation_Final_model_day_fairness_FIXED import (
+        exclusion_from_settings,
+    )
 
     _, flex = _settings(config_path)
     summary, out = run_from_files(
@@ -268,7 +289,15 @@ def run_flex(PHASE2_DIR: Path, PHASE3_DIR: Path, ROOT: Path, PHASE1_DIR: Path, c
     return summary
 
 
-def run_vacation_and_flex(PHASE1_DIR: Path, PHASE2_DIR: Path, PHASE3_DIR: Path, ROOT: Path, config_path: Path = None):
+def run_vacation_and_flex(
+    PHASE1_DIR: Path,
+    PHASE2_DIR: Path,
+    PHASE3_DIR: Path,
+    ROOT: Path,
+    config_path: Path = None,
+):
     """Both steps in order."""
-    run_vacation(PHASE2_DIR, PHASE3_DIR, ROOT, PHASE1_DIR=PHASE1_DIR, config_path=config_path)
+    run_vacation(
+        PHASE2_DIR, PHASE3_DIR, ROOT, PHASE1_DIR=PHASE1_DIR, config_path=config_path
+    )
     return run_flex(PHASE2_DIR, PHASE3_DIR, ROOT, PHASE1_DIR, config_path=config_path)

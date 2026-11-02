@@ -6,11 +6,19 @@ flex_days:
   Latin:
     max_flex_days: 1
   Domestic:
-    max_flex_days: 0
+    max_flex_days: 1
   Europe:
     max_flex_days: 1
   Pacific:
-    max_flex_days: 1
+    max_flex_days: 0
+  ATC:
+    max_flex_days: 2
+  ROC:
+    max_flex_days: 2
+  CHF:
+    max_flex_days: 4
+  OC:
+    max_flex_days: 0
 
 work_centers:
   Domestic:
@@ -23,23 +31,23 @@ work_centers:
       - "May"
 
   Pacific:
-    demand_start_date: "12/11"   # December 11
+    demand_start_date: null   # December 11
     training_month_optimizer:
       - "April"
     training_months:
       - "April"
 
   Latin:
-    demand_start_date: 
-      - "02/17"   # February 17  
-      - "11/18"   # February 17
+    demand_start_date:  # February 17  
+      - "02/17"
+      #- "11/18"   # February 17
     training_month_optimizer:
       - "October"
     training_months:
       - "October"
 
   Europe:
-    demand_start_date: "06/18"   # June 14
+    demand_start_date: "08/04"   # June 14
     training_month_optimizer:
       - "March"
     training_months:
@@ -85,7 +93,7 @@ vacation_lns:
   # vacations never add shortage, and rules are met by giving fewer vacations.
   shortage:
     allow_added: true
-    weight: 100000                  # price per unit of added shortage (rule weights are kept 10x above it)
+    weight: 1000000                # price per unit of added shortage (rule weights are kept 10x above it)
 
   # Rule 1: vacations per date within [min - tolerance_below, max + tolerance_above].
   # The maximum is hard. The minimum comes before shortage.
@@ -105,9 +113,9 @@ vacation_lns:
   # slack_days: k    -> every dispatcher gets L-k .. L+1+k days, L chosen by
   #                     the model (max - min <= 2k + 1). 0 = L or L+1 days.
   rule2_fairness:
-    slack_days: 2
-    worst_weight: 100.0             # weight on the largest |days - mean days|
-    average_weight: 10000.0           # weight on the average |days - mean days|
+    slack_days: 12
+    worst_weight: 1.0             # weight on the largest |days - mean days|
+    average_weight: 1000.0           # weight on the average |days - mean days|
 
   # Rule 3: daily total inversely proportional to the day's volume.
   # mode proportional: target = K / volume, kept inside the rule-1 range, with
@@ -117,10 +125,10 @@ vacation_lns:
   # mode rank_cap: the original rule: dates sorted by volume into 5 groups,
   #   caps max, max-1, ..., max-4 from quietest to busiest, plus cap_slack.
   rule3_inverse_volume:
-    enabled: true
+    enabled: false
     mode: proportional
-    tolerance: 1                  # proportional only: vacations per day either side of the target
-    cap_slack: 1                  # rank_cap only
+    tolerance: 2                  # proportional only: vacations per day either side of the target
+    cap_slack: 0                  # rank_cap only
 
   # Base: annual total target (value +- tolerance) x number of dates.
   # With shortage.allow_added: true it comes before shortage (weight raised to
@@ -129,8 +137,8 @@ vacation_lns:
   base_per_day:
     enabled: true
     value: 27
-    tolerance: 1
-    weight: 100
+    tolerance: 0.75
+    weight: 10
 
   # Local search (LNS) after the starting solution.
   search:
@@ -150,48 +158,6 @@ flex_maxflow:
   max_days_per_dispatcher: 4      # minus days already in the pre-assigned flex file
   solver: maxflow                 # maxflow (exact) or greedy
 
-# vacation:
-#   # Rule 1: total vacations per date.  Allowed range is
-#   # [min - tolerance_below, max + tolerance_above].  enabled: false -> any total.
-#   rule1_daily_total:
-#     enabled: true
-#     min: 25
-#     max: 29
-#     tolerance_below: 0
-#     tolerance_above: 0
-
-#   # Rule 2: every dispatcher gets L or L+1 days (L chosen by the model);
-#   # slack_days lets counts range from L - slack to L + 1 + slack.
-#   # weight = price per day outside {L, L+1}: 1000 keeps counts even no matter
-#   # the slack; ~1 lets the model use the whole band to cut shortage.
-#   rule2_fairness:
-#     slack_days: 1
-#     weight: 1
-
-#   # Rule 3: daily total = round(K / volume) for one scale K chosen by the model.
-#   # tolerance = how much worse than the best proportional fit K may be
-#   # (0 = best fit only; ~97 = any scale, i.e. effectively no constraint).
-#   rule3_inverse_volume:
-#     enabled: True
-#     tolerance: 0.0
-
-#   # Optional base: annual total within (value +- tolerance) x number of dates.
-#   base_per_day:
-#     enabled: True
-#     value: 27
-#     tolerance: 1
-
-# flex:
-#   max_days_per_dispatcher: 4      # minus days already in the pre-assigned flex file
-#   home_work_center_only: true     # flex only onto the dispatcher's own WORK_CENTER_ID (not secondary quals)
-#   same_shift_only: true           # false: may flex onto another shift
-#   cross_work_center_cost: 1000    # preference for own desk (only matters if home_work_center_only: false)
-#   cross_shift_cost: 1000          # preference for the dispatcher's own shift (if allowed)
-#   balance_cost: 10   
-
-# solver:
-#   flex_aware_vacations: true             # spreads flex days across dispatchers
-
 training:
   # Historical P(secondary | primary) is computed from inputs/Supply_sample.csv.
   # Each value scales that proportion: effective = historical * scale.
@@ -199,59 +165,59 @@ training:
   # so nobody with that primary is trained in it. Values must be in [0, 1].
   secondary_proportion_scales:
     ATC:
-      ROC: 0.1
-      CHF: 0.1
-      OC: 0.1
-      Latin: 0.1
-      Europe: 0.1
-      Pacific: 0.1
+      ROC: 1
+      CHF: 1
+      OC: 1
+      Latin: 1
+      Europe: 1
+      Pacific: 1
     ROC:
-      ATC: 0.1
-      CHF: 0.1
-      OC: 0.1
-      Latin: 0.1
-      Europe: 0.1
-      Pacific: 0.1
+      ATC: 1
+      CHF: 1
+      OC: 1
+      Latin: 1
+      Europe: 1
+      Pacific: 1
     CHF:
-      ATC: 0.1
-      ROC: 0.1
-      OC: 0.1
-      Latin: 0.1
-      Europe: 0.1
-      Pacific: 0.1
+      ATC: 1
+      ROC: 1
+      OC: 1
+      Latin: 1
+      Europe: 1
+      Pacific: 1
     OC:
-      ATC: 0.1
-      ROC: 0.1
-      CHF: 0.1
-      Latin: 0.1
-      Europe: 0.1
-      Pacific: 0.1
+      ATC: 1
+      ROC: 1
+      CHF: 1
+      Latin: 1
+      Europe: 1
+      Pacific: 1
     Latin:
-      ATC: 0.25
-      ROC: 0.25
-      CHF: 0.25
-      OC: 0.25
-      Europe: 0.25
-      Pacific: 0.25
+      ATC: 1
+      ROC: 1
+      CHF: 1
+      OC: 1
+      Europe: 1
+      Pacific: 1
     Europe:
-      ATC: 0.25
-      ROC: 0.25
-      CHF: 0.25
-      OC: 0.25
-      Latin: 0.25
-      Pacific: 0.25
+      ATC: 1
+      ROC: 1
+      CHF: 1
+      OC: 1
+      Latin: 1
+      Pacific: 1
     Pacific:
-      ATC: 0.25
-      ROC: 0.25
-      CHF: 0.25
-      OC: 0.25
-      Latin: 0.25
-      Europe: 0.25
+      ATC: 1
+      ROC: 1
+      CHF: 1
+      OC: 1
+      Latin: 1
+      Europe: 1
 
 Buffer_demand:
   # Domestic: 1
-  ROC: 0
+  ROC: 1
   OC: 1
-  ATC: 0
-  CHF: 0
+  ATC: 1
+  CHF: 1
   # Pacific: 1

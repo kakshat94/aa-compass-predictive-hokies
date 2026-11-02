@@ -63,8 +63,9 @@ SCHEMA_DF = {
     "TRAINING_SCHEDULE_DATE": "training_schedule_date",
     "PERIOD": "period",
     "FROM_SHIFT_TYPE": "from_shift_type",
-    "FROM_WORK_CENTER_ID": "from_work_center_id"
+    "FROM_WORK_CENTER_ID": "from_work_center_id",
 }
+
 
 def _hms(seconds: float) -> str:
     m, s = divmod(int(seconds), 60)
@@ -99,7 +100,7 @@ def export_outputs(file_in, file_out):
             "intl_special_training_scheduled_df.csv",
         ]:
             df.rename(columns=SCHEMA_DF, inplace=True)
-        elif file_out=="intl_special_training_data.csv":
+        elif file_out == "intl_special_training_data.csv":
             schema_local = SCHEMA_MAIN.copy()
             schema_local["MONTH"] = "Month"
             df = df.reindex(columns=schema_local.keys())
@@ -107,12 +108,11 @@ def export_outputs(file_in, file_out):
         else:
             df = df.reindex(columns=SCHEMA_MAIN.keys())
             df.rename(columns=SCHEMA_MAIN, inplace=True)
-            
 
         # Save out the formatted file
-        
+
         df.to_csv(export_path, index=False)
-        
+
         logging.info(f"Exported {file_in} to {export_path}\{file_out}")
     else:
         logging.warning("Final supply file not found, skipping export.")
@@ -136,7 +136,7 @@ if __name__ == "__main__":
     # ── Phase 1 — Bidline Creation ────────────────────────────────────────────
     _section("PHASE 1 — Bidline Creation")
     t0 = time.time()
-    bidlines = phase1.main(PHASE1_DIR, ROOT)
+    # bidlines = phase1.main(PHASE1_DIR, ROOT)
     timings["phase1"] = time.time() - t0
     logging.info(f"  elapsed: {_hms(timings['phase1'])}")
 
@@ -186,7 +186,7 @@ if __name__ == "__main__":
 
     # ── Phase 2 — Qualification + Training ───────────────────────────────────
     _section("PHASE 2 — Qualification + Training")
-    phase2.main(PHASE1_DIR, PHASE2_DIR, ROOT, PARAMS_PATH, SOLVER)
+    # phase2.main(PHASE1_DIR, PHASE2_DIR, ROOT, PARAMS_PATH, SOLVER)
     timings["phase2"] = time.time() - t0
     logging.info(f"  elapsed: {_hms(timings['phase2'])}")
 
@@ -329,7 +329,7 @@ if __name__ == "__main__":
     df_qualified_unique = df_qualified_subset.drop_duplicates(subset=join_keys)
 
     # Perform a left join on TECH_ID and SHIFT_TYPE
-    
+
     df_merged = pd.merge(
         df_regular[
             [
@@ -358,7 +358,7 @@ if __name__ == "__main__":
     output_files = [
         (
             "outputs/phase1/Supply_Regular_Merged.csv",
-            "initial_supply_(bid_lines)_data_reference.csv",
+            "initial_supply_(bid_lines)_data.csv",
         ),
         (
             "outputs/phase2_vacation_flex/flex_maxflow/flex_added_supply_rows.csv",

@@ -22,6 +22,7 @@ Outputs include flex assignments, added supply-shaped rows and final supply.
 Exact max-flow optimality is conditional on fixed inputs, fixed preassignments and
 modeled eligibility; this is not FAA/CBA or qualifications certification.
 """
+
 from __future__ import annotations
 import argparse
 import json
@@ -29,12 +30,40 @@ from collections import Counter, defaultdict
 from pathlib import Path
 import pandas as pd
 
-SCHEMA = ["INDEX", "MAJOR_WORK_TYPE", "START_TIME", "EMPLOYEE_TITLE",
-          "WORK_CENTER_ID", "CONTRACTOR_FLAG", "CLUSTER", "EMPLOYEE_WORK_CENTER_ID",
-          "TECH_ID", "END_TIME", "SHIFT_DATE", "SHIFT_LENGTH", "SHIFT_TYPE",
-          "FINAL_QUALS", "PRIMARY_QUAL", "DOMESTIC", "ATC", "ROC", "CHF",
-          "OC", "LATIN", "EUROPE", "PACIFIC", "QUAL_COUNT", "SF_LOAD_TMS"]
-ASSIGNMENT_COLS = ["TECH_ID", "SHIFT_DATE", "WORK_CENTER_ID", "SHIFT_TYPE", "ASSIGNMENT_TYPE"]
+SCHEMA = [
+    "INDEX",
+    "MAJOR_WORK_TYPE",
+    "START_TIME",
+    "EMPLOYEE_TITLE",
+    "WORK_CENTER_ID",
+    "CONTRACTOR_FLAG",
+    "CLUSTER",
+    "EMPLOYEE_WORK_CENTER_ID",
+    "TECH_ID",
+    "END_TIME",
+    "SHIFT_DATE",
+    "SHIFT_LENGTH",
+    "SHIFT_TYPE",
+    "FINAL_QUALS",
+    "PRIMARY_QUAL",
+    "DOMESTIC",
+    "ATC",
+    "ROC",
+    "CHF",
+    "OC",
+    "LATIN",
+    "EUROPE",
+    "PACIFIC",
+    "QUAL_COUNT",
+    "SF_LOAD_TMS",
+]
+ASSIGNMENT_COLS = [
+    "TECH_ID",
+    "SHIFT_DATE",
+    "WORK_CENTER_ID",
+    "SHIFT_TYPE",
+    "ASSIGNMENT_TYPE",
+]
 
 
 def load_csv(path, *, optional=False, name="input"):
@@ -46,7 +75,10 @@ def load_csv(path, *, optional=False, name="input"):
     p = Path(path)
     if not p.is_file():
         if optional:
-            print(f"WARNING: {name} file not found at {p}; assuming no records.", flush=True)
+            print(
+                f"WARNING: {name} file not found at {p}; assuming no records.",
+                flush=True,
+            )
             return pd.DataFrame(columns=["TECH_ID", "SHIFT_DATE"])
         raise FileNotFoundError(f"Missing required {name}: {p.resolve()}")
     df = pd.read_csv(p, dtype={"TECH_ID": str}, low_memory=False)
@@ -65,9 +97,13 @@ def normalize(df, name, center=False):
     if df["TECH_ID"].isna().any() or (df["TECH_ID"] == "").any():
         raise ValueError(f"{name}: missing TECH_ID")
     raw = df["SHIFT_DATE"].copy()
-    df["SHIFT_DATE"] = pd.to_datetime(df["SHIFT_DATE"], format="mixed", errors="coerce").dt.normalize()
+    df["SHIFT_DATE"] = pd.to_datetime(
+        df["SHIFT_DATE"], format="mixed", errors="coerce"
+    ).dt.normalize()
     if df["SHIFT_DATE"].isna().any():
-        raise ValueError(f"{name}: bad SHIFT_DATE: {raw[df['SHIFT_DATE'].isna()].head().tolist()}")
+        raise ValueError(
+            f"{name}: bad SHIFT_DATE: {raw[df['SHIFT_DATE'].isna()].head().tolist()}"
+        )
     if center:
         for c in ("WORK_CENTER_ID", "SHIFT_TYPE"):
             if c not in df:
@@ -86,7 +122,10 @@ def pairset(df):
 
 def check_unique(df, name):
     if df.duplicated(["TECH_ID", "SHIFT_DATE"]).any():
-        examples = df.loc[df.duplicated(["TECH_ID", "SHIFT_DATE"], keep=False), ["TECH_ID", "SHIFT_DATE"]].head()
+        examples = df.loc[
+            df.duplicated(["TECH_ID", "SHIFT_DATE"], keep=False),
+            ["TECH_ID", "SHIFT_DATE"],
+        ].head()
         raise ValueError(f"{name} duplicate employee-date rows:\n{examples}")
 
 
@@ -94,22 +133,45 @@ def load_demand(path, audit_path):
     df = load_csv(path)
     if not {"SHIFT_DATE", "WORK_CENTER", "SHIFT_TYPE", "DEMAND"}.issubset(df):
         raise ValueError("Demand must have SHIFT_DATE, WORK_CENTER, SHIFT_TYPE, DEMAND")
-    df["SHIFT_DATE"] = pd.to_datetime(df["SHIFT_DATE"], format="mixed", errors="raise").dt.normalize()
-    df["SHIFT_TYPE"] = df["SHIFT_TYPE"].astype(str).str.strip().str.upper()
+    df["SHIFT_DATE"] = pd.to_datetime(
+        df["SHIFT_DATE"], format="mixed", errors="raise"
+    ).dt.normalize()
+    df["SHIFT_TYPE"] = df["SHIFT_TYPE"].astype("string").str.strip().str.upper()
+    # IMPUTED marks demand that is NOT in annual_desk_needs_reference (estimated).
+    # It still counts in the shortage reports, but no flex day is added for it.
+    df["IMPUTED"] = False
     if str(audit_path).lower() != "none" and Path(audit_path).exists():
         audit = load_csv(audit_path)
         required = {"SHIFT_DATE", "WORK_CENTER", "SHIFT_TYPE", "IMPUTED_DEMAND"}
         if not required.issubset(audit):
             raise ValueError(f"Demand audit requires {sorted(required)}")
-        audit["SHIFT_DATE"] = pd.to_datetime(audit["SHIFT_DATE"], format="mixed").dt.normalize()
-        audit["SHIFT_TYPE"] = audit["SHIFT_TYPE"].astype(str).str.strip().str.upper()
+        audit["SHIFT_DATE"] = pd.to_datetime(
+            audit["SHIFT_DATE"], format="mixed"
+        ).dt.normalize()
+        audit["SHIFT_TYPE"] = (
+            audit["SHIFT_TYPE"].astype("string").str.strip().str.upper()
+        )
         present = set(zip(df.SHIFT_DATE, df.WORK_CENTER, df.SHIFT_TYPE))
-        extra = audit.loc[[key not in present for key in zip(audit.SHIFT_DATE, audit.WORK_CENTER, audit.SHIFT_TYPE)], ["SHIFT_DATE", "WORK_CENTER", "SHIFT_TYPE", "IMPUTED_DEMAND"]].rename(columns={"IMPUTED_DEMAND": "DEMAND"})
+        extra = audit.loc[
+            [
+                key not in present
+                for key in zip(audit.SHIFT_DATE, audit.WORK_CENTER, audit.SHIFT_TYPE)
+            ],
+            ["SHIFT_DATE", "WORK_CENTER", "SHIFT_TYPE", "IMPUTED_DEMAND"],
+        ].rename(columns={"IMPUTED_DEMAND": "DEMAND"})
         if len(extra):
-            print(f"WARNING: Using {len(extra)} estimated demand records from {audit_path}", flush=True)
+            print(
+                f"WARNING: Using {len(extra)} estimated demand records from {audit_path}",
+                flush=True,
+            )
+            extra["IMPUTED"] = True
             df = pd.concat([df, extra], ignore_index=True)
     df["DEMAND"] = pd.to_numeric(df["DEMAND"], errors="raise")
-    if df["DEMAND"].isna().any() or (df["DEMAND"] < 0).any() or (df["DEMAND"] % 1 != 0).any():
+    if (
+        df["DEMAND"].isna().any()
+        or (df["DEMAND"] < 0).any()
+        or (df["DEMAND"] % 1 != 0).any()
+    ):
         raise ValueError("Demand must be nonnegative integers")
     if df.duplicated(["SHIFT_DATE", "WORK_CENTER", "SHIFT_TYPE"]).any():
         raise ValueError("Duplicate demand buckets")
@@ -118,16 +180,30 @@ def load_demand(path, audit_path):
 
 def get_people_assignments(original):
     centers = defaultdict(set)
-    for r in original[["TECH_ID", "WORK_CENTER_ID", "SHIFT_TYPE"]].itertuples(index=False, name=None):
+    for r in original[["TECH_ID", "WORK_CENTER_ID", "SHIFT_TYPE"]].itertuples(
+        index=False, name=None
+    ):
         centers[str(r[0])].add((str(r[1]), str(r[2])))
     ambiguous = {p: sorted(v) for p, v in centers.items() if len(v) != 1}
     if ambiguous:
-        raise ValueError(f"Cannot infer one fixed work center/shift for {len(ambiguous)} employees: {list(ambiguous.items())[:3]}. An employee-level flex qualification mapping is needed.")
+        raise ValueError(
+            f"Cannot infer one fixed work center/shift for {len(ambiguous)} employees: {list(ambiguous.items())[:3]}. An employee-level flex qualification mapping is needed."
+        )
     return {p: next(iter(v)) for p, v in centers.items()}
 
 
-def prepare_preassigned(raw, assignment, original_pairs, after_pairs, vac_pairs, training_pairs, begin, finish, max_flex,
-                        blocked_pairs=frozenset()):
+def prepare_preassigned(
+    raw,
+    assignment,
+    original_pairs,
+    after_pairs,
+    vac_pairs,
+    training_pairs,
+    begin,
+    finish,
+    max_flex,
+    blocked_pairs=frozenset(),
+):
     pre = normalize(raw, "preassigned flex", center=False)
     check_unique(pre, "preassigned flex")
     for col in ("WORK_CENTER_ID", "SHIFT_TYPE"):
@@ -150,16 +226,21 @@ def prepare_preassigned(raw, assignment, original_pairs, after_pairs, vac_pairs,
             reasons.append("training day")
         elif (p, d) in blocked_pairs:
             reasons.append("day already assigned in blocked schedule")
-        elif any(pd.notna(g) and str(g).strip() not in ("", e)
-                 for g, e in zip((r.WORK_CENTER_ID, r.SHIFT_TYPE), assignment[p])):
+        elif any(
+            pd.notna(g) and str(g).strip() not in ("", e)
+            for g, e in zip((r.WORK_CENTER_ID, r.SHIFT_TYPE), assignment[p])
+        ):
             reasons.append("work center/shift differs from the dispatcher's own")
         else:
             reasons.append("")
     pre["CONFLICT_REASON"] = reasons
     conflicts = pre.loc[pre.CONFLICT_REASON != ""].copy()
     if len(conflicts):
-        print(f"WARNING: {len(conflicts)} preassigned flex rows clash and are not added as supply: "
-              f"{conflicts.CONFLICT_REASON.value_counts().to_dict()}", flush=True)
+        print(
+            f"WARNING: {len(conflicts)} preassigned flex rows clash and are not added as supply: "
+            f"{conflicts.CONFLICT_REASON.value_counts().to_dict()}",
+            flush=True,
+        )
     # Every row of a known dispatcher uses that dispatcher's flex budget.
     pre_counts = Counter(t for t in pre.TECH_ID.astype(str) if t in people)
     pre = pre.loc[pre.CONFLICT_REASON == ""].drop(columns="CONFLICT_REASON").copy()
@@ -169,20 +250,30 @@ def prepare_preassigned(raw, assignment, original_pairs, after_pairs, vac_pairs,
         for col, expected in (("WORK_CENTER_ID", c), ("SHIFT_TYPE", s)):
             given = r[col]
             if pd.notna(given) and str(given).strip() not in ("", expected):
-                raise ValueError(f"Preassigned flex {p} {d.date()} has {col}={given}, expected {expected}")
+                raise ValueError(
+                    f"Preassigned flex {p} {d.date()} has {col}={given}, expected {expected}"
+                )
             pre.at[i, col] = expected
     excess = {p: n for p, n in pre_counts.items() if n > max_flex}
     if excess:
-        raise ValueError(f"Preassigned flex exceeds {max_flex} days per dispatcher: {list(excess.items())[:5]}")
+        raise ValueError(
+            f"Preassigned flex exceeds {max_flex} days per dispatcher: {list(excess.items())[:5]}"
+        )
     pre["ASSIGNMENT_TYPE"] = "FLEX_PREASSIGNED"
     return pre, pre_counts, conflicts
 
 
 def template_row(original, person, date, center, shift):
     # Employee-specific historical metadata is preferred over a different employee.
-    personal = original.loc[(original.TECH_ID == person) & (original.WORK_CENTER_ID == center) & (original.SHIFT_TYPE == shift)]
+    personal = original.loc[
+        (original.TECH_ID == person)
+        & (original.WORK_CENTER_ID == center)
+        & (original.SHIFT_TYPE == shift)
+    ]
     if personal.empty:
-        raise ValueError(f"No employee-specific work template for {person}, {center}, {shift}")
+        raise ValueError(
+            f"No employee-specific work template for {person}, {center}, {shift}"
+        )
     same_weekday = personal.loc[personal.SHIFT_DATE.dt.dayofweek == date.dayofweek]
     pool = same_weekday if len(same_weekday) else personal
     source_idx = (pool.SHIFT_DATE - date).abs().idxmin()
@@ -205,25 +296,51 @@ def full_supply_rows(original, assignments, *, index_start):
     rows = []
     original_columns = original.columns.tolist()
     for r in assignments.itertuples(index=False):
-        p, d, c, s = str(r.TECH_ID), r.SHIFT_DATE, str(r.WORK_CENTER_ID), str(r.SHIFT_TYPE)
+        p, d, c, s = (
+            str(r.TECH_ID),
+            r.SHIFT_DATE,
+            str(r.WORK_CENTER_ID),
+            str(r.SHIFT_TYPE),
+        )
         row = template_row(original, p, d, c, s)
         for col in original_columns:
-            if col in assignments and col not in ("TECH_ID", "SHIFT_DATE", "WORK_CENTER_ID", "SHIFT_TYPE", "ASSIGNMENT_TYPE"):
+            if col in assignments and col not in (
+                "TECH_ID",
+                "SHIFT_DATE",
+                "WORK_CENTER_ID",
+                "SHIFT_TYPE",
+                "ASSIGNMENT_TYPE",
+            ):
                 value = getattr(r, col)
                 if pd.notna(value):
                     row[col] = value
         if "INDEX" in original_columns:
             row["INDEX"] = index_start + len(rows)
         if "SF_LOAD_TMS" in original_columns:
-            row["SF_LOAD_TMS"] = pd.NA  # new record; do not invent upstream load timestamp
+            row["SF_LOAD_TMS"] = (
+                pd.NA
+            )  # new record; do not invent upstream load timestamp
         rows.append(row)
     if not rows:
         return original.iloc[0:0].copy()
     return pd.DataFrame(rows).reindex(columns=original_columns)
 
 
-def run(original, after, vacation, training, pre_raw, demand, *, max_flex, solver, start, end, exclude_date="2026-01-11",
-        blocked=None):
+def run(
+    original,
+    after,
+    vacation,
+    training,
+    pre_raw,
+    demand,
+    *,
+    max_flex,
+    solver,
+    start,
+    end,
+    exclude_date="2026-01-11",
+    blocked=None,
+):
     original = normalize(original, "original supply", center=True)
     after = normalize(after, "after-vacation supply", center=True)
     vacation = normalize(vacation, "vacation assignments")
@@ -231,7 +348,12 @@ def run(original, after, vacation, training, pre_raw, demand, *, max_flex, solve
     # Match the vacation optimizer's planning horizon. Remove the excluded
     # date from ALL inputs before checking that only vacation rows were removed.
     # This also prevents excluded dates from contributing demand or flex rows.
-    excluded = None if exclude_date is None or str(exclude_date).strip().lower() in ("", "none", "null") else pd.Timestamp(exclude_date).normalize()
+    excluded = (
+        None
+        if exclude_date is None
+        or str(exclude_date).strip().lower() in ("", "none", "null")
+        else pd.Timestamp(exclude_date).normalize()
+    )
     passthrough = after.iloc[0:0].copy()
     if excluded is not None:
         # The excluded date's after-vacation rows go back into the final supply unchanged.
@@ -249,7 +371,9 @@ def run(original, after, vacation, training, pre_raw, demand, *, max_flex, solve
             removed = int((df["SHIFT_DATE"] == excluded).sum())
             filtered[name] = df.loc[df["SHIFT_DATE"] != excluded].copy()
             if removed:
-                print(f"Excluded {removed} {name} rows for {excluded.date()}", flush=True)
+                print(
+                    f"Excluded {removed} {name} rows for {excluded.date()}", flush=True
+                )
         original = filtered["original supply"]
         after = filtered["after-vacation supply"]
         vacation = filtered["vacation assignments"]
@@ -262,45 +386,125 @@ def run(original, after, vacation, training, pre_raw, demand, *, max_flex, solve
     check_unique(after, "after-vacation supply")
     check_unique(vacation, "vacation")
     assignment = get_people_assignments(original)
-    original_pairs, after_pairs, vac_pairs, tr_pairs = map(pairset, (original, after, vacation, training))
+    original_pairs, after_pairs, vac_pairs, tr_pairs = map(
+        pairset, (original, after, vacation, training)
+    )
     # Every work/training day in the blocked schedule: never a flex day.
-    blocked_pairs = pairset(normalize(blocked, "blocked schedule")) if blocked is not None and len(blocked) else set()
+    blocked_pairs = (
+        pairset(normalize(blocked, "blocked schedule"))
+        if blocked is not None and len(blocked)
+        else set()
+    )
     if not vac_pairs <= original_pairs:
-        raise ValueError("Vacation file contains employee-date not present in original supply")
+        raise ValueError(
+            "Vacation file contains employee-date not present in original supply"
+        )
     if tr_pairs & vac_pairs:
         raise ValueError("Training and vacation overlap")
     if set(after.columns) != set(original.columns):
-        raise ValueError(f"After-vacation columns mismatch original supply: missing={sorted(set(original)-set(after))}, extra={sorted(set(after)-set(original))}")
+        raise ValueError(
+            f"After-vacation columns mismatch original supply: missing={sorted(set(original)-set(after))}, extra={sorted(set(after)-set(original))}"
+        )
     if not after_pairs <= original_pairs:
-        raise ValueError("After-vacation supply contains new employee-date rows not in original supply")
+        raise ValueError(
+            "After-vacation supply contains new employee-date rows not in original supply"
+        )
     if after_pairs != original_pairs - vac_pairs:
         missing = (original_pairs - vac_pairs) - after_pairs
         unwanted = after_pairs & vac_pairs
-        raise ValueError(f"After-vacation supply inconsistent with vacation assignments: missing non-vacation work rows={len(missing)}, vacation rows still present={len(unwanted)}. This program requires vacation-only shrinkage; training is separately excluded for coverage.")
+        raise ValueError(
+            f"After-vacation supply inconsistent with vacation assignments: missing non-vacation work rows={len(missing)}, vacation rows still present={len(unwanted)}. This program requires vacation-only shrinkage; training is separately excluded for coverage."
+        )
     begin = pd.Timestamp(start).normalize() if start else original.SHIFT_DATE.min()
     finish = pd.Timestamp(end).normalize() if end else original.SHIFT_DATE.max()
     if finish < begin:
         raise ValueError("End before start")
-    pre, pre_counts, pre_conflicts = prepare_preassigned(pre_raw, assignment, original_pairs, after_pairs,
-                                                        vac_pairs, tr_pairs, begin, finish, max_flex, blocked_pairs)
-    pre_pairs = pairset(pre)
+    pre, pre_counts, pre_conflicts = prepare_preassigned(
+        pre_raw,
+        assignment,
+        original_pairs,
+        after_pairs,
+        vac_pairs,
+        tr_pairs,
+        begin,
+        finish,
+        max_flex,
+        blocked_pairs,
+    )
     # Only actual productive rows count; exclude training from after-vacation supply.
     coverage = Counter()
-    for r in after[["TECH_ID", "SHIFT_DATE", "WORK_CENTER_ID", "SHIFT_TYPE"]].itertuples(index=False):
+    for r in after[
+        ["TECH_ID", "SHIFT_DATE", "WORK_CENTER_ID", "SHIFT_TYPE"]
+    ].itertuples(index=False):
         if (str(r.TECH_ID), r.SHIFT_DATE) not in tr_pairs:
             coverage[(r.SHIFT_DATE, str(r.WORK_CENTER_ID), str(r.SHIFT_TYPE))] += 1
     coverage_without_preassigned = coverage.copy()
-    for r in pre[["SHIFT_DATE", "WORK_CENTER_ID", "SHIFT_TYPE"]].itertuples(index=False):
+    required = {
+        (r.SHIFT_DATE, str(r.WORK_CENTER), str(r.SHIFT_TYPE)): int(r.DEMAND)
+        for r in demand.itertuples(index=False)
+        if begin <= r.SHIFT_DATE <= finish
+    }
+    represented = {
+        (r.SHIFT_DATE, str(r.WORK_CENTER_ID), str(r.SHIFT_TYPE))
+        for r in original.itertuples(index=False)
+        if begin <= r.SHIFT_DATE <= finish
+    }
+    # Flex only goes to buckets whose demand comes from the demand file itself.
+    imputed_buckets = set()
+    if "IMPUTED" in demand:
+        imputed_buckets = {
+            (r.SHIFT_DATE, str(r.WORK_CENTER), str(r.SHIFT_TYPE))
+            for r in demand.itertuples(index=False)
+            if bool(r.IMPUTED) and begin <= r.SHIFT_DATE <= finish
+        }
+    # Pre-assigned flex days are kept only where they cover demand from the demand
+    # file. A pre-assigned day on a desk/shift/date that is already covered without
+    # it (or has no demand in the file) adds surplus: it is removed, and its
+    # dispatcher's flex budget goes back to the optimizer for unmet demand.
+    keep, used = [], Counter()
+    for i, r in pre.sort_values(
+        ["SHIFT_DATE", "WORK_CENTER_ID", "SHIFT_TYPE", "TECH_ID"]
+    ).iterrows():
+        b = (r.SHIFT_DATE, str(r.WORK_CENTER_ID), str(r.SHIFT_TYPE))
+        need = (
+            0
+            if b in imputed_buckets
+            else required.get(b, 0) - coverage_without_preassigned[b]
+        )
+        if used[b] < need:
+            used[b] += 1
+            keep.append(i)
+    pre_surplus = pre.loc[~pre.index.isin(keep)].copy()
+    pre = pre.loc[pre.index.isin(keep)].copy()
+    for t in pre_surplus.TECH_ID.astype(str):
+        pre_counts[t] -= 1
+    pre_counts = +pre_counts
+    if len(pre_surplus):
+        print(
+            f"Removed {len(pre_surplus)} surplus pre-assigned flex days (their desk/shift/date is covered "
+            f"without them); that budget is reassigned to unmet demand.",
+            flush=True,
+        )
+    pre_pairs = pairset(pre)
+    for r in pre[["SHIFT_DATE", "WORK_CENTER_ID", "SHIFT_TYPE"]].itertuples(
+        index=False
+    ):
         coverage[(r.SHIFT_DATE, str(r.WORK_CENTER_ID), str(r.SHIFT_TYPE))] += 1
-    required = {(r.SHIFT_DATE, str(r.WORK_CENTER), str(r.SHIFT_TYPE)): int(r.DEMAND)
-                for r in demand.itertuples(index=False) if begin <= r.SHIFT_DATE <= finish}
-    represented = {(r.SHIFT_DATE, str(r.WORK_CENTER_ID), str(r.SHIFT_TYPE))
-                   for r in original.itertuples(index=False) if begin <= r.SHIFT_DATE <= finish}
     missing_demand = represented - required.keys()
     if missing_demand:
-        raise ValueError(f"Missing demand in {len(missing_demand)} represented buckets. Example: {next(iter(missing_demand))}")
+        raise ValueError(
+            f"Missing demand in {len(missing_demand)} represented buckets. Example: {next(iter(missing_demand))}"
+        )
     shortage = {b: max(0, n - coverage[b]) for b, n in required.items()}
     before = sum(shortage.values())
+    flex_need = {b: (0 if b in imputed_buckets else n) for b, n in shortage.items()}
+    skipped_imputed = sum(shortage[b] for b in imputed_buckets if b in shortage)
+    if imputed_buckets:
+        print(
+            f"Flex not added to {len(imputed_buckets)} buckets with imputed demand "
+            f"(shortage {skipped_imputed} there is reported but not flexed).",
+            flush=True,
+        )
     by_bucket = defaultdict(list)
     original_days = defaultdict(set)
     for p, d in original_pairs:
@@ -313,13 +517,19 @@ def run(original, after, vacation, training, pre_raw, demand, *, max_flex, solve
     allocated = []
     greedy_used = Counter()
     if solver == "greedy":
-        for b in sorted(shortage, key=lambda b: (-shortage[b], b)):
+        for b in sorted(flex_need, key=lambda b: (-flex_need[b], b)):
             d, c, s = b
-            for _ in range(shortage[b]):
-                eligible = [p for p in by_bucket.get((c, s), []) if greedy_used[p] < remaining[p]
-                            and d not in original_days[p] and (p, d) not in pre_pairs
-                            and (p, d) not in tr_pairs and (p, d) not in vac_pairs
-                            and (p, d) not in blocked_pairs]
+            for _ in range(flex_need[b]):
+                eligible = [
+                    p
+                    for p in by_bucket.get((c, s), [])
+                    if greedy_used[p] < remaining[p]
+                    and d not in original_days[p]
+                    and (p, d) not in pre_pairs
+                    and (p, d) not in tr_pairs
+                    and (p, d) not in vac_pairs
+                    and (p, d) not in blocked_pairs
+                ]
                 if not eligible:
                     break
                 p = min(eligible, key=lambda p: (greedy_used[p], p))
@@ -329,7 +539,9 @@ def run(original, after, vacation, training, pre_raw, demand, *, max_flex, solve
         try:
             from ortools.graph.python import max_flow
         except ImportError as exc:
-            raise ImportError("Install ortools for exact maximum-flow scheduling") from exc
+            raise ImportError(
+                "Install ortools for exact maximum-flow scheduling"
+            ) from exc
         flow = max_flow.SimpleMaxFlow()
         src, dst, next_node = 0, 1, 2
         person_node = {}
@@ -338,7 +550,7 @@ def run(original, after, vacation, training, pre_raw, demand, *, max_flex, solve
             next_node += 1
             flow.add_arc_with_capacity(src, person_node[p], remaining[p])
         bucket_node = {}
-        for b, need in sorted(shortage.items()):
+        for b, need in sorted(flex_need.items()):
             if need:
                 bucket_node[b] = next_node
                 next_node += 1
@@ -347,8 +559,14 @@ def run(original, after, vacation, training, pre_raw, demand, *, max_flex, solve
         for b, node in bucket_node.items():
             d, c, s = b
             for p in by_bucket.get((c, s), []):
-                if remaining[p] == 0 or d in original_days[p] or (p, d) in pre_pairs or (p, d) in tr_pairs or (p, d) in vac_pairs \
-                        or (p, d) in blocked_pairs:
+                if (
+                    remaining[p] == 0
+                    or d in original_days[p]
+                    or (p, d) in pre_pairs
+                    or (p, d) in tr_pairs
+                    or (p, d) in vac_pairs
+                    or (p, d) in blocked_pairs
+                ):
                     continue
                 arc = flow.add_arc_with_capacity(person_node[p], node, 1)
                 assignment_arcs.append((arc, p, b))
@@ -359,13 +577,16 @@ def run(original, after, vacation, training, pre_raw, demand, *, max_flex, solve
             if flow.flow(arc):
                 allocated.append((p, *b))
         assert len(allocated) == flow.optimal_flow()
-    new = pd.DataFrame(allocated, columns=["TECH_ID", "SHIFT_DATE", "WORK_CENTER_ID", "SHIFT_TYPE"])
+    new = pd.DataFrame(
+        allocated, columns=["TECH_ID", "SHIFT_DATE", "WORK_CENTER_ID", "SHIFT_TYPE"]
+    )
     new["ASSIGNMENT_TYPE"] = "FLEX_OPTIMIZED"
     pre_assign = pre[ASSIGNMENT_COLS]
     all_assign = pd.concat([pre_assign, new[ASSIGNMENT_COLS]], ignore_index=True)
     check_unique(all_assign, "combined flex")
     counts = Counter(all_assign.TECH_ID.astype(str)) + Counter(
-        t for t in pre_conflicts.TECH_ID.astype(str) if t in assignment)
+        t for t in pre_conflicts.TECH_ID.astype(str) if t in assignment
+    )
     if any(v > max_flex for v in counts.values()):
         raise AssertionError("Annual flex cap violated")
     # Create complete-format new supply records; use employee-specific templates.
@@ -388,15 +609,26 @@ def run(original, after, vacation, training, pre_raw, demand, *, max_flex, solve
     pre_full = full_supply_rows(original, pre, index_start=0)
     new_full = full_supply_rows(original, new, index_start=0)
     if "INDEX" in original:
-        pre_full["INDEX"] = generated_ids[:len(pre_full)]
-        new_full["INDEX"] = generated_ids[len(pre_full):]
+        pre_full["INDEX"] = generated_ids[: len(pre_full)]
+        new_full["INDEX"] = generated_ids[len(pre_full) :]
     # For provided full-schema preassignments use their fields where available,
     # otherwise replicate employee metadata and adjust the shift date.
-    added = pd.concat([pre_full, new_full], ignore_index=True).reindex(columns=original.columns)
-    final = pd.concat([after.reindex(columns=original.columns), added,
-                       passthrough.reindex(columns=original.columns)], ignore_index=True)
+    added = pd.concat([pre_full, new_full], ignore_index=True).reindex(
+        columns=original.columns
+    )
+    final = pd.concat(
+        [
+            after.reindex(columns=original.columns),
+            added,
+            passthrough.reindex(columns=original.columns),
+        ],
+        ignore_index=True,
+    )
     check_unique(final, "final supply")
-    if "INDEX" in final and final["INDEX"].dropna().astype(str).str.strip().duplicated().any():
+    if (
+        "INDEX" in final
+        and final["INDEX"].dropna().astype(str).str.strip().duplicated().any()
+    ):
         raise ValueError("INDEX collision in final supply")
     # Verify numeric coverage accounting for both preassigned and newly placed days.
     before_new = coverage.copy()
@@ -406,82 +638,188 @@ def run(original, after, vacation, training, pre_raw, demand, *, max_flex, solve
     rows = []
     for b, dem in sorted(required.items()):
         d, c, s = b
-        rows.append({"SHIFT_DATE": d, "WORK_CENTER": c, "SHIFT_TYPE": s, "DEMAND": dem,
-                     "AVAILABLE_BEFORE_FLEX": before_new[b], "AVAILABLE_AFTER_FLEX": coverage[b],
-                     "SHORTAGE_BEFORE_FLEX": max(0, dem-before_new[b]),
-                     "SHORTAGE_AFTER_FLEX": max(0, dem-coverage[b]),
-                     "FLEX_ASSIGNED": new_bucket[b],
-                     "OVERCOVERAGE_AFTER_FLEX": max(0, coverage[b]-dem)})
+        rows.append(
+            {
+                "SHIFT_DATE": d,
+                "WORK_CENTER": c,
+                "SHIFT_TYPE": s,
+                "DEMAND": dem,
+                "AVAILABLE_BEFORE_FLEX": before_new[b],
+                "AVAILABLE_AFTER_FLEX": coverage[b],
+                "SHORTAGE_BEFORE_FLEX": max(0, dem - before_new[b]),
+                "SHORTAGE_AFTER_FLEX": max(0, dem - coverage[b]),
+                "FLEX_ASSIGNED": new_bucket[b],
+                "OVERCOVERAGE_AFTER_FLEX": max(0, coverage[b] - dem),
+            }
+        )
     cov = pd.DataFrame(rows)
     by_person = pd.DataFrame({"TECH_ID": sorted(assignment)})
-    by_person["PREASSIGNED_FLEX_DAYS"] = by_person.TECH_ID.map(pre_counts).fillna(0).astype(int)
+    by_person["PREASSIGNED_FLEX_DAYS"] = (
+        by_person.TECH_ID.map(pre_counts).fillna(0).astype(int)
+    )
     new_counts = Counter(new.TECH_ID.astype(str))
     by_person["NEW_FLEX_DAYS"] = by_person.TECH_ID.map(new_counts).fillna(0).astype(int)
-    by_person["TOTAL_FLEX_DAYS"] = by_person.PREASSIGNED_FLEX_DAYS + by_person.NEW_FLEX_DAYS
+    by_person["TOTAL_FLEX_DAYS"] = (
+        by_person.PREASSIGNED_FLEX_DAYS + by_person.NEW_FLEX_DAYS
+    )
+    by_person["PREASSIGNED_SURPLUS_REMOVED"] = (
+        by_person.TECH_ID.map(Counter(pre_surplus.TECH_ID.astype(str)))
+        .fillna(0)
+        .astype(int)
+    )
     # PREASSIGNED_FLEX_DAYS includes clashing rows (they use budget but add no cover).
-    by_person["PREASSIGNED_CONFLICT_DAYS"] = by_person.PREASSIGNED_FLEX_DAYS - by_person.TECH_ID.map(
-        Counter(pre.TECH_ID.astype(str))).fillna(0).astype(int)
+    by_person["PREASSIGNED_CONFLICT_DAYS"] = (
+        by_person.PREASSIGNED_FLEX_DAYS
+        - by_person.TECH_ID.map(Counter(pre.TECH_ID.astype(str))).fillna(0).astype(int)
+    )
     by_person["REMAINING_FLEX_CAPACITY"] = max_flex - by_person.TOTAL_FLEX_DAYS
-    summary = {"solver": "exact_bipartite_max_flow" if solver == "maxflow" else "greedy",
-               "max_flex_per_dispatcher": max_flex, "preassigned_flex_days": len(pre),
-               "preassigned_flex_conflicts": len(pre_conflicts), "blocked_schedule_days": len(blocked_pairs),
-               "excluded_date_rows_passed_through": len(passthrough),
-               "new_flex_days": len(new), "total_flex_days": len(all_assign),
-               "dispatchers_with_flex": int((by_person.TOTAL_FLEX_DAYS > 0).sum()),
-               "shortage_after_vacation_before_preassigned": sum(max(0, n - coverage_without_preassigned[b]) for b, n in required.items()),
-               "shortage_after_preassigned_before_new_flex": before,
-               "shortage_after_all_flex": int(cov.SHORTAGE_AFTER_FLEX.sum()),
-               "shortage_reduction_from_new_flex": before - int(cov.SHORTAGE_AFTER_FLEX.sum()),
-               "supply_rows_after_vacation": len(after), "supply_rows_after_all_flex": len(final),
-               "full_supply_columns": original.columns.tolist(),
-               "schema_columns_missing_from_SQL_screenshot": [c for c in SCHEMA if c not in original],
-               "qualifications_verified": False,
-               "new_flex_row_metadata": "inherited from same employee existing work shift; review timestamp and shift metadata",
-               "optimal_under_modeled_constraints": solver == "maxflow",
-                "excluded_date": str(excluded.date()) if excluded is not None else None}
+    summary = {
+        "solver": "exact_bipartite_max_flow" if solver == "maxflow" else "greedy",
+        "max_flex_per_dispatcher": max_flex,
+        "preassigned_flex_days": len(pre),
+        "preassigned_flex_conflicts": len(pre_conflicts),
+        "preassigned_surplus_removed": len(pre_surplus),
+        "blocked_schedule_days": len(blocked_pairs),
+        "excluded_date_rows_passed_through": len(passthrough),
+        "new_flex_days": len(new),
+        "total_flex_days": len(all_assign),
+        "dispatchers_with_flex": int((by_person.TOTAL_FLEX_DAYS > 0).sum()),
+        "shortage_after_vacation_before_preassigned": sum(
+            max(0, n - coverage_without_preassigned[b]) for b, n in required.items()
+        ),
+        "shortage_after_preassigned_before_new_flex": before,
+        "imputed_demand_buckets_not_flexed": len(imputed_buckets),
+        "shortage_in_imputed_buckets_not_flexed": int(skipped_imputed),
+        "shortage_after_all_flex": int(cov.SHORTAGE_AFTER_FLEX.sum()),
+        "shortage_reduction_from_new_flex": before - int(cov.SHORTAGE_AFTER_FLEX.sum()),
+        "supply_rows_after_vacation": len(after),
+        "supply_rows_after_all_flex": len(final),
+        "full_supply_columns": original.columns.tolist(),
+        "schema_columns_missing_from_SQL_screenshot": [
+            c for c in SCHEMA if c not in original
+        ],
+        "qualifications_verified": False,
+        "new_flex_row_metadata": "inherited from same employee existing work shift; review timestamp and shift metadata",
+        "optimal_under_modeled_constraints": solver == "maxflow",
+        "excluded_date": str(excluded.date()) if excluded is not None else None,
+    }
     assert len(final) == len(after) + len(pre) + len(new) + len(passthrough)
     assert int(cov.FLEX_ASSIGNED.sum()) == len(new)
     assert summary["shortage_reduction_from_new_flex"] == len(new)
-    return all_assign, new, added, final, cov, by_person, summary, pre_conflicts
+    return (
+        all_assign,
+        new,
+        added,
+        final,
+        cov,
+        by_person,
+        summary,
+        pre_conflicts,
+        pre_surplus,
+    )
 
 
-def run_from_files(original_supply, after_vacation, vacation, training, preassigned_flex, demand, demand_audit,
-                   output_dir, *, max_flex=4, solver="maxflow", start=None, end=None, exclude_date="2026-01-11",
-                   blocked_schedule=None):
+def run_from_files(
+    original_supply,
+    after_vacation,
+    vacation,
+    training,
+    preassigned_flex,
+    demand,
+    demand_audit,
+    output_dir,
+    *,
+    max_flex=4,
+    solver="maxflow",
+    start=None,
+    end=None,
+    exclude_date="2026-01-11",
+    blocked_schedule=None,
+):
     """Load the inputs, run, and write every output to output_dir."""
-    blocked = load_csv(blocked_schedule, optional=True, name="blocked schedule") if blocked_schedule is not None else None
-    result = run(load_csv(original_supply), load_csv(after_vacation), load_csv(vacation),
-                 load_csv(training if training is not None else "none", optional=True, name="training"),
-                 load_csv(preassigned_flex if preassigned_flex is not None else "none", optional=True,
-                          name="preassigned flex"),
-                 load_demand(demand, demand_audit if demand_audit is not None else "none"),
-                 max_flex=max_flex, solver=solver, start=start, end=end, exclude_date=exclude_date, blocked=blocked)
-    combined, new, added, final, cov, by_person, summary, conflicts = result
+    blocked = (
+        load_csv(blocked_schedule, optional=True, name="blocked schedule")
+        if blocked_schedule is not None
+        else None
+    )
+    result = run(
+        load_csv(original_supply),
+        load_csv(after_vacation),
+        load_csv(vacation),
+        load_csv(
+            training if training is not None else "none", optional=True, name="training"
+        ),
+        load_csv(
+            preassigned_flex if preassigned_flex is not None else "none",
+            optional=True,
+            name="preassigned flex",
+        ),
+        load_demand(demand, demand_audit if demand_audit is not None else "none"),
+        max_flex=max_flex,
+        solver=solver,
+        start=start,
+        end=end,
+        exclude_date=exclude_date,
+        blocked=blocked,
+    )
+    combined, new, added, final, cov, by_person, summary, conflicts, surplus = result
     out = Path(output_dir)
     out.mkdir(parents=True, exist_ok=True)
-    combined.to_csv(out / "Flex_assignment_combined.csv", index=False, date_format="%Y-%m-%d")
+    combined.to_csv(
+        out / "Flex_assignment_combined.csv", index=False, date_format="%Y-%m-%d"
+    )
     new.to_csv(out / "flex_days_new.csv", index=False, date_format="%Y-%m-%d")
-    added.to_csv(out / "flex_added_supply_rows.csv", index=False, date_format="%Y-%m-%d")
-    final.to_csv(out / "supply_after_vacation_and_flex.csv", index=False, date_format="%Y-%m-%d")
-    cov.to_csv(out / "staffing_coverage_before_after_flex.csv", index=False, date_format="%Y-%m-%d")
+    added.to_csv(
+        out / "flex_added_supply_rows.csv", index=False, date_format="%Y-%m-%d"
+    )
+    final.to_csv(
+        out / "supply_after_vacation_and_flex.csv", index=False, date_format="%Y-%m-%d"
+    )
+    cov.to_csv(
+        out / "staffing_coverage_before_after_flex.csv",
+        index=False,
+        date_format="%Y-%m-%d",
+    )
     by_person.to_csv(out / "flex_by_dispatcher.csv", index=False)
-    conflicts.to_csv(out / "preassigned_flex_conflicts.csv", index=False, date_format="%Y-%m-%d")
-    (out / "flex_summary.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
+    conflicts.to_csv(
+        out / "preassigned_flex_conflicts.csv", index=False, date_format="%Y-%m-%d"
+    )
+    surplus.to_csv(
+        out / "preassigned_flex_surplus_removed.csv",
+        index=False,
+        date_format="%Y-%m-%d",
+    )
+    (out / "flex_summary.json").write_text(
+        json.dumps(summary, indent=2), encoding="utf-8"
+    )
     print(f"Saved outputs to {out.resolve()}", flush=True)
     return summary, out
 
 
 def main():
-    p = argparse.ArgumentParser(description="Flex max-flow with preassignments and full supply-format output")
+    p = argparse.ArgumentParser(
+        description="Flex max-flow with preassignments and full supply-format output"
+    )
     p.add_argument("--original-supply", default="data/Supply_Regular_qualified.csv")
-    p.add_argument("--after-vacation", default="outputs/vacation_outputs_updatedFormat.csv")
+    p.add_argument(
+        "--after-vacation", default="outputs/vacation_outputs_updatedFormat.csv"
+    )
     p.add_argument("--vacation", default="outputs/vacation_initial.csv")
-    p.add_argument("--preassigned-flex", default="data/Flex_assignment.csv",
-                   help="Preexisting Flex_assignment.csv; missing file or none means no preassignments")
-    p.add_argument("--training", default="data/all_training_data.csv",
-                   help="Merged training calendar; missing file or none means no training records")
-    p.add_argument("--blocked-schedule", default=None,
-                   help="Optional schedule of all work/training days (e.g. Supply_Regular_Merged.csv); never flexed")
+    p.add_argument(
+        "--preassigned-flex",
+        default="data/Flex_assignment.csv",
+        help="Preexisting Flex_assignment.csv; missing file or none means no preassignments",
+    )
+    p.add_argument(
+        "--training",
+        default="data/all_training_data.csv",
+        help="Merged training calendar; missing file or none means no training records",
+    )
+    p.add_argument(
+        "--blocked-schedule",
+        default=None,
+        help="Optional schedule of all work/training days (e.g. Supply_Regular_Merged.csv); never flexed",
+    )
     p.add_argument("--demand", default="data/annual_desk_needs_reference.csv")
     p.add_argument("--demand-audit", default="outputs/demand_imputation_audit.csv")
     p.add_argument("--output-dir", default="outputs/flex_maxflow")
@@ -489,16 +827,32 @@ def main():
     p.add_argument("--solver", choices=["maxflow", "greedy"], default="maxflow")
     p.add_argument("--start", default=None)
     p.add_argument("--end", default=None)
-    p.add_argument("--exclude-date", default="2026-01-11",
-                   help="Exclude this date consistently from supply, vacations, training, flex and demand; use none to disable")
+    p.add_argument(
+        "--exclude-date",
+        default="2026-01-11",
+        help="Exclude this date consistently from supply, vacations, training, flex and demand; use none to disable",
+    )
     args = p.parse_args()
     if args.max_flex < 0:
         p.error("max-flex must be nonnegative")
-    summary, _ = run_from_files(args.original_supply, args.after_vacation, args.vacation, args.training,
-                                args.preassigned_flex, args.demand, args.demand_audit, args.output_dir,
-                                max_flex=args.max_flex, solver=args.solver, start=args.start, end=args.end,
-                                exclude_date=args.exclude_date, blocked_schedule=args.blocked_schedule)
+    summary, _ = run_from_files(
+        args.original_supply,
+        args.after_vacation,
+        args.vacation,
+        args.training,
+        args.preassigned_flex,
+        args.demand,
+        args.demand_audit,
+        args.output_dir,
+        max_flex=args.max_flex,
+        solver=args.solver,
+        start=args.start,
+        end=args.end,
+        exclude_date=args.exclude_date,
+        blocked_schedule=args.blocked_schedule,
+    )
     print(json.dumps(summary, indent=2), flush=True)
+
 
 if __name__ == "__main__":
     main()

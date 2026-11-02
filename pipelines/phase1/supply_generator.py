@@ -259,6 +259,8 @@ class SupplyGenerator:
 
             # Step 2.5: Extract flex assignment rows from model.F
             for (w, n, o, d), v in F_dict[shift_key].items():
+                if w in ["ATC", "OC", "CHF", "ROC"]:
+                    continue
                 if v > 0.5:
                     tech_id = tech_id_of.get((shift_type, w, n, o))
                     dt = datetime.strptime(d, "%Y-%m-%d")

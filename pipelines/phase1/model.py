@@ -1,3 +1,4 @@
+import signal
 import xpress as xp
 import pandas as pd
 import yaml
@@ -66,7 +67,17 @@ class WorkforceOptimizer:
 
         self.model = xp.problem(name=f"Bidline_Model{self.shift}")
 
-        self.model.controls.outputlog = 0
+        # self.model.controls.outputlog = 0
+
+        def handle_ctrl_c(signum, frame):
+            """Catches Ctrl+C and gracefully tells the Xpress solver to stop."""
+            print("\n[External Trigger] Ctrl+C detected! Interrupting Xpress solver...")
+            # Safely instruct the background C-solver to wrap up and exit
+            self.model.interrupt(reason=xp.enums.StopType.CTRLC)
+
+        signal.signal(signal.SIGINT, handle_ctrl_c)
+
+        self.model.controls.miprelstop = 0.015
 
         self.X = {
             idx: self.model.addVariable(vartype=xp.binary, name=f"X_{idx}")
@@ -85,20 +96,33 @@ class WorkforceOptimizer:
 
         # self.model.addVariable(list(self.Z.values()))
 
-        self.cov = [
-            xp.Sum(
-                self.X[wc, number, offset] * self.coverage_vectors[offset][day]
-                - self.Y[wc, number, offset, day] * self.coverage_vectors[offset][day]
-                + self.F[wc, number, offset, day]
-                * (1 - self.coverage_vectors[offset][day])
-                # - self.Z[wc, number, offset, day] * (1 - self.coverage_vectors[offset][day])
-                for wc, number, offset in self.X_set
-                if wc == w
-            )
-            >= self.demand[w][day] + _BUFFER_PARAMS.get(w,0)
-            for w in self.demand.keys()
-            for day in self.coverage_days[w]
-        ]
+        self.cov = {}
+        for w in self.demand.keys():
+            flag = 1
+            count = 0
+            for day in self.coverage_days[w]:
+                self.cov[w, day] = [
+                    xp.Sum(
+                        self.X[wc, number, offset] * self.coverage_vectors[offset][day]
+                        - self.Y[wc, number, offset, day]
+                        * self.coverage_vectors[offset][day]
+                        + self.F[wc, number, offset, day]
+                        * (1 - self.coverage_vectors[offset][day])
+                        # - self.Z[wc, number, offset, day] * (1 - self.coverage_vectors[offset][day])
+                        for wc, number, offset in self.X_set
+                        if wc == w
+                    )
+                    >= self.demand[w][day] + _BUFFER_PARAMS.get(w, 0) * flag
+                ]
+                if flag == 1:
+                    flag = 0
+                    count += 1
+                elif flag == 0 and count <= 4:
+                    count += 1
+                elif flag == 0 and count > 4:
+                    flag = 1
+                    count = 0
+
         self.model.addConstraint(self.cov)
 
         self.alltrain = [

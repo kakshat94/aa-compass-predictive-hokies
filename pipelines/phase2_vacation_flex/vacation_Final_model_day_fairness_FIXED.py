@@ -70,7 +70,36 @@ DEFAULT_OUTPUT_DIR = "outputs/tech_id_annual_day_fairness"
 DEFAULT_EXCLUDED_DATE = "2026-01-11"  # comma-separated list; "none" disables.
 
 SEED_SCALE = 1_000_000  # integer price scale of the min-cost-flow seed
-ROW, DATE = "SRC_ROW_ID", "SRC_SHIFT_DATE"  # helper columns (itertuples drops names starting with "_")
+ROW, DATE = (
+    "SRC_ROW_ID",
+    "SRC_SHIFT_DATE",
+)  # helper columns (itertuples drops names starting with "_")
+
+SCHEMA_MAIN = {
+    "MAJOR_WORK_TYPE": "major_work_type",
+    "START_TIME": "start_time",
+    "EMPLOYEE_TITLE": "employee_title",
+    "WORK_CENTER_ID": "work_center_id",
+    "CONTRACTOR_FLAG": "contractor_flag",
+    "CLUSTER": "cluster",
+    "EMPLOYEE_WORK_CENTER_ID": "employee_work_center_id",
+    "TECH_ID": "tech_id",
+    "END_TIME": "end_time",
+    "SHIFT_DATE": "shift_date",
+    "SHIFT_LENGTH": "shift_length",
+    "SHIFT_TYPE": "shift_type",
+    "FINAL_QUALS": "Final_Quals",
+    "PRIMARY_QUAL": "Primary_Qual",
+    "DOMESTIC": "Domestic",
+    "ATC": "ATC",
+    "ROC": "ROC",
+    "CHF": "CHF",
+    "OC": "OC",
+    "LATIN": "Latin",
+    "EUROPE": "Europe",
+    "PACIFIC": "Pacific",
+    "QUAL_COUNT": "Qual_Count",
+}
 
 
 def csv_in(path):
@@ -85,7 +114,9 @@ def csv_in(path):
 def require(df, names, label):
     missing = [c for c in names if c not in df.columns]
     if missing:
-        raise ValueError(f"{label}: missing {missing}. Available columns: {list(df.columns)}")
+        raise ValueError(
+            f"{label}: missing {missing}. Available columns: {list(df.columns)}"
+        )
 
 
 def dates_in(df, name):
@@ -103,11 +134,23 @@ def normalize_supply(df):
     for col in ("WORK_CENTER_ID", "SHIFT_TYPE"):
         df[col] = df[col].astype("string").str.strip().str.upper()
     if df[["TECH_ID", "WORK_CENTER_ID", "SHIFT_TYPE"]].isna().any().any():
-        raise ValueError("Supply contains missing dispatcher, work-center, or shift IDs")
+        raise ValueError(
+            "Supply contains missing dispatcher, work-center, or shift IDs"
+        )
     for col in ("STATUS", "ASSIGNMENT_TYPE", "DAY_TYPE"):
         if col in df:
-            excluded = {"OFF", "REST", "DAY OFF", "DAY_OFF", "VACATION", "FLEX", "TRAINING"}
-            df = df.loc[~df[col].astype(str).str.strip().str.upper().isin(excluded)].copy()
+            excluded = {
+                "OFF",
+                "REST",
+                "DAY OFF",
+                "DAY_OFF",
+                "VACATION",
+                "FLEX",
+                "TRAINING",
+            }
+            df = df.loc[
+                ~df[col].astype(str).str.strip().str.upper().isin(excluded)
+            ].copy()
     if df.duplicated(["TECH_ID", "SHIFT_DATE"]).any():
         raise ValueError("Multiple scheduled supply rows for a TECH_ID and SHIFT_DATE")
     return df.sort_values(["SHIFT_DATE", "TECH_ID"]).reset_index(drop=True)
@@ -118,7 +161,9 @@ def attach_dispatcher_groups(supply):
     supply = supply.copy()
     supply["FAIR_GROUP"] = supply["TECH_ID"].astype(str)
     count = int(supply["TECH_ID"].nunique())
-    print(f"Annual fairness groups: {count} TECH_ID dispatchers (one assigned bid line per dispatcher).")
+    print(
+        f"Annual fairness groups: {count} TECH_ID dispatchers (one assigned bid line per dispatcher)."
+    )
     return supply, "TECH_ID_DISPATCHER_ANNUAL_LINE"
 
 
@@ -128,7 +173,11 @@ def normalize_demand(df):
     df["WORK_CENTER"] = df.WORK_CENTER.astype("string").str.strip().str.upper()
     df["SHIFT_TYPE"] = df.SHIFT_TYPE.astype("string").str.strip().str.upper()
     df["DEMAND"] = pd.to_numeric(df.DEMAND, errors="raise")
-    if df.DEMAND.isna().any() or (df.DEMAND < 0).any() or not (df.DEMAND % 1 == 0).all():
+    if (
+        df.DEMAND.isna().any()
+        or (df.DEMAND < 0).any()
+        or not (df.DEMAND % 1 == 0).all()
+    ):
         raise ValueError("Demand must be nonnegative integers")
     if df.duplicated(["SHIFT_DATE", "WORK_CENTER", "SHIFT_TYPE"]).any():
         raise ValueError("Duplicate desk demand bucket")
@@ -146,14 +195,26 @@ def demand_map_with_audit(df, supply, considered_dates, missing_mode):
         for r in df.itertuples(index=False)
         if r.SHIFT_DATE in considered_dates
     }
-    donors = {(r.SHIFT_DATE, str(r.WORK_CENTER), str(r.SHIFT_TYPE)): int(r.DEMAND) for r in df.itertuples(index=False)}
-    missing = sorted(set(zip(supply.SHIFT_DATE, supply.WORK_CENTER_ID, supply.SHIFT_TYPE)) - set(mapping))
+    donors = {
+        (r.SHIFT_DATE, str(r.WORK_CENTER), str(r.SHIFT_TYPE)): int(r.DEMAND)
+        for r in df.itertuples(index=False)
+    }
+    missing = sorted(
+        set(zip(supply.SHIFT_DATE, supply.WORK_CENTER_ID, supply.SHIFT_TYPE))
+        - set(mapping)
+    )
     if missing and missing_mode == "error":
-        raise ValueError(f"{len(missing)} missing demand buckets; examples {missing[:4]}")
+        raise ValueError(
+            f"{len(missing)} missing demand buckets; examples {missing[:4]}"
+        )
     records = []
     for date, center, shift in missing:
         donor_date = next(
-            (z for z in (date - pd.Timedelta(days=7), date + pd.Timedelta(days=7)) if (z, center, shift) in donors),
+            (
+                z
+                for z in (date - pd.Timedelta(days=7), date + pd.Timedelta(days=7))
+                if (z, center, shift) in donors
+            ),
             None,
         )
         if donor_date is None:
@@ -164,12 +225,27 @@ def demand_map_with_audit(df, supply, considered_dates, missing_mode):
         demand = donors[(donor_date, center, shift)]
         mapping[(date, center, shift)] = demand
         records.append(
-            dict(SHIFT_DATE=date, WORK_CENTER=center, SHIFT_TYPE=shift, IMPUTED_DEMAND=demand, DONOR_DATE=donor_date)
+            dict(
+                SHIFT_DATE=date,
+                WORK_CENTER=center,
+                SHIFT_TYPE=shift,
+                IMPUTED_DEMAND=demand,
+                DONOR_DATE=donor_date,
+            )
         )
     if records:
-        print(f"WARNING: {len(records)} demand buckets imputed. Coverage numbers are PROVISIONAL.")
+        print(
+            f"WARNING: {len(records)} demand buckets imputed. Coverage numbers are PROVISIONAL."
+        )
     return mapping, pd.DataFrame(
-        records, columns=["SHIFT_DATE", "WORK_CENTER", "SHIFT_TYPE", "IMPUTED_DEMAND", "DONOR_DATE"]
+        records,
+        columns=[
+            "SHIFT_DATE",
+            "WORK_CENTER",
+            "SHIFT_TYPE",
+            "IMPUTED_DEMAND",
+            "DONOR_DATE",
+        ],
     )
 
 
@@ -187,17 +263,28 @@ def load_volume(path, dates):
     """Operational volume per date. Missing dates take the same weekday a week
     earlier, else a week later (as in the original make_quota)."""
     table = csv_in(path)
-    dcol = next((c for c in ("DATE", "SHIFT_DATE", "CALENDAR_DATE", "DAY") if c in table), None)
+    dcol = next(
+        (c for c in ("DATE", "SHIFT_DATE", "CALENDAR_DATE", "DAY") if c in table), None
+    )
     vcol = next(
         (
             c
-            for c in ("DEMAND_VOLUME_PER_DAY", "DEMAND_VOLUME", "DAILY_VOLUME", "OPERATIONAL_VOLUME", "VOLUME", "DEMAND")
+            for c in (
+                "DEMAND_VOLUME_PER_DAY",
+                "DEMAND_VOLUME",
+                "DAILY_VOLUME",
+                "OPERATIONAL_VOLUME",
+                "VOLUME",
+                "DEMAND",
+            )
             if c in table
         ),
         None,
     )
     if dcol is None or vcol is None:
-        raise ValueError(f"Cannot detect volume date/value columns: {list(table.columns)}")
+        raise ValueError(
+            f"Cannot detect volume date/value columns: {list(table.columns)}"
+        )
     table = dates_in(table, dcol)
     if table[dcol].duplicated().any():
         raise ValueError("Duplicate dates in volume CSV")
@@ -210,14 +297,27 @@ def load_volume(path, dates):
         if d in vol:
             volumes[d] = float(vol[d])
             continue
-        donor = next((z for z in (d - pd.Timedelta(days=7), d + pd.Timedelta(days=7)) if z in vol), None)
+        donor = next(
+            (
+                z
+                for z in (d - pd.Timedelta(days=7), d + pd.Timedelta(days=7))
+                if z in vol
+            ),
+            None,
+        )
         if donor is None:
-            raise ValueError(f"No volume for {d.date()} nor the same weekday one week before/after")
+            raise ValueError(
+                f"No volume for {d.date()} nor the same weekday one week before/after"
+            )
         volumes[d] = float(vol[donor])
         imputed.append(dict(SHIFT_DATE=d, IMPUTED_VOLUME=volumes[d], DONOR_DATE=donor))
     if imputed:
-        print(f"WARNING: volume imputed for {len(imputed)} date(s) from the same weekday +-7 days.")
-    return volumes, pd.DataFrame(imputed, columns=["SHIFT_DATE", "IMPUTED_VOLUME", "DONOR_DATE"])
+        print(
+            f"WARNING: volume imputed for {len(imputed)} date(s) from the same weekday +-7 days."
+        )
+    return volumes, pd.DataFrame(
+        imputed, columns=["SHIFT_DATE", "IMPUTED_VOLUME", "DONOR_DATE"]
+    )
 
 
 def daily_limits(dates, volume_path, args):
@@ -229,7 +329,9 @@ def daily_limits(dates, volume_path, args):
     caps = {d: args.day_hi for d in dates}
     soft = {d: args.day_lo for d in dates}
     target = {d: None for d in dates}
-    volumes, vol_audit = {}, pd.DataFrame(columns=["SHIFT_DATE", "IMPUTED_VOLUME", "DONOR_DATE"])
+    volumes, vol_audit = {}, pd.DataFrame(
+        columns=["SHIFT_DATE", "IMPUTED_VOLUME", "DONOR_DATE"]
+    )
     if args.volume_policy == "none":
         if volume_path and Path(volume_path).is_file():
             volumes, vol_audit = load_volume(volume_path, dates)
@@ -241,14 +343,22 @@ def daily_limits(dates, volume_path, args):
         n_levels = min(5, args.day_hi + 1)
         for rank, date in enumerate(ordered):
             band = min(n_levels - 1, rank * n_levels // len(ordered))
-            caps[date] = min(args.day_hi, max(0, args.day_hi - band + args.volume_cap_slack))
+            caps[date] = min(
+                args.day_hi, max(0, args.day_hi - band + args.volume_cap_slack)
+            )
             soft[date] = min(soft[date], caps[date])
-        print("NOTE: Volume rank caps are approximate policy choices, NOT AA-specified cutoffs.")
+        print(
+            "NOTE: Volume rank caps are approximate policy choices, NOT AA-specified cutoffs."
+        )
         return caps, soft, target, volumes, vol_audit
 
     # proportional: target_d = clip(K / volume_d, rule-1 range)
     lo, hi = args.day_lo, args.day_hi
-    level = args.base_per_day if args.base_per_day is not None else (args.daily_min + args.daily_max) / 2
+    level = (
+        args.base_per_day
+        if args.base_per_day is not None
+        else (args.daily_min + args.daily_max) / 2
+    )
     level = min(max(level, lo), hi)
     v = np.array([volumes[d] for d in dates])
 
@@ -383,9 +493,12 @@ class Allocation:
             dispatcher_annual_vacation_day_SD=float(np.std(counts, ddof=0)),
             dispatcher_annual_vacation_day_min=min(counts, default=0),
             dispatcher_annual_vacation_day_max=max(counts, default=0),
-            dispatcher_annual_vacation_day_spread=max(counts, default=0) - min(counts, default=0),
+            dispatcher_annual_vacation_day_spread=max(counts, default=0)
+            - min(counts, default=0),
             dispatcher_annual_rate_SD_pp=100 * float(np.std(rates, ddof=0)),
-            annual_average_rate_deviation_pp=100 * sum(map(abs, rate_devs)) / len(rates),
+            annual_average_rate_deviation_pp=100
+            * sum(map(abs, rate_devs))
+            / len(rates),
             annual_worst_rate_deviation_pp=100 * max(map(abs, rate_devs), default=0),
             annual_signed=signed,
             soft_floor_deficit=shortfall,
@@ -420,8 +533,12 @@ def flow_seed(idx, safe_cap, bucket_cap, day_cap, args):
     G, D = len(idx.group_list), len(idx.days)
     k = args.slack_days
     reward_floor = max(1, round(args.soft_min_weight * SEED_SCALE / D))
-    reward_base = max(1, round(args.base_weight * SEED_SCALE / D)) if args.base_range else 0
-    fair_unit = max(1, round(max(args.annual_average_weight, 1e-3) * SEED_SCALE / G / 2))
+    reward_base = (
+        max(1, round(args.base_weight * SEED_SCALE / D)) if args.base_range else 0
+    )
+    fair_unit = max(
+        1, round(max(args.annual_average_weight, 1e-3) * SEED_SCALE / G / 2)
+    )
     shortage_price = max(1, round(args.shortage_weight * SEED_SCALE / D))
     forced_price = 10**13
 
@@ -441,15 +558,24 @@ def flow_seed(idx, safe_cap, bucket_cap, day_cap, args):
     row_head = np.array([b0 + bpos[idx.bucket_of[j]] for j in rows], dtype=np.int64)
     bd_tail = np.array([b0 + i for i in range(len(buckets))], dtype=np.int64)
     bd_head = np.array([d0 + dpos[b[0]] for b in buckets], dtype=np.int64)
-    bd_cap = np.array([min(safe_cap[b], bucket_cap[b]) for b in buckets], dtype=np.int64)
-    bx_cap = np.array([max(0, bucket_cap[b] - safe_cap[b]) for b in buckets], dtype=np.int64)
-    max_total = sum(min(day_cap[d], sum(bucket_cap[b] for b in idx.buckets_by_day[d])) for d in days)
+    bd_cap = np.array(
+        [min(safe_cap[b], bucket_cap[b]) for b in buckets], dtype=np.int64
+    )
+    bx_cap = np.array(
+        [max(0, bucket_cap[b] - safe_cap[b]) for b in buckets], dtype=np.int64
+    )
+    max_total = sum(
+        min(day_cap[d], sum(bucket_cap[b] for b in idx.buckets_by_day[d])) for d in days
+    )
     big = max_total + 1
 
     def solve(C, L):
         """C = fairness centre; L = band anchor (None: no band)."""
         lo = {g: max(0, L - k) if L is not None else 0 for g in idx.group_list}
-        hi = {g: min(cap_g[g], L + 1 + k) if L is not None else cap_g[g] for g in idx.group_list}
+        hi = {
+            g: min(cap_g[g], L + 1 + k) if L is not None else cap_g[g]
+            for g in idx.group_list
+        }
         if any(lo[g] > cap_g[g] for g in idx.group_list):
             return None
         tails, heads, caps, costs = [], [], [], []
@@ -487,10 +613,15 @@ def flow_seed(idx, safe_cap, bucket_cap, day_cap, args):
         first_row = f.add_arcs_with_capacity_and_unit_cost(
             row_tail, row_head, np.ones(len(rows), dtype=np.int64), np.zeros(len(rows), dtype=np.int64)
         )[0] if rows else 0  # fmt: skip
-        f.add_arcs_with_capacity_and_unit_cost(bd_tail, bd_head, bd_cap, np.zeros(len(buckets), dtype=np.int64))
+        f.add_arcs_with_capacity_and_unit_cost(
+            bd_tail, bd_head, bd_cap, np.zeros(len(buckets), dtype=np.int64)
+        )
         if bx_cap.any():
             f.add_arcs_with_capacity_and_unit_cost(
-                bd_tail, bd_head, bx_cap, np.full(len(buckets), shortage_price, dtype=np.int64)
+                bd_tail,
+                bd_head,
+                bx_cap,
+                np.full(len(buckets), shortage_price, dtype=np.int64),
             )
         supplies = np.zeros(d0 + len(days), dtype=np.int64)
         supplies[SRC], supplies[SNK] = total_hi, -total_hi
@@ -498,7 +629,11 @@ def flow_seed(idx, safe_cap, bucket_cap, day_cap, args):
         if f.solve() != f.OPTIMAL:
             raise RuntimeError("seed min-cost flow failed")
         chosen = [0] * idx.n
-        flows = f.flows(np.arange(first_row, first_row + len(rows), dtype=np.int64)) if rows else []
+        flows = (
+            f.flows(np.arange(first_row, first_row + len(rows), dtype=np.int64))
+            if rows
+            else []
+        )
         for j, fl in zip(rows, flows):
             if fl:
                 chosen[j] = 1
@@ -551,7 +686,9 @@ def flow_seed(idx, safe_cap, bucket_cap, day_cap, args):
         if best_key is None or key < best_key:
             best, best_key = state, key
     if best is None:
-        raise RuntimeError("no feasible seed (this should not happen: L = 0 is always feasible)")
+        raise RuntimeError(
+            "no feasible seed (this should not happen: L = 0 is always feasible)"
+        )
     return best, pd.DataFrame(scan)
 
 
@@ -578,13 +715,19 @@ def neighborhood_buckets(idx, state, info, bucket_caps, rng, how_many, mode):
             if not (chosen and free and len({idx.group_of[j] for j in js}) > 1):
                 continue
             potential = max(
-                0.0, max(annual[idx.group_of[j]] for j in chosen) - min(annual[idx.group_of[j]] for j in free)
+                0.0,
+                max(annual[idx.group_of[j]] for j in chosen)
+                - min(annual[idx.group_of[j]] for j in free),
             )
         else:
             if not chosen and not (free and remaining_cap > 0):
                 continue
             drop_gain = max([annual[idx.group_of[j]] for j in chosen] + [0.0])
-            add_gain = -min([annual[idx.group_of[j]] for j in free] + [0.0]) if remaining_cap > 0 else 0.0
+            add_gain = (
+                -min([annual[idx.group_of[j]] for j in free] + [0.0])
+                if remaining_cap > 0
+                else 0.0
+            )
             potential = max(0.0, drop_gain, add_gain)
         ranked.append((potential + 0.002 * rng.random(), bucket))
     if not ranked:
@@ -605,7 +748,9 @@ def neighborhood_buckets(idx, state, info, bucket_caps, rng, how_many, mode):
     return picked
 
 
-def solve_local(idx, state, buckets, bucket_caps, day_caps, args, mode, iteration, incumbent):
+def solve_local(
+    idx, state, buckets, bucket_caps, day_caps, args, mode, iteration, incumbent
+):
     """Solve a small CP-SAT annual-fairness neighborhood."""
     from ortools.sat.python import cp_model
 
@@ -641,7 +786,9 @@ def solve_local(idx, state, buckets, bucket_caps, day_caps, args, mode, iteratio
     bound = G * len(idx.days)
     deviations, group_totals = [], []
     for g in idx.group_list:
-        group_total = updated(state.vg[g], by_group[g]) if g in by_group else state.vg[g]
+        group_total = (
+            updated(state.vg[g], by_group[g]) if g in by_group else state.vg[g]
+        )
         group_totals.append(group_total)
         delta = G * group_total - total_expr
         z = model.NewIntVar(0, bound, f"dev_scaled_days_{len(deviations)}")
@@ -695,7 +842,11 @@ def solve_local(idx, state, buckets, bucket_caps, day_caps, args, mode, iteratio
     result = solver.Solve(model)
     if result not in (cp_model.OPTIMAL, cp_model.FEASIBLE):
         return solver.StatusName(result), {}, solver.WallTime()
-    return solver.StatusName(result), {j: int(solver.Value(var)) for j, var in x.items()}, solver.WallTime()
+    return (
+        solver.StatusName(result),
+        {j: int(solver.Value(var)) for j, var in x.items()},
+        solver.WallTime(),
+    )
 
 
 def spread_ok(idx, state, args):
@@ -716,9 +867,13 @@ def optimize(idx, state, bucket_caps, day_caps, baseline_shortage, demand_req, a
         k = min(5, bucket_n) if mode == "count" else bucket_n
         buckets = neighborhood_buckets(idx, state, current, bucket_caps, rng, k, mode)
         if not buckets:
-            print(f"LNS {iteration}/{args.lns_iterations}: no eligible {mode} neighborhood")
+            print(
+                f"LNS {iteration}/{args.lns_iterations}: no eligible {mode} neighborhood"
+            )
             continue
-        status, proposal, elapsed = solve_local(idx, state, buckets, bucket_caps, day_caps, args, mode, iteration, current)
+        status, proposal, elapsed = solve_local(
+            idx, state, buckets, bucket_caps, day_caps, args, mode, iteration, current
+        )
         accepted = False
         if proposal:
             candidate = state.clone()
@@ -726,13 +881,17 @@ def optimize(idx, state, bucket_caps, day_caps, baseline_shortage, demand_req, a
             if (
                 all(candidate.vb[b] <= bucket_caps[b] for b in buckets)
                 and all(candidate.vd[d] <= day_caps[d] for d in {b[0] for b in buckets})
-                and (args.allow_added_shortage or shortage(idx, candidate, demand_req) == baseline_shortage)
+                and (
+                    args.allow_added_shortage
+                    or shortage(idx, candidate, demand_req) == baseline_shortage
+                )
                 and spread_ok(idx, candidate, args)
             ):
                 other = candidate.statistics(idx, args)
                 if (
                     other["score_days"] < current["score_days"] - 1e-9
-                    and other["annual_worst_deviation_days"] <= current["annual_worst_deviation_days"] + 1e-9
+                    and other["annual_worst_deviation_days"]
+                    <= current["annual_worst_deviation_days"] + 1e-9
                 ):
                     state, current = candidate, other
                     accepted, stagnant = True, 0
@@ -782,7 +941,11 @@ def export(ctx, state, outdir, before, args):
     the remaining supply includes the excluded dates untouched, so the flex
     module's consistency checks pass."""
     idx, req, raw = ctx["idx"], ctx["req"], ctx["raw"]
-    bucket_caps, day_caps, baseline_shortage = ctx["limit_caps"], ctx["day_caps"], ctx["shortage_min"]
+    bucket_caps, day_caps, baseline_shortage = (
+        ctx["limit_caps"],
+        ctx["day_caps"],
+        ctx["shortage_min"],
+    )
     safe_caps = ctx["safe_caps"]
     outdir.mkdir(parents=True, exist_ok=True)
     final = state.statistics(idx, args)
@@ -791,25 +954,41 @@ def export(ctx, state, outdir, before, args):
     assert all(state.vd[d] <= day_caps[d] for d in idx.days)
     assert all(state.vb[b] <= bucket_caps[b] for b in idx.buckets)
     assert spread_ok(idx, state, args), "fairness band violated"
-    chosen_rows = [int(getattr(idx.rows[j], ROW)) for j, a in enumerate(state.chosen) if a]
+    chosen_rows = [
+        int(getattr(idx.rows[j], ROW)) for j, a in enumerate(state.chosen) if a
+    ]
     for j, a in enumerate(state.chosen):
         if a:
-            assert (str(idx.rows[j].TECH_ID), idx.rows[j].SHIFT_DATE) not in ctx["train"]
+            assert (str(idx.rows[j].TECH_ID), idx.rows[j].SHIFT_DATE) not in ctx[
+                "train"
+            ]
     is_vac = raw[ROW].isin(chosen_rows)
     cols = [c for c in raw.columns if c not in (ROW, DATE)]
-    vacations = raw.loc[is_vac, ["TECH_ID", DATE, "WORK_CENTER_ID", "SHIFT_TYPE"]].rename(columns={DATE: "SHIFT_DATE"})
+    vacations = raw.loc[is_vac, list(SCHEMA_MAIN.keys())].rename(
+        columns={DATE: "SHIFT_DATE"}
+    )
     vacations = vacations.sort_values(["SHIFT_DATE", "TECH_ID"])
-    vacations.to_csv(outdir / "vacation_initial.csv", index=False, date_format="%Y-%m-%d")
+    vacations.to_csv(
+        outdir / "vacation_initial.csv", index=False, date_format="%Y-%m-%d"
+    )
     remaining = raw.loc[~is_vac].copy()
     remaining["SHIFT_DATE"] = remaining[DATE]
     remaining = remaining[cols]
     assert len(remaining) + len(vacations) == len(raw)
-    remaining.to_csv(outdir / "vacation_outputs_updatedFormat.csv", index=False, date_format="%Y-%m-%d")
+    remaining.to_csv(
+        outdir / "vacation_outputs_updatedFormat.csv",
+        index=False,
+        date_format="%Y-%m-%d",
+    )
     imputed = ctx["imputed"].copy()
     imputed["WORK_CENTER"] = _label(imputed["WORK_CENTER"], ctx["wc_labels"])
     imputed["SHIFT_TYPE"] = _label(imputed["SHIFT_TYPE"], ctx["shift_labels"])
-    imputed.to_csv(outdir / "demand_imputation_audit.csv", index=False, date_format="%Y-%m-%d")
-    ctx["volume_audit"].to_csv(outdir / "volume_imputation_audit.csv", index=False, date_format="%Y-%m-%d")
+    imputed.to_csv(
+        outdir / "demand_imputation_audit.csv", index=False, date_format="%Y-%m-%d"
+    )
+    ctx["volume_audit"].to_csv(
+        outdir / "volume_imputation_audit.csv", index=False, date_format="%Y-%m-%d"
+    )
     ctx["seed_scan"].to_csv(outdir / "vacation_seed_level_scan.csv", index=False)
 
     home = ctx["home_wc"]
@@ -839,7 +1018,13 @@ def export(ctx, state, outdir, before, args):
     )
     by_wc = (
         dispatcher_df.groupby("WORK_CENTER_ID")["ANNUAL_VACATIONS"]
-        .agg(DISPATCHERS="count", MIN_DAYS="min", MEAN_DAYS="mean", MAX_DAYS="max", TOTAL_VACATIONS="sum")
+        .agg(
+            DISPATCHERS="count",
+            MIN_DAYS="min",
+            MEAN_DAYS="mean",
+            MAX_DAYS="max",
+            TOTAL_VACATIONS="sum",
+        )
         .reset_index()
     )
     by_wc.to_csv(outdir / "vacation_by_work_center.csv", index=False)
@@ -855,7 +1040,9 @@ def export(ctx, state, outdir, before, args):
             SHORTAGE_ADDED=sum(max(0, state.vb[b] - safe_caps[b]) for b in idx.buckets_by_day[d]),
         ))  # fmt: skip
     daily_df = pd.DataFrame(daily)
-    daily_df.to_csv(outdir / "vacation_daily_targets.csv", index=False, date_format="%Y-%m-%d")
+    daily_df.to_csv(
+        outdir / "vacation_daily_targets.csv", index=False, date_format="%Y-%m-%d"
+    )
 
     coverage = []
     for bucket, required in sorted(req.items()):
@@ -868,21 +1055,46 @@ def export(ctx, state, outdir, before, args):
             SHORTAGE_AFTER_VACATIONS=max(0, required - eligible + state.vb[bucket]),
         ))  # fmt: skip
     coverage_df = pd.DataFrame(coverage)
-    coverage_df.to_csv(outdir / "coverage_all_buckets.csv", index=False, date_format="%Y-%m-%d")
+    coverage_df.to_csv(
+        outdir / "coverage_all_buckets.csv", index=False, date_format="%Y-%m-%d"
+    )
     coverage_deficits = coverage_df[coverage_df.UNAVOIDABLE_SHORTAGE > 0]
-    coverage_deficits.to_csv(outdir / "coverage_shortage_audit.csv", index=False, date_format="%Y-%m-%d")
+    coverage_deficits.to_csv(
+        outdir / "coverage_shortage_audit.csv", index=False, date_format="%Y-%m-%d"
+    )
     assert int(coverage_df.UNAVOIDABLE_SHORTAGE.sum()) == baseline_shortage
     coverage_df[coverage_df.SHORTAGE_AFTER_VACATIONS > 0].to_csv(
-        outdir / "coverage_shortage_after_vacation.csv", index=False, date_format="%Y-%m-%d"
+        outdir / "coverage_shortage_after_vacation.csv",
+        index=False,
+        date_format="%Y-%m-%d",
     )
-    by_desk = coverage_df.assign(
-        SHORTAGE_ADDED=coverage_df.SHORTAGE_AFTER_VACATIONS - coverage_df.UNAVOIDABLE_SHORTAGE
-    ).groupby("WORK_CENTER")[["DEMAND", "VACATIONS", "UNAVOIDABLE_SHORTAGE", "SHORTAGE_ADDED", "SHORTAGE_AFTER_VACATIONS"]].sum()
-    by_desk.reset_index().to_csv(outdir / "vacation_shortage_by_work_center.csv", index=False)
+    by_desk = (
+        coverage_df.assign(
+            SHORTAGE_ADDED=coverage_df.SHORTAGE_AFTER_VACATIONS
+            - coverage_df.UNAVOIDABLE_SHORTAGE
+        )
+        .groupby("WORK_CENTER")[
+            [
+                "DEMAND",
+                "VACATIONS",
+                "UNAVOIDABLE_SHORTAGE",
+                "SHORTAGE_ADDED",
+                "SHORTAGE_AFTER_VACATIONS",
+            ]
+        ]
+        .sum()
+    )
+    by_desk.reset_index().to_csv(
+        outdir / "vacation_shortage_by_work_center.csv", index=False
+    )
 
     corr = None
     if ctx["volumes"]:
-        corr = float(daily_df["VACATIONS"].corr(daily_df["OPERATIONAL_VOLUME"], method="spearman"))
+        corr = float(
+            daily_df["VACATIONS"].corr(
+                daily_df["OPERATIONAL_VOLUME"], method="spearman"
+            )
+        )
     counts = [state.vg[g] for g in idx.group_list]
     report = dict(
         model="COVERAGE_OPTIMAL_PLUS_TECH_ID_ANNUAL_VACATION_DAY_FAIRNESS",
@@ -924,12 +1136,16 @@ def export(ctx, state, outdir, before, args):
     )  # fmt: skip
     if args.base_range:
         report["base_total_range"] = list(args.base_range)
-    (outdir / "vacation_summary.json").write_text(json.dumps(report, indent=2, default=str), encoding="utf-8")
+    (outdir / "vacation_summary.json").write_text(
+        json.dumps(report, indent=2, default=str), encoding="utf-8"
+    )
     return report
 
 
 def build_parser():
-    p = argparse.ArgumentParser(description="Shortage first + TECH_ID annual vacation-DAY fairness; daily max HARD, min SOFT")
+    p = argparse.ArgumentParser(
+        description="Shortage first + TECH_ID annual vacation-DAY fairness; daily max HARD, min SOFT"
+    )
     p.add_argument("--supply", default=DEFAULT_SUPPLY)
     p.add_argument("--demand", default=DEFAULT_DEMAND)
     p.add_argument("--volume", default=DEFAULT_VOLUME)
@@ -937,13 +1153,27 @@ def build_parser():
     p.add_argument("--output-dir", default=DEFAULT_OUTPUT_DIR)
     p.add_argument("--resume-vacations", default=None,
                    help="Recover a previously exported vacation_initial.csv without rerunning the search")  # fmt: skip
-    p.add_argument("--exclude-date", default=DEFAULT_EXCLUDED_DATE, help="comma-separated dates, or none")
+    p.add_argument(
+        "--exclude-date",
+        default=DEFAULT_EXCLUDED_DATE,
+        help="comma-separated dates, or none",
+    )
     p.add_argument("--demand-missing", choices=("impute", "error"), default="impute")
     # Rule 1: daily total
     p.add_argument("--daily-min", type=int, default=25)
     p.add_argument("--daily-max", type=int, default=29)
-    p.add_argument("--daily-tolerance-below", type=int, default=0, help="allowed range starts at min - this")
-    p.add_argument("--daily-tolerance-above", type=int, default=0, help="allowed range ends at max + this")
+    p.add_argument(
+        "--daily-tolerance-below",
+        type=int,
+        default=0,
+        help="allowed range starts at min - this",
+    )
+    p.add_argument(
+        "--daily-tolerance-above",
+        type=int,
+        default=0,
+        help="allowed range ends at max + this",
+    )
     p.add_argument("--no-daily-rule", dest="daily_rule", action="store_false",
                    help="switch rule 1 off: no daily range (eligible staff is the only cap)")  # fmt: skip
     p.add_argument("--min-weight", dest="soft_min_weight", type=float, default=10000.0,
@@ -963,13 +1193,24 @@ def build_parser():
     p.add_argument("--slack-days", type=int, default=None,
                    help="hard band: counts within [L-k, L+1+k] (max-min <= 2k+1); omit for no band")  # fmt: skip
     # Rule 3: inverse volume
-    p.add_argument("--volume-policy", choices=("proportional", "rank-cap", "none"), default="proportional")
+    p.add_argument(
+        "--volume-policy",
+        choices=("proportional", "rank-cap", "none"),
+        default="proportional",
+    )
     p.add_argument("--volume-tolerance", type=int, default=1,
                    help="proportional: vacations per day allowed either side of the volume target")  # fmt: skip
     p.add_argument("--volume-cap-slack", type=int, default=1, help="rank-cap only")
     # Base per day
-    p.add_argument("--base-per-day", type=float, default=None, help="e.g. 27; omit for no base")
-    p.add_argument("--base-tolerance", type=float, default=0.0, help="+- vacations per day around the base")
+    p.add_argument(
+        "--base-per-day", type=float, default=None, help="e.g. 27; omit for no base"
+    )
+    p.add_argument(
+        "--base-tolerance",
+        type=float,
+        default=0.0,
+        help="+- vacations per day around the base",
+    )
     p.add_argument("--base-weight", type=float, default=10000.0,
                    help="Penalty per mean daily vacation outside the base range")  # fmt: skip
     # Search
@@ -1003,11 +1244,27 @@ def check_args(args):
         errors.append("rule 1 tolerances must be >= 0")
     apply_daily_rule(args)
     if not args.daily_rule and args.volume_policy == "rank-cap":
-        errors.append("rank_cap needs rule 1 enabled (its caps count down from the daily max)")
-    if not args.daily_rule and args.volume_policy == "none" and args.base_per_day is None:
-        errors.append("with rule 1, rule 3 and the base all off nothing asks for vacations (the answer would be 0)")
-    if any(x < 0 for x in (args.annual_worst_weight, args.annual_average_weight, args.soft_min_weight,
-                           args.base_weight, args.shortage_weight)):
+        errors.append(
+            "rank_cap needs rule 1 enabled (its caps count down from the daily max)"
+        )
+    if (
+        not args.daily_rule
+        and args.volume_policy == "none"
+        and args.base_per_day is None
+    ):
+        errors.append(
+            "with rule 1, rule 3 and the base all off nothing asks for vacations (the answer would be 0)"
+        )
+    if any(
+        x < 0
+        for x in (
+            args.annual_worst_weight,
+            args.annual_average_weight,
+            args.soft_min_weight,
+            args.base_weight,
+            args.shortage_weight,
+        )
+    ):
         errors.append("Objective weights must be nonnegative")
     if args.annual_worst_weight + args.annual_average_weight <= 0:
         errors.append("At least one annual fairness weight must be positive")
@@ -1019,8 +1276,12 @@ def check_args(args):
         errors.append("Volume cap slack / tolerance must be >= 0")
     if args.slack_days is not None and args.slack_days < 0:
         errors.append("slack-days must be >= 0")
-    if args.base_per_day is not None and (args.base_tolerance < 0 or not 0 <= args.base_per_day <= args.day_hi):
-        errors.append("base value must be in [0, daily max + tolerance_above] and base tolerance >= 0")
+    if args.base_per_day is not None and (
+        args.base_tolerance < 0 or not 0 <= args.base_per_day <= args.day_hi
+    ):
+        errors.append(
+            "base value must be in [0, daily max + tolerance_above] and base tolerance >= 0"
+        )
     if errors:
         raise ValueError("; ".join(errors))
 
@@ -1034,33 +1295,59 @@ def run(args):
         # the base are priced well above a unit of added shortage, whatever
         # their configured weights say.
         rule_weight = RULE_PRIORITY * args.shortage_weight
-        for name, label in (("soft_min_weight", "rule1 min_weight"), ("base_weight", "base_per_day weight")):
+        for name, label in (
+            ("soft_min_weight", "rule1 min_weight"),
+            ("base_weight", "base_per_day weight"),
+        ):
             if getattr(args, name) < rule_weight:
                 if name == "soft_min_weight" or args.base_per_day is not None:
-                    print(f"NOTE: {label} raised from {getattr(args, name):g} to {rule_weight:g} "
-                          f"so the rule outranks shortage.")
+                    print(
+                        f"NOTE: {label} raised from {getattr(args, name):g} to {rule_weight:g} "
+                        f"so the rule outranks shortage."
+                    )
                 setattr(args, name, rule_weight)
 
     raw = csv_in(args.supply)
     # Keep the input rows exactly as read, so outputs use the input's own spelling.
     raw[ROW] = np.arange(len(raw))
-    raw[DATE] = pd.to_datetime(raw["SHIFT_DATE"], format="mixed", errors="coerce").dt.normalize()
+    raw[DATE] = pd.to_datetime(
+        raw["SHIFT_DATE"], format="mixed", errors="coerce"
+    ).dt.normalize()
     full = normalize_supply(raw.drop(columns=[DATE]))
-    wc_labels = {str(x).strip().upper(): str(x).strip() for x in raw["WORK_CENTER_ID"].dropna().unique()}
-    shift_labels = {str(x).strip().upper(): str(x).strip() for x in raw["SHIFT_TYPE"].dropna().unique()}
-    home_wc = full.groupby("TECH_ID")["WORK_CENTER_ID"].agg(lambda s: s.mode().iat[0]).to_dict()
+    wc_labels = {
+        str(x).strip().upper(): str(x).strip()
+        for x in raw["WORK_CENTER_ID"].dropna().unique()
+    }
+    shift_labels = {
+        str(x).strip().upper(): str(x).strip()
+        for x in raw["SHIFT_TYPE"].dropna().unique()
+    }
+    home_wc = (
+        full.groupby("TECH_ID")["WORK_CENTER_ID"]
+        .agg(lambda s: s.mode().iat[0])
+        .to_dict()
+    )
 
     excluded = []
     if str(args.exclude_date).lower() not in ("none", "", "null"):
-        excluded = [pd.Timestamp(x.strip()).normalize() for x in str(args.exclude_date).split(",") if x.strip()]
+        excluded = [
+            pd.Timestamp(x.strip()).normalize()
+            for x in str(args.exclude_date).split(",")
+            if x.strip()
+        ]
     supply = full.loc[~full.SHIFT_DATE.isin(excluded)].copy()
     for d in excluded:
-        print(f"Excluded {d.date()} ({int((full.SHIFT_DATE == d).sum())} supply rows; kept unchanged in the output).")
+        print(
+            f"Excluded {d.date()} ({int((full.SHIFT_DATE == d).sum())} supply rows; kept unchanged in the output)."
+        )
     if supply.empty:
         raise ValueError("Supply empty after exclusions")
     supply, group_kind = attach_dispatcher_groups(supply)
     train, training_supplied = training_keys(args.training)
-    mask = [(str(r.TECH_ID), r.SHIFT_DATE) not in train for r in supply.itertuples(index=False)]
+    mask = [
+        (str(r.TECH_ID), r.SHIFT_DATE) not in train
+        for r in supply.itertuples(index=False)
+    ]
     allowed = supply.loc[mask].reset_index(drop=True)
     if allowed.empty:
         raise ValueError("No vacation-eligible work shifts after training exclusions")
@@ -1080,30 +1367,58 @@ def run(args):
     day_caps = {d: min(day_caps[d], len(idx.days[d])) for d in dates}
     args.soft_targets = soft
     demand = normalize_demand(csv_in(args.demand))
-    req_all, imputed = demand_map_with_audit(demand, full, set(full.SHIFT_DATE), args.demand_missing)
+    req_all, imputed = demand_map_with_audit(
+        demand, full, set(full.SHIFT_DATE), args.demand_missing
+    )
     req = {b: n for b, n in req_all.items() if b[0] in set(dates)}
     # PROOF of minimum shortage given fixed eligible supply: vacations only
     # come out of staff above demand in each (date, work center, shift).
-    safe_caps = {b: min(len(js), max(0, len(js) - req.get(b, 0))) for b, js in idx.buckets.items()}
-    shortage_min = sum(max(0, need - len(idx.buckets.get(b, ()))) for b, need in req.items())
-    max_safe_total = sum(min(day_caps[d], sum(safe_caps[b] for b in idx.buckets_by_day[d])) for d in dates)
-    print(f"Input: {idx.n:,} eligible shifts, {len(dates)} dates, {len(idx.groups)} TECH_ID fairness units.")
+    safe_caps = {
+        b: min(len(js), max(0, len(js) - req.get(b, 0)))
+        for b, js in idx.buckets.items()
+    }
+    shortage_min = sum(
+        max(0, need - len(idx.buckets.get(b, ()))) for b, need in req.items()
+    )
+    max_safe_total = sum(
+        min(day_caps[d], sum(safe_caps[b] for b in idx.buckets_by_day[d]))
+        for d in dates
+    )
+    print(
+        f"Input: {idx.n:,} eligible shifts, {len(dates)} dates, {len(idx.groups)} TECH_ID fairness units."
+    )
     # Vacations may use every eligible workday when added shortage is allowed.
-    limit_caps = {b: len(js) for b, js in idx.buckets.items()} if args.allow_added_shortage else safe_caps
+    limit_caps = (
+        {b: len(js) for b, js in idx.buckets.items()}
+        if args.allow_added_shortage
+        else safe_caps
+    )
     args.safe_caps = safe_caps
-    print(f"SHORTAGE BEFORE VACATIONS = {shortage_min} (no vacation allocation can reduce this).")
-    print(f"Most vacations possible without adding shortage (within daily caps): {max_safe_total:,}.")
+    print(
+        f"SHORTAGE BEFORE VACATIONS = {shortage_min} (no vacation allocation can reduce this)."
+    )
+    print(
+        f"Most vacations possible without adding shortage (within daily caps): {max_safe_total:,}."
+    )
     if args.allow_added_shortage:
-        print(f"Vacations may add shortage when the rules need them (price {args.shortage_weight} per unit).")
+        print(
+            f"Vacations may add shortage when the rules need them (price {args.shortage_weight} per unit)."
+        )
     else:
         print("Vacations never add shortage (shortage.allow_added: false).")
     if base_range:
-        print(f"Base: annual total target {base_range[0]:,}..{base_range[1]:,} (weight {args.base_weight:g}).")
+        print(
+            f"Base: annual total target {base_range[0]:,}..{base_range[1]:,} (weight {args.base_weight:g})."
+        )
     if args.max_spread is not None:
-        print(f"Fairness band: every dispatcher within [L-{args.slack_days}, L+1+{args.slack_days}] days (hard).")
+        print(
+            f"Fairness band: every dispatcher within [L-{args.slack_days}, L+1+{args.slack_days}] days (hard)."
+        )
 
     allocation, seed_scan = flow_seed(idx, safe_caps, limit_caps, day_caps, args)
-    assert shortage(idx, allocation, req) == shortage_min + added_shortage(allocation, safe_caps)
+    assert shortage(idx, allocation, req) == shortage_min + added_shortage(
+        allocation, safe_caps
+    )
     before = allocation.statistics(idx, args)
     print(
         f"Seed: {allocation.v} vacations; days per dispatcher {before['dispatcher_annual_vacation_day_min']}-"
@@ -1114,23 +1429,37 @@ def run(args):
     if args.resume_vacations:
         saved = normalize_supply(csv_in(args.resume_vacations))
         valid_rows = {
-            (str(r.TECH_ID), r.SHIFT_DATE, str(r.WORK_CENTER_ID), str(r.SHIFT_TYPE)): j for j, r in enumerate(idx.rows)
+            (str(r.TECH_ID), r.SHIFT_DATE, str(r.WORK_CENTER_ID), str(r.SHIFT_TYPE)): j
+            for j, r in enumerate(idx.rows)
         }
         chosen = [0] * idx.n
         for r in saved.itertuples(index=False):
-            key = (str(r.TECH_ID), r.SHIFT_DATE, str(r.WORK_CENTER_ID), str(r.SHIFT_TYPE))
+            key = (
+                str(r.TECH_ID),
+                r.SHIFT_DATE,
+                str(r.WORK_CENTER_ID),
+                str(r.SHIFT_TYPE),
+            )
             if key not in valid_rows:
-                raise ValueError(f"--resume-vacations includes ineligible or unknown assignment: {key}")
+                raise ValueError(
+                    f"--resume-vacations includes ineligible or unknown assignment: {key}"
+                )
             chosen[valid_rows[key]] = 1
         allocation = Allocation(idx, chosen)
         if any(allocation.vd[d] > day_caps[d] for d in idx.days) or any(
             allocation.vb[b] > limit_caps[b] for b in idx.buckets
         ):
-            raise ValueError("Recovered vacations exceed daily caps or the bucket limits")
-        print(f"Recovered {allocation.v:,} vacation assignments from {args.resume_vacations}.")
+            raise ValueError(
+                "Recovered vacations exceed daily caps or the bucket limits"
+            )
+        print(
+            f"Recovered {allocation.v:,} vacation assignments from {args.resume_vacations}."
+        )
         history = []
     elif args.lns_iterations:
-        allocation, history = optimize(idx, allocation, limit_caps, day_caps, shortage_min, req, args)
+        allocation, history = optimize(
+            idx, allocation, limit_caps, day_caps, shortage_min, req, args
+        )
     else:
         history = []
 
@@ -1176,10 +1505,14 @@ def exclusion_from_settings(ex):
     if ex is None:
         return DEFAULT_EXCLUDED_DATE
     if not isinstance(ex, dict):
-        raise ValueError('exclude_date must look like {enabled: true, date: "2026-01-11"}')
+        raise ValueError(
+            'exclude_date must look like {enabled: true, date: "2026-01-11"}'
+        )
     unknown = set(ex) - YAML_KEYS["exclude_date"]
     if unknown:
-        raise ValueError(f"unknown key(s) in 'exclude_date': {sorted(unknown)}; allowed: ['date', 'enabled']")
+        raise ValueError(
+            f"unknown key(s) in 'exclude_date': {sorted(unknown)}; allowed: ['date', 'enabled']"
+        )
     if not ex.get("enabled", True):
         return "none"
     date = ex.get("date", DEFAULT_EXCLUDED_DATE)
@@ -1196,7 +1529,9 @@ def args_from_settings(vacation: dict, **paths):
         d = d or {}
         unknown = set(d) - YAML_KEYS[name]
         if unknown:
-            raise ValueError(f"unknown key(s) in '{name}': {sorted(unknown)}; allowed: {sorted(YAML_KEYS[name])}")
+            raise ValueError(
+                f"unknown key(s) in '{name}': {sorted(unknown)}; allowed: {sorted(YAML_KEYS[name])}"
+            )
         return d
 
     vacation = section("vacation", vacation)
@@ -1228,11 +1563,15 @@ def args_from_settings(vacation: dict, **paths):
     else:
         mode = str(r3.get("mode", "proportional")).replace("_", "-")
         if mode not in ("proportional", "rank-cap"):
-            raise ValueError("rule3_inverse_volume.mode must be proportional or rank_cap")
+            raise ValueError(
+                "rule3_inverse_volume.mode must be proportional or rank_cap"
+            )
         a.volume_policy = mode
     a.volume_tolerance = int(r3.get("tolerance", a.volume_tolerance))
     a.volume_cap_slack = int(r3.get("cap_slack", a.volume_cap_slack))
-    a.base_per_day = float(base.get("value", 27)) if base.get("enabled", False) else None
+    a.base_per_day = (
+        float(base.get("value", 27)) if base.get("enabled", False) else None
+    )
     a.base_tolerance = float(base.get("tolerance", a.base_tolerance))
     a.base_weight = float(base.get("weight", a.base_weight))
     for k in YAML_KEYS["search"]:

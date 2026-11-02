@@ -182,7 +182,6 @@ def run_pipeline(
             written = write_flex_assignments(flex_df, flex_output)
             print(f"pre-assigned flex     : {len(flex_df):,} rows -> {written}")
 
-
     # --- Stage 2: training assignment (random or exact MIP) ---
     training_months = load_training_months(params_path)
     frozen = None
